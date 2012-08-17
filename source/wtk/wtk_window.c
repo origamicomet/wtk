@@ -27,6 +27,7 @@
 #include "_wtk_controls.h"
 
 #include <wtk/wtk_mm.h>
+#include <wtk/wtk_font.h>
 
 static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
@@ -70,8 +71,10 @@ struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int heigh
     memset((void*)window, 0, sizeof(struct wtk_window));
     window->control.type = WTK_CONTROL_TYPE(Window);
     window->control.hWnd = hWnd;
+    window->control.font = wtk_font_default();
 
     SetWindowLongPtr(hWnd, 0, (LONG_PTR)window);
+    PostMessage(hWnd, WM_SETFONT, (WPARAM)window->control.font->hFont, TRUE);
     PostMessage(hWnd, WM_USER + 0, 0, 0);
     return window;
 }

@@ -27,6 +27,7 @@
 #include "_wtk_controls.h"
 
 #include <wtk/wtk_mm.h>
+#include <wtk/wtk_font.h>
 
 #include <stdarg.h>
 
@@ -65,8 +66,10 @@ struct wtk_control* WTK_API wtk_control_create( int x, int y, unsigned int width
     memset((void*)control, 0, sizeof(struct wtk_control));
     control->type = WTK_CONTROL_TYPE(Base);
     control->hWnd = hWnd;
+    control->font = wtk_font_default();
 
     SetWindowLongPtr(hWnd, 0, (LONG_PTR)control);
+    PostMessage(hWnd, WM_SETFONT, (WPARAM)control->font->hFont, TRUE);
     PostMessage(hWnd, WM_USER + 0, 0, 0);
     return control;
 }
@@ -144,6 +147,7 @@ typedef struct {
 
 static wtk_property_accessors _property_accessors[WTK_CONTROL_PROP_COUNT] = {
     { NULL, NULL },                                     // WTK_CONTROL_PROP_Invalid
+    { &wtk_prop_font_getter, &wtk_prop_font_setter },   // WTK_CONTROL_PROP_Font
     { &wtk_prop_title_getter, &wtk_prop_title_setter }, // WTK_CONTROL_PROP_Title
     { &wtk_prop_text_getter, &wtk_prop_text_setter },   // WTK_CONTROL_PROP_Text
 };

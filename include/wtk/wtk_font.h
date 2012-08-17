@@ -21,16 +21,32 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_PROPERTIES_H_
-#define _WTK_CONTROL_PROPERTIES_H_
+#ifndef _WTK_FONT_H_
+#define _WTK_FONT_H_
 
-#define WTK_CONTROL_PROP( property ) WTK_CONTROL_PROP_##property
-typedef enum {
-    WTK_CONTROL_PROP_Invalid = 0,
-    WTK_CONTROL_PROP_Font,
-    WTK_CONTROL_PROP_Title,
-    WTK_CONTROL_PROP_Text,
-    WTK_CONTROL_PROP_COUNT
-} wtk_control_property;
+#include <wtk/wtk_config.h>
+#include <wtk/wtk_compat.h>
 
-#endif // _WTK_CONTROL_PROPERTIES_H_
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+struct wtk_font;
+typedef struct wtk_font wtk_font;
+
+typedef enum wtk_font_style {
+    WTK_FONT_STYLE_DEFAULT   = 0,
+    WTK_FONT_STYLE_BOLD      = (1 << 0),
+    WTK_FONT_STYLE_UNDERLINE = (1 << 1),
+    WTK_FONT_STYLE_ITALIC    = (1 << 2),
+    WTK_FONT_STYLE_STRIKEOUT = (1 << 3)
+} wtk_font_style;
+
+extern WTK_EXPORT struct wtk_font* WTK_API wtk_font_create( const char* font_family, unsigned int font_size, unsigned int font_style );
+extern WTK_EXPORT struct wtk_font* WTK_API wtk_font_default();
+extern WTK_EXPORT void WTK_API wtk_font_destroy( struct wtk_font* font );
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+#endif // _WTK_FONT_H_

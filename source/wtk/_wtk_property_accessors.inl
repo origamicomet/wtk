@@ -25,7 +25,22 @@
 
 #include <stdarg.h>
 
-static void WTK_API wtk_prop_title_getter( struct wtk_control* control, va_list args, size_t num_args )
+static void WTK_API wtk_prop_font_getter( struct wtk_control* control, va_list args )
+{
+    struct wtk_font** out;
+    out = va_arg(args, struct wtk_font**);
+    *out = control->font;
+}
+
+static void WTK_API wtk_prop_font_setter( struct wtk_control* control, va_list args )
+{
+    struct wtk_font* font;
+    font = va_arg(args, struct wtk_font*);
+    PostMessage(control->hWnd, WM_SETFONT, (WPARAM)font->hFont, TRUE);
+    control->font = font;
+}
+
+static void WTK_API wtk_prop_title_getter( struct wtk_control* control, va_list args )
 {
     const char** out;
 
@@ -35,7 +50,7 @@ static void WTK_API wtk_prop_title_getter( struct wtk_control* control, va_list 
     *out = ((struct wtk_window*)control)->title;
 }
 
-static void WTK_API wtk_prop_title_setter( struct wtk_control* control, va_list args, size_t num_args )
+static void WTK_API wtk_prop_title_setter( struct wtk_control* control, va_list args )
 {
     const char* value;
 
@@ -46,21 +61,36 @@ static void WTK_API wtk_prop_title_setter( struct wtk_control* control, va_list 
     ((struct wtk_window*)control)->title = value;
 }
 
-static void WTK_API wtk_prop_text_getter( struct wtk_control* control, va_list args, size_t num_args )
+static void WTK_API wtk_prop_text_getter( struct wtk_control* control, va_list args )
 {
     const char** out;
 
-    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Button));
+    WTK_ASSERT(
+        ( control->type == WTK_CONTROL_TYPE(Label) ||
+          control->type == WTK_CONTROL_TYPE(Button) )
+    );
 
     out = va_arg(args, const char**);
-    *out = ((struct wtk_button*)control)->text;
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Label): {
+            *out = ((struct wtk_button*)control)->text;
+        } break;
+
+        case WTK_CONTROL_TYPE(Button): {
+            *out = ((struct wtk_button*)control)->text;
+        } break;
+    }
 }
 
-static void WTK_API wtk_prop_text_setter( struct wtk_control* control, va_list args, size_t num_args )
+static void WTK_API wtk_prop_text_setter( struct wtk_control* control, va_list args )
 {
     const char* value;
 
-    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Button));
+    WTK_ASSERT(
+        ( control->type == WTK_CONTROL_TYPE(Label) ||
+          control->type == WTK_CONTROL_TYPE(Button) )
+    );
 
     value = va_arg(args, const char*);
     SetWindowTextA(control->hWnd, value);

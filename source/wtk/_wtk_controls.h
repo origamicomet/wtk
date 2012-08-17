@@ -21,15 +21,18 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef __WTK_CONTROL_H_
-#define __WTK_CONTROL_H_
+#ifndef __WTK_CONTROLS_H_
+#define __WTK_CONTROLS_H_
 
 #include "_wtk_windows.h"
+#include "_wtk_font.h"
 
 struct wtk_control {
     // Shared:
     wtk_control_type type;
     void* user_ptr;
+
+    struct wtk_font* font;
 
     // Callbacks:
     int (WTK_API *on_create_callback)( struct wtk_control* control, wtk_event event );
@@ -53,6 +56,13 @@ struct wtk_window {
     int (WTK_API *on_close_callback)( struct wtk_control* control, wtk_event event );
 };
 
+struct wtk_label {
+    wtk_control control;
+
+    // Shared:
+    const char* text;
+};
+
 struct wtk_button {
     wtk_control control;
 
@@ -60,4 +70,4 @@ struct wtk_button {
     const char* text;
 };
 
-#endif // __WTK_CONTROL_H_
+#endif // __WTK_CONTROLS_H_

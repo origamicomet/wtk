@@ -34,11 +34,13 @@ typedef int (WTK_API *wtk_control_init_func)();
 
 extern int WTK_API wtk_control_init();
 extern int WTK_API wtk_window_init();
+extern int WTK_API wtk_label_init();
 extern int WTK_API wtk_button_init();
 
 static const wtk_control_init_func _control_init_funcs[WTK_CONTROL_TYPE_COUNT - 1] = {
     &wtk_control_init,
     &wtk_window_init,
+    &wtk_label_init,
     &wtk_button_init
 };
 
