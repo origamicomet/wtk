@@ -28,6 +28,8 @@
 
 #include <wtk/wtk_mm.h>
 #include <wtk/wtk_font.h>
+#include <wtk/wtk_mouse.h>
+#include <wtk/wtk_keyboard.h>
 
 static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 

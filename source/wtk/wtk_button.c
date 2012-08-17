@@ -28,6 +28,8 @@
 
 #include <wtk/wtk_mm.h>
 #include <wtk/wtk_font.h>
+#include <wtk/wtk_mouse.h>
+#include <wtk/wtk_keyboard.h>
 
 static LRESULT CALLBACK wtk_button_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
@@ -77,16 +79,37 @@ static LRESULT CALLBACK wtk_button_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
         } break;
 
         case WM_LBUTTONDOWN: {
-            if( control->on_pressed_callback ) control->on_pressed_callback(control, WTK_EVENT(OnPressed), GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-            return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
+            if( control->on_pressed_callback ) control->on_pressed_callback(control, WTK_EVENT(OnPressed), WTK_MOUSE_BTN_LEFT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
+        } break;
+
+        case WM_MBUTTONDOWN: {
+            if( control->on_pressed_callback ) control->on_pressed_callback(control, WTK_EVENT(OnPressed), WTK_MOUSE_BTN_MIDDLE, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
+        } break;
+
+        case WM_RBUTTONDOWN: {
+            if( control->on_pressed_callback ) control->on_pressed_callback(control, WTK_EVENT(OnPressed), WTK_MOUSE_BTN_RIGHT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
         } break;
 
         case WM_LBUTTONUP: {
-            if( control->on_release_callback ) control->on_release_callback(control, WTK_EVENT(OnRelease), GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-            return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
+            if( control->on_released_callback ) control->on_released_callback(control, WTK_EVENT(OnReleased), WTK_MOUSE_BTN_LEFT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
+        } break;
+
+        case WM_MBUTTONUP: {
+            if( control->on_released_callback ) control->on_released_callback(control, WTK_EVENT(OnReleased), WTK_MOUSE_BTN_MIDDLE, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
+        } break;
+
+        case WM_RBUTTONUP: {
+            if( control->on_released_callback ) control->on_released_callback(control, WTK_EVENT(OnReleased), WTK_MOUSE_BTN_RIGHT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
         } break;
 
         default: {
+        _default:
             return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
         } break;
     }

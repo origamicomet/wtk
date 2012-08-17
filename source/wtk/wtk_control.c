@@ -28,6 +28,8 @@
 
 #include <wtk/wtk_mm.h>
 #include <wtk/wtk_font.h>
+#include <wtk/wtk_mouse.h>
+#include <wtk/wtk_keyboard.h>
 
 #include <stdarg.h>
 
@@ -80,64 +82,6 @@ void WTK_API wtk_control_destroy( struct wtk_control* control )
     DestroyWindow(control->hWnd);
 }
 
-void* WTK_API wtk_control_get_user_ptr( struct wtk_control* control )
-{
-    WTK_ASSERT(control);
-    return control->user_ptr;
-}
-
-void WTK_API wtk_control_set_user_ptr( struct wtk_control* control, void* user_ptr )
-{
-    WTK_ASSERT(control);
-    control->user_ptr = user_ptr;
-}
-
-void WTK_API wtk_control_get_position( struct wtk_control* control, int* x, int* y )
-{
-    HWND hWndParent;
-
-    WTK_ASSERT(control);
-    WTK_ASSERT(x);
-    WTK_ASSERT(y);
-
-    hWndParent = GetParent(control->hWnd);
-    if( hWndParent ) {
-        POINT p = { 0, };
-        MapWindowPoints(control->hWnd, hWndParent, &p, 1);
-        *x = p.x; *y = p.y;
-    } else {
-        RECT rect;
-        GetWindowRect(control->hWnd, &rect);
-        *x = rect.left; *y = rect.top;
-    }
-}
-
-void WTK_API wtk_control_set_position( struct wtk_control* control, int x, int y )
-{
-    WTK_ASSERT(control);
-    SetWindowPos(control->hWnd, 0, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-}
-
-void WTK_API wtk_control_get_size( struct wtk_control* control, unsigned int* width, unsigned int* height )
-{
-    RECT rect;
-
-    WTK_ASSERT(control);
-    WTK_ASSERT(width);
-    WTK_ASSERT(height);
-    
-    GetWindowRect(control->hWnd, &rect);
-
-    *width = rect.right - rect.left - 1;
-    *height = rect.bottom - rect.top - 1;
-}
-
-void WTK_API wtk_control_set_size( struct wtk_control* control, unsigned int width, unsigned int height )
-{
-    WTK_ASSERT(control);
-    SetWindowPos(control->hWnd, 0, 0, 0, width, height, SWP_NOZORDER | SWP_NOMOVE);
-}
-
 #include "_wtk_property_accessors.inl"
 
 typedef struct {
@@ -146,10 +90,13 @@ typedef struct {
 } wtk_property_accessors;
 
 static wtk_property_accessors _property_accessors[WTK_CONTROL_PROP_COUNT] = {
-    { NULL, NULL },                                     // WTK_CONTROL_PROP_Invalid
-    { &wtk_prop_font_getter, &wtk_prop_font_setter },   // WTK_CONTROL_PROP_Font
-    { &wtk_prop_title_getter, &wtk_prop_title_setter }, // WTK_CONTROL_PROP_Title
-    { &wtk_prop_text_getter, &wtk_prop_text_setter },   // WTK_CONTROL_PROP_Text
+    { NULL, NULL },                                           // WTK_CONTROL_PROP_Invalid
+    { &wtk_prop_user_ptr_getter, &wtk_prop_user_ptr_setter }, // WTK_CONTROL_PROP_UserPtr
+    { &wtk_prop_position_getter, &wtk_prop_position_setter }, // WTK_CONTROL_PROP_Position
+    { &wtk_prop_size_getter, &wtk_prop_size_setter },         // WTK_CONTROL_PROP_Size
+    { &wtk_prop_font_getter, &wtk_prop_font_setter },         // WTK_CONTROL_PROP_Font
+    { &wtk_prop_title_getter, &wtk_prop_title_setter },       // WTK_CONTROL_PROP_Title
+    { &wtk_prop_text_getter, &wtk_prop_text_setter },         // WTK_CONTROL_PROP_Text
 };
 
 void WTK_API wtk_control_get_property( struct wtk_control* control, wtk_control_property property, ... )
@@ -183,13 +130,19 @@ typedef struct {
 } wtk_event_accessors;
 
 static wtk_event_accessors _event_accessors[WTK_EVENT_COUNT] = {
-    { NULL },                         // WTK_EVENT_Invalid
-    { &wtk_event_on_create_setter },  // WTK_EVENT_OnCreate
-    { &wtk_event_on_destroy_setter }, // WTK_EVENT_OnDestroy
-    { &wtk_event_on_close_setter },   // WTK_EVENT_OnClose
-    { &wtk_event_on_pressed_setter }, // WTK_EVENT_OnPressed
-    { &wtk_event_on_release_setter }, // WTK_EVENT_OnRelease
-    { &wtk_event_on_clicked_setter }, // WTK_EVENT_OnClicked
+    { NULL },                                // WTK_EVENT_Invalid
+    { &wtk_event_on_create_setter },         // WTK_EVENT_OnCreate
+    { &wtk_event_on_destroy_setter },        // WTK_EVENT_OnDestroy
+    { &wtk_event_on_close_setter },          // WTK_EVENT_OnClose
+    { &wtk_event_on_paint_setter },          // WTK_EVENT_OnPaint
+    { &wtk_event_on_value_changed_setter },  // WTK_EVENT_OnValueChanged
+    { &wtk_event_on_pressed_setter },        // WTK_EVENT_OnPressed
+    { &wtk_event_on_released_setter },       // WTK_EVENT_OnReleased
+    { &wtk_event_on_clicked_setter },        // WTK_EVENT_OnClicked
+    { &wtk_event_on_mouse_moved_setter },    // WTK_EVENT_OnMouseMoved
+    { &wtk_event_on_mouse_scrolled_setter }, // WTK_EVENT_OnMouseScrolled
+    { &wtk_event_on_key_pressed_setter },    // WTK_EVENT_OnKeyPressed
+    { &wtk_event_on_key_released_setter },   // WTK_EVENT_OnKeyReleased
 };
 
 void WTK_API wtk_control_set_callback( struct wtk_control* control, wtk_event event, wtk_event_callback callback )
@@ -214,7 +167,38 @@ static LRESULT CALLBACK wtk_control_proc( HWND hWnd, UINT uMsg, WPARAM wParam, L
             wtk_free(control);
         } break;
 
+        case WM_LBUTTONDOWN: {
+            if( control->on_pressed_callback ) control->on_pressed_callback(control, WTK_EVENT(OnPressed), WTK_MOUSE_BTN_LEFT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
+        } break;
+
+        case WM_MBUTTONDOWN: {
+            if( control->on_pressed_callback ) control->on_pressed_callback(control, WTK_EVENT(OnPressed), WTK_MOUSE_BTN_MIDDLE, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
+        } break;
+
+        case WM_RBUTTONDOWN: {
+            if( control->on_pressed_callback ) control->on_pressed_callback(control, WTK_EVENT(OnPressed), WTK_MOUSE_BTN_RIGHT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
+        } break;
+
+        case WM_LBUTTONUP: {
+            if( control->on_released_callback ) control->on_released_callback(control, WTK_EVENT(OnReleased), WTK_MOUSE_BTN_LEFT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
+        } break;
+
+        case WM_MBUTTONUP: {
+            if( control->on_released_callback ) control->on_released_callback(control, WTK_EVENT(OnReleased), WTK_MOUSE_BTN_MIDDLE, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
+        } break;
+
+        case WM_RBUTTONUP: {
+            if( control->on_released_callback ) control->on_released_callback(control, WTK_EVENT(OnReleased), WTK_MOUSE_BTN_RIGHT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            goto _default;
+        } break;
+
         default: {
+        _default:
             return DefWindowProc(hWnd, uMsg, wParam, lParam);
         } break;
     }

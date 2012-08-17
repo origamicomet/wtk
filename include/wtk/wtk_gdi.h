@@ -21,19 +21,20 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_PROPERTIES_H_
-#define _WTK_CONTROL_PROPERTIES_H_
+#ifndef _WTK_GDI_H_
+#define _WTK_GDI_H_
 
-#define WTK_CONTROL_PROP( property ) WTK_CONTROL_PROP_##property
-typedef enum {
-    WTK_CONTROL_PROP_Invalid = 0,
-    WTK_CONTROL_PROP_UserPtr,
-    WTK_CONTROL_PROP_Position,
-    WTK_CONTROL_PROP_Size,
-    WTK_CONTROL_PROP_Font,
-    WTK_CONTROL_PROP_Title,
-    WTK_CONTROL_PROP_Text,
-    WTK_CONTROL_PROP_COUNT
-} wtk_control_property;
+#include <wtk/wtk_config.h>
+#include <wtk/wtk_compat.h>
 
-#endif // _WTK_CONTROL_PROPERTIES_H_
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+struct wtk_gdi;
+typedef struct wtk_gdi;
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+#endif // _WTK_GDI_H_

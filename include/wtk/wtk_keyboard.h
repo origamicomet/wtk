@@ -21,19 +21,13 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_PROPERTIES_H_
-#define _WTK_CONTROL_PROPERTIES_H_
+#ifndef _WTK_KEYBOARD_H_
+#define _WTK_KEYBOARD_H_
 
-#define WTK_CONTROL_PROP( property ) WTK_CONTROL_PROP_##property
 typedef enum {
-    WTK_CONTROL_PROP_Invalid = 0,
-    WTK_CONTROL_PROP_UserPtr,
-    WTK_CONTROL_PROP_Position,
-    WTK_CONTROL_PROP_Size,
-    WTK_CONTROL_PROP_Font,
-    WTK_CONTROL_PROP_Title,
-    WTK_CONTROL_PROP_Text,
-    WTK_CONTROL_PROP_COUNT
-} wtk_control_property;
+} wtk_key_code;
 
-#endif // _WTK_CONTROL_PROPERTIES_H_
+typedef enum {
+} wtk_special_keys;
+
+#endif // _WTK_KEYBOARD_H_

@@ -25,6 +25,90 @@
 
 #include <stdarg.h>
 
+// =============================================================================
+// WTK_CONTROL_PROP_UserPtr
+// =============================================================================
+
+static void WTK_API wtk_prop_user_ptr_getter( struct wtk_control* control, va_list args )
+{
+    void** out;
+    out = va_arg(args, void**);
+    *out = control->user_ptr;
+}
+
+static void WTK_API wtk_prop_user_ptr_setter( struct wtk_control* control, va_list args )
+{
+    void* user_ptr;
+    user_ptr = va_arg(args, void*);
+    control->user_ptr = user_ptr;
+}
+
+// =============================================================================
+// WTK_CONTROL_PROP_Position
+// =============================================================================
+
+static void WTK_API wtk_prop_position_getter( struct wtk_control* control, va_list args )
+{
+    HWND hWndParent;
+    int *x_out, *y_out;
+    
+    x_out = va_arg(args, int*);
+    y_out = va_arg(args, int*);
+
+    hWndParent = GetParent(control->hWnd);
+    if( hWndParent ) {
+        POINT p = { 0, };
+        MapWindowPoints(control->hWnd, hWndParent, &p, 1);
+        *x_out = p.x; *y_out = p.y;
+    } else {
+        RECT rect;
+        GetWindowRect(control->hWnd, &rect);
+        *x_out = rect.left; *y_out = rect.top;
+    }
+}
+
+static void WTK_API wtk_prop_position_setter( struct wtk_control* control, va_list args )
+{
+    int x, y;
+    
+    x = va_arg(args, int);
+    y = va_arg(args, int);
+
+    SetWindowPos(control->hWnd, 0, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+}
+
+// =============================================================================
+// WTK_CONTROL_PROP_Size
+// =============================================================================
+
+static void WTK_API wtk_prop_size_getter( struct wtk_control* control, va_list args )
+{
+    RECT rect;
+    int *width_out, *height_out;
+    
+    width_out = va_arg(args, int*);
+    height_out = va_arg(args, int*);
+
+    GetWindowRect(control->hWnd, &rect);
+
+    *width_out = rect.right - rect.left - 1;
+    *height_out = rect.bottom - rect.top - 1;
+}
+
+static void WTK_API wtk_prop_size_setter( struct wtk_control* control, va_list args )
+{
+    int width, height;
+    
+    width = va_arg(args, int);
+    height = va_arg(args, int);
+
+    SetWindowPos(control->hWnd, 0, 0, 0, width, height, SWP_NOZORDER | SWP_NOMOVE);
+}
+
+// =============================================================================
+// WTK_CONTROL_PROP_Font
+// =============================================================================
+
 static void WTK_API wtk_prop_font_getter( struct wtk_control* control, va_list args )
 {
     struct wtk_font** out;
@@ -39,6 +123,10 @@ static void WTK_API wtk_prop_font_setter( struct wtk_control* control, va_list a
     PostMessage(control->hWnd, WM_SETFONT, (WPARAM)font->hFont, TRUE);
     control->font = font;
 }
+
+// =============================================================================
+// WTK_CONTROL_PROP_Title
+// =============================================================================
 
 static void WTK_API wtk_prop_title_getter( struct wtk_control* control, va_list args )
 {
@@ -60,6 +148,10 @@ static void WTK_API wtk_prop_title_setter( struct wtk_control* control, va_list 
     SetWindowTextA(control->hWnd, value);
     ((struct wtk_window*)control)->title = value;
 }
+
+// =============================================================================
+// WTK_CONTROL_PROP_Text
+// =============================================================================
 
 static void WTK_API wtk_prop_text_getter( struct wtk_control* control, va_list args )
 {

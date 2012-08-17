@@ -40,19 +40,12 @@ typedef struct wtk_control wtk_control;
 extern WTK_EXPORT struct wtk_control* WTK_API wtk_control_create( int x, int y, unsigned int width, unsigned int height, struct wtk_control* parent );
 extern WTK_EXPORT void WTK_API wtk_control_destroy( struct wtk_control* control );
 
-extern WTK_EXPORT void* WTK_API wtk_control_get_user_ptr( struct wtk_control* control );
-extern WTK_EXPORT void WTK_API wtk_control_set_user_ptr( struct wtk_control* control, void* user_ptr );
-
-extern WTK_EXPORT void WTK_API wtk_control_get_position( struct wtk_control* control, int* x, int* y );
-extern WTK_EXPORT void WTK_API wtk_control_set_position( struct wtk_control* control, int x, int y );
-
-extern WTK_EXPORT void WTK_API wtk_control_get_size( struct wtk_control* control, unsigned int* width, unsigned int* height );
-extern WTK_EXPORT void WTK_API wtk_control_set_size( struct wtk_control* control, unsigned int width, unsigned int height );
-
 typedef void* wtk_property;
 
 extern WTK_EXPORT void WTK_API wtk_control_get_property( struct wtk_control* control, wtk_control_property property, ... );
 extern WTK_EXPORT void WTK_API wtk_control_set_property( struct wtk_control* control, wtk_control_property property, ... );
+
+typedef void* wtk_event_callback;
 
 extern WTK_EXPORT void WTK_API wtk_control_set_callback( struct wtk_control* control, wtk_event event, wtk_event_callback callback );
 

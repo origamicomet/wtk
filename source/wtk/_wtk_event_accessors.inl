@@ -21,15 +21,29 @@
 // THE SOFTWARE.
 // =============================================================================
 
+#include "_wtk_controls.h"
+
+// =============================================================================
+// WTK_EVENT_OnCreate
+// =============================================================================
+
 static void WTK_API wtk_event_on_create_setter( struct wtk_control* control, wtk_event_callback callback )
 {
     control->on_create_callback = callback;
 }
 
+// =============================================================================
+// WTK_EVENT_OnDestroy
+// =============================================================================
+
 static void WTK_API wtk_event_on_destroy_setter( struct wtk_control* control, wtk_event_callback callback )
 {
     control->on_destroy_callback = callback;
 }
+
+// =============================================================================
+// WTK_EVENT_OnClose
+// =============================================================================
 
 static void WTK_API wtk_event_on_close_setter( struct wtk_control* control, wtk_event_callback callback )
 {
@@ -37,17 +51,83 @@ static void WTK_API wtk_event_on_close_setter( struct wtk_control* control, wtk_
     ((struct wtk_window*)control)->on_close_callback = callback;
 }
 
+// =============================================================================
+// WTK_EVENT_OnPaint
+// =============================================================================
+
+static void WTK_API wtk_event_on_paint_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    control->on_paint_callback = callback;
+}
+
+// =============================================================================
+// WTK_EVENT_OnValueChanged
+// =============================================================================
+
+static void WTK_API wtk_event_on_value_changed_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    control->on_value_changed_callback = callback;
+}
+
+// =============================================================================
+// WTK_EVENT_OnPressed
+// =============================================================================
+
 static void WTK_API wtk_event_on_pressed_setter( struct wtk_control* control, wtk_event_callback callback )
 {
     control->on_pressed_callback = callback;
 }
 
-static void WTK_API wtk_event_on_release_setter( struct wtk_control* control, wtk_event_callback callback )
+// =============================================================================
+// WTK_EVENT_OnReleased
+// =============================================================================
+
+static void WTK_API wtk_event_on_released_setter( struct wtk_control* control, wtk_event_callback callback )
 {
-    control->on_release_callback = callback;
+    control->on_released_callback = callback;
 }
+
+// =============================================================================
+// WTK_EVENT_OnClicked
+// =============================================================================
 
 static void WTK_API wtk_event_on_clicked_setter( struct wtk_control* control, wtk_event_callback callback )
 {
     control->on_clicked_callback = callback;
+}
+
+// =============================================================================
+// WTK_EVENT_OnMouseMoved
+// =============================================================================
+
+static void WTK_API wtk_event_on_mouse_moved_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    control->on_mouse_moved_callback = callback;
+}
+
+// =============================================================================
+// WTK_EVENT_OnKeyPressed
+// =============================================================================
+
+static void WTK_API wtk_event_on_key_pressed_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    control->on_key_pressed_callback = callback;
+}
+
+// =============================================================================
+// WTK_EVENT_OnKeyReleased
+// =============================================================================
+
+static void WTK_API wtk_event_on_key_released_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    control->on_key_released_callback = callback;
+}
+
+// =============================================================================
+// WTK_EVENT_OnMouseScrolled
+// =============================================================================
+
+static void WTK_API wtk_event_on_mouse_scrolled_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    control->on_mouse_scrolled_callback = callback;
 }

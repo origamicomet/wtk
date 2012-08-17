@@ -27,20 +27,32 @@
 #include "_wtk_windows.h"
 #include "_wtk_font.h"
 
+#include <wtk/wtk_gdi.h>
+#include <wtk/wtk_mouse.h>
+#include <wtk/wtk_keyboard.h>
+
 struct wtk_control {
     // Shared:
     wtk_control_type type;
     void* user_ptr;
-
     struct wtk_font* font;
 
     // Callbacks:
     int (WTK_API *on_create_callback)( struct wtk_control* control, wtk_event event );
     int (WTK_API *on_destroy_callback)( struct wtk_control* control, wtk_event event );
+    int (WTK_API *on_paint_callback)( struct wtk_control* control, wtk_event event, struct wtk_gdi* gid );
 
-    int (WTK_API *on_pressed_callback)( struct wtk_control* control, wtk_event event, int x, int y );
-    int (WTK_API *on_release_callback)( struct wtk_control* control, wtk_event event, int x, int y );
+    int (WTK_API *on_value_changed_callback)( struct wtk_control* control, wtk_event event );
+
+    int (WTK_API *on_pressed_callback)( struct wtk_control* control, wtk_event event, wtk_mouse_btn mouse_btn, int x, int y );
+    int (WTK_API *on_released_callback)( struct wtk_control* control, wtk_event event, wtk_mouse_btn mouse_btn, int x, int y );
     int (WTK_API *on_clicked_callback)( struct wtk_control* control, wtk_event event );
+
+    int (WTK_API *on_mouse_moved_callback)( struct wtk_control* control, wtk_event event, int x, int y );
+    int (WTK_API *on_mouse_scrolled_callback)( struct wtk_control* control, wtk_event event, int scroll );
+
+    int (WTK_API *on_key_pressed_callback)( struct wtk_control* control, wtk_event event, wtk_key_code key_code, unsigned int special_keys );
+    int (WTK_API *on_key_released_callback)( struct wtk_control* control, wtk_event event, wtk_key_code key_code, unsigned int special_keys );
 
     // Platform specific:
     HWND hWnd;

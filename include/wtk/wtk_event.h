@@ -39,13 +39,17 @@ typedef enum {
     WTK_EVENT_OnCreate,
     WTK_EVENT_OnDestroy,
     WTK_EVENT_OnClose,
+    WTK_EVENT_OnPaint,
+    WTK_EVENT_OnValueChanged,
     WTK_EVENT_OnPressed,
-    WTK_EVENT_OnRelease,
+    WTK_EVENT_OnReleased,
     WTK_EVENT_OnClicked,
+    WTK_EVENT_OnMouseMoved,
+    WTK_EVENT_OnMouseScrolled,
+    WTK_EVENT_OnKeyPressed,
+    WTK_EVENT_OnKeyReleased,
     WTK_EVENT_COUNT
 } wtk_event;
-
-typedef void* wtk_event_callback;
 
 #ifdef __cplusplus
 }
