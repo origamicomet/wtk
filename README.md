@@ -1,0 +1,1 @@
+A minimalistic C89 cross-platform widget library. MIT licensed.
