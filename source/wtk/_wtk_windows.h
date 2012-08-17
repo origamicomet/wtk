@@ -37,7 +37,7 @@
 #define NOTAPE
 #define NORASTEROPS
 #define NOCLIPBOARD
-#define NOCTLMGR
+// #define NOCTLMGR
 #define NONLS
 #define NOMEMMGR
 #define NOMETAFILE
@@ -46,5 +46,7 @@
 #define NOHELP
 #define NOPROFILER
 #include <Windows.h>
+#include <Windowsx.h>
+#include <CommCtrl.h>
 
 #endif // __WTK_WINDOWS_H_

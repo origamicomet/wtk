@@ -1,7 +1,7 @@
 // =============================================================================
 // This file is part of the Windowing Toolkit.
 // Copyright (C) 2012 Michael Williams <devbug@bitbyte.ca>
-//
+//a
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -21,48 +21,21 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#include "_wtk_controls.h"
+#ifndef _WTK_BUTTON_H_
+#define _WTK_BUTTON_H_
 
-#include <stdarg.h>
+#include <wtk/wtk_control.h>
 
-static void WTK_API wtk_prop_title_getter( struct wtk_control* control, va_list args, size_t num_args )
-{
-    const char** out;
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
 
-    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Window));
+struct wtk_button;
+typedef struct wtk_button wtk_button;
 
-    out = va_arg(args, const char**);
-    *out = ((struct wtk_window*)control)->title;
+extern WTK_EXPORT struct wtk_button* WTK_API wtk_button_create( int x, int y, int width, int height, struct wtk_control* parent );
+
+#ifdef __cplusplus
 }
-
-static void WTK_API wtk_prop_title_setter( struct wtk_control* control, va_list args, size_t num_args )
-{
-    const char* value;
-
-    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Window));
-
-    value = va_arg(args, const char*);
-    SetWindowTextA(control->hWnd, value);
-    ((struct wtk_window*)control)->title = value;
-}
-
-static void WTK_API wtk_prop_text_getter( struct wtk_control* control, va_list args, size_t num_args )
-{
-    const char** out;
-
-    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Button));
-
-    out = va_arg(args, const char**);
-    *out = ((struct wtk_button*)control)->text;
-}
-
-static void WTK_API wtk_prop_text_setter( struct wtk_control* control, va_list args, size_t num_args )
-{
-    const char* value;
-
-    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Button));
-
-    value = va_arg(args, const char*);
-    SetWindowTextA(control->hWnd, value);
-    ((struct wtk_button*)control)->text = value;
-}
+#endif // __cplusplus
+#endif // _WTK_BUTTON_H_

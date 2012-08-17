@@ -32,8 +32,12 @@ struct wtk_control {
     void* user_ptr;
 
     // Callbacks:
-    wtk_event_callback on_create_callback;
-    wtk_event_callback on_destroy_callback;
+    int (WTK_API *on_create_callback)( struct wtk_control* control, wtk_event event );
+    int (WTK_API *on_destroy_callback)( struct wtk_control* control, wtk_event event );
+
+    int (WTK_API *on_pressed_callback)( struct wtk_control* control, wtk_event event, int x, int y );
+    int (WTK_API *on_release_callback)( struct wtk_control* control, wtk_event event, int x, int y );
+    int (WTK_API *on_clicked_callback)( struct wtk_control* control, wtk_event event );
 
     // Platform specific:
     HWND hWnd;
@@ -46,7 +50,14 @@ struct wtk_window {
     const char* title;
 
     // Callbacks:
-    wtk_event_callback on_close_callback;
+    int (WTK_API *on_close_callback)( struct wtk_control* control, wtk_event event );
+};
+
+struct wtk_button {
+    wtk_control control;
+
+    // Shared:
+    const char* text;
 };
 
 #endif // __WTK_CONTROL_H_

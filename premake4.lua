@@ -43,6 +43,8 @@ solution "wtk"
             files { "include/**.h", "source/**.c" }
 
         configuration("windows")
+            links({ "comctl32" })
+            defines({ "ISOLATION_AWARE_ENABLED=1" })
             postbuildcommands({ "move \"..\\..\\lib\\" .. _ACTION .. "\\*.dll\" \"..\\..\\bin\\" .. _ACTION .. "\\\"" })
 
     project("sample")

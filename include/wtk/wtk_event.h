@@ -39,10 +39,13 @@ typedef enum {
     WTK_EVENT_OnCreate,
     WTK_EVENT_OnDestroy,
     WTK_EVENT_OnClose,
+    WTK_EVENT_OnPressed,
+    WTK_EVENT_OnRelease,
+    WTK_EVENT_OnClicked,
     WTK_EVENT_COUNT
 } wtk_event;
 
-typedef int (WTK_API *wtk_event_callback)( struct wtk_control* control, wtk_event event, void* event_data );
+typedef void* wtk_event_callback;
 
 #ifdef __cplusplus
 }

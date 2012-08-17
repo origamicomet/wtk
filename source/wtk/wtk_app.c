@@ -24,18 +24,39 @@
 #include <wtk/wtk_app.h>
 
 #include "_wtk_windows.h"
+
 #include <wtk/wtk_control_types.h>
 #include <wtk/wtk_mm.h>
+
+#pragma comment(linker, "\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 typedef int (WTK_API *wtk_control_init_func)();
 
 extern int WTK_API wtk_control_init();
 extern int WTK_API wtk_window_init();
+extern int WTK_API wtk_button_init();
 
 static const wtk_control_init_func _control_init_funcs[WTK_CONTROL_TYPE_COUNT - 1] = {
     &wtk_control_init,
-    &wtk_window_init
+    &wtk_window_init,
+    &wtk_button_init
 };
+
+static void WTK_API wtk_enable_visual_styles()
+{
+    DWORD dwVersion;
+    DWORD dwMinorVersion;
+    DWORD dwMajorVersion;
+
+    dwVersion      = GetVersion();
+    dwMinorVersion = (DWORD)(HIBYTE(LOWORD(dwVersion)));
+    dwMajorVersion = (DWORD)(LOBYTE(LOWORD(dwVersion)));
+
+    if( dwMajorVersion > 5 || (dwMajorVersion == 5 && dwMinorVersion >= 1) ) {
+        const INITCOMMONCONTROLSEX iccx = { sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES };
+        InitCommonControlsEx(&iccx);
+    }
+}
 
 int WTK_API wtk_init( const wtk_allocator* allocator )
 {
@@ -44,6 +65,7 @@ int WTK_API wtk_init( const wtk_allocator* allocator )
     WTK_ASSERT(allocator);
 
     wtk_set_allocator(allocator);
+    wtk_enable_visual_styles();
 
     for( i = 0; i < WTK_CONTROL_TYPE_COUNT - 1; ++i ) {
         if( !_control_init_funcs[i]() ) return FALSE;

@@ -36,3 +36,18 @@ static void WTK_API wtk_event_on_close_setter( struct wtk_control* control, wtk_
     WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Window));
     ((struct wtk_window*)control)->on_close_callback = callback;
 }
+
+static void WTK_API wtk_event_on_pressed_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    control->on_pressed_callback = callback;
+}
+
+static void WTK_API wtk_event_on_release_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    control->on_release_callback = callback;
+}
+
+static void WTK_API wtk_event_on_clicked_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    control->on_clicked_callback = callback;
+}

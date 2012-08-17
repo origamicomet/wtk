@@ -23,10 +23,10 @@
 
 #include <wtk/wtk_window.h>
 
-#include <wtk/wtk_mm.h>
+#include "_wtk_windows.h"
 #include "_wtk_controls.h"
 
-#include <string.h>
+#include <wtk/wtk_mm.h>
 
 static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
@@ -40,7 +40,7 @@ int WTK_API wtk_window_init()
         GetModuleHandle(0),
         LoadIcon(NULL, IDI_APPLICATION),
         LoadCursor(NULL, IDC_ARROW),
-        (HBRUSH)(COLOR_WINDOW + 1),
+        (HBRUSH)(COLOR_WINDOW),
         NULL,
         "_wtk_window",
         LoadIcon(NULL, IDI_APPLICATION)
@@ -49,10 +49,21 @@ int WTK_API wtk_window_init()
     return RegisterClassEx(&wcx) ? TRUE : FALSE;
 }
 
+static void wtk_window_adjust_size( int* width, int* height, DWORD dwExStyles, DWORD dwStyles )
+{
+    RECT client_area = { 0, 0, *width - 1, *height - 1 };
+    AdjustWindowRectEx(&client_area, dwStyles, FALSE, dwExStyles);
+    *width = client_area.right - client_area.left + 1;
+    *height = client_area.bottom - client_area.top + 1;
+}
+
 struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int height, struct wtk_control* parent )
 {
     struct wtk_window* window = NULL;
-    HWND hWnd = CreateWindowExA(WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, "_wtk_window", NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, x, y, width, height, parent ? parent->hWnd : NULL, NULL, GetModuleHandle(0), 0);
+    HWND hWnd = NULL;
+
+    wtk_window_adjust_size(&width, &height, WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+    hWnd = CreateWindowExA(WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, "_wtk_window", NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, x, y, width, height, parent ? parent->hWnd : NULL, NULL, GetModuleHandle(0), 0);
     if( !hWnd ) return NULL;
 
     window = wtk_alloc(sizeof(struct wtk_window));
@@ -73,15 +84,25 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
 
     switch( uMsg ) {
         case WM_USER + 0: {
-            if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate), NULL);
+            if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
         } break;
 
         case WM_DESTROY: {
-            if( control->on_destroy_callback ) control->on_destroy_callback(control, WTK_EVENT(OnDestroy), NULL);
+            if( control->on_destroy_callback ) control->on_destroy_callback(control, WTK_EVENT(OnDestroy));
+            wtk_free(window);
         } break;
 
         case WM_CLOSE: {
-            if( window->on_close_callback ) return window->on_close_callback(control, WTK_EVENT(OnClose), NULL);
+            if( window->on_close_callback ) return window->on_close_callback(control, WTK_EVENT(OnClose));
+        } break;
+
+        case WM_COMMAND: {
+            switch( HIWORD(wParam) ) {
+                case BN_CLICKED: {
+                    struct wtk_control* btn_control = &((struct wtk_button*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr"))->control;
+                    if( btn_control->on_clicked_callback ) btn_control->on_clicked_callback(btn_control, WTK_EVENT(OnClicked));
+                } break;
+            }
         } break;
 
         default: {

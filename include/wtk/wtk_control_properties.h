@@ -28,6 +28,7 @@
 typedef enum {
     WTK_CONTROL_PROP_Invalid = 0,
     WTK_CONTROL_PROP_Title,
+    WTK_CONTROL_PROP_Text,
     WTK_CONTROL_PROP_COUNT
 } wtk_control_property;
 

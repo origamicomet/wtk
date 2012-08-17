@@ -23,10 +23,12 @@
 
 #include <wtk/wtk_control.h>
 
-#include <wtk/wtk_mm.h>
+#include "_wtk_windows.h"
 #include "_wtk_controls.h"
 
-#include <string.h>
+#include <wtk/wtk_mm.h>
+
+#include <stdarg.h>
 
 static LRESULT CALLBACK wtk_control_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
@@ -136,28 +138,38 @@ void WTK_API wtk_control_set_size( struct wtk_control* control, unsigned int wid
 #include "_wtk_property_accessors.inl"
 
 typedef struct {
-    void (WTK_API *getter)( struct wtk_control*, void* );
-    void (WTK_API *setter)( struct wtk_control*, void* );
+    void (WTK_API *getter)( struct wtk_control*, va_list );
+    void (WTK_API *setter)( struct wtk_control*, va_list );
 } wtk_property_accessors;
 
 static wtk_property_accessors _property_accessors[WTK_CONTROL_PROP_COUNT] = {
-    { NULL, NULL },                                    // WTK_CONTROL_PROP_Invalid
-    { &wtk_prop_title_getter, &wtk_prop_title_setter } // WTK_CONTROL_PROP_Title
+    { NULL, NULL },                                     // WTK_CONTROL_PROP_Invalid
+    { &wtk_prop_title_getter, &wtk_prop_title_setter }, // WTK_CONTROL_PROP_Title
+    { &wtk_prop_text_getter, &wtk_prop_text_setter },   // WTK_CONTROL_PROP_Text
 };
 
-void WTK_API wtk_control_get_property( struct wtk_control* control, wtk_control_property property, void* out )
+void WTK_API wtk_control_get_property( struct wtk_control* control, wtk_control_property property, ... )
 {
+    va_list args;
+
     WTK_ASSERT(control);
-    WTK_ASSERT(out);
     WTK_ASSERT(((property > WTK_CONTROL_PROP_Invalid) && (property < WTK_CONTROL_PROP_COUNT)));
-    _property_accessors[property].getter(control, out);
+
+    va_start(args, property);
+    _property_accessors[property].getter(control, args);
+    va_end(args);
 }
 
-void WTK_API wtk_control_set_property( struct wtk_control* control, wtk_control_property property, void* value )
+void WTK_API wtk_control_set_property( struct wtk_control* control, wtk_control_property property, ... )
 {
+    va_list args;
+
     WTK_ASSERT(control);
     WTK_ASSERT(((property > WTK_CONTROL_PROP_Invalid) && (property < WTK_CONTROL_PROP_COUNT)));
-    _property_accessors[property].setter(control, value);
+
+    va_start(args, property);
+    _property_accessors[property].setter(control, args);
+    va_end(args);
 }
 
 #include "_wtk_event_accessors.inl"
@@ -171,6 +183,9 @@ static wtk_event_accessors _event_accessors[WTK_EVENT_COUNT] = {
     { &wtk_event_on_create_setter },  // WTK_EVENT_OnCreate
     { &wtk_event_on_destroy_setter }, // WTK_EVENT_OnDestroy
     { &wtk_event_on_close_setter },   // WTK_EVENT_OnClose
+    { &wtk_event_on_pressed_setter }, // WTK_EVENT_OnPressed
+    { &wtk_event_on_release_setter }, // WTK_EVENT_OnRelease
+    { &wtk_event_on_clicked_setter }, // WTK_EVENT_OnClicked
 };
 
 void WTK_API wtk_control_set_callback( struct wtk_control* control, wtk_event event, wtk_event_callback callback )
@@ -187,11 +202,12 @@ static LRESULT CALLBACK wtk_control_proc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 
     switch( uMsg ) {
         case WM_USER + 0: {
-            if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate), NULL);
+            if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
         } break;
 
         case WM_DESTROY: {
-            if( control->on_destroy_callback ) control->on_destroy_callback(control, WTK_EVENT(OnDestroy), NULL);
+            if( control->on_destroy_callback ) control->on_destroy_callback(control, WTK_EVENT(OnDestroy));
+            wtk_free(control);
         } break;
 
         default: {

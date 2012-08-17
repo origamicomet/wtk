@@ -34,6 +34,6 @@
     #define WTK_EXPORT
 #endif
 
-#define WTK_API __stdcall
+#define WTK_API __cdecl
 
 #endif // _WTK_CONFIG_H_
