@@ -36,6 +36,7 @@ typedef enum {
     WTK_CONTROL_PROP_Title,
     WTK_CONTROL_PROP_Text,
     WTK_CONTROL_PROP_TextAlign,
+    WTK_CONTROL_PROP_Value,
     WTK_CONTROL_PROP_COUNT
 } wtk_control_property;
 

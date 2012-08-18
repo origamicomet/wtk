@@ -45,8 +45,6 @@ struct wtk_control {
     int (WTK_API *on_destroy_callback)( struct wtk_control* control, wtk_event event );
     int (WTK_API *on_paint_callback)( struct wtk_control* control, wtk_event event, struct wtk_gdi* gid );
 
-    int (WTK_API *on_value_changed_callback)( struct wtk_control* control, wtk_event event );
-
     int (WTK_API *on_pressed_callback)( struct wtk_control* control, wtk_event event, wtk_mouse_btn mouse_btn, int x, int y );
     int (WTK_API *on_released_callback)( struct wtk_control* control, wtk_event event, wtk_mouse_btn mouse_btn, int x, int y );
     int (WTK_API *on_clicked_callback)( struct wtk_control* control, wtk_event event );
@@ -90,6 +88,18 @@ struct wtk_button {
     wtk_align text_v_align;
 };
 
+struct wtk_checkbox {
+    wtk_control control;
+
+    // Shared:
+    const char* text;
+    struct wtk_icon* icon;
+    wtk_align text_align;
+
+    // Callbacks:
+    int (WTK_API *on_value_changed_callback)( struct wtk_control* control, wtk_event event );
+};
+
 struct wtk_textbox {
     wtk_control control;
 
@@ -98,6 +108,9 @@ struct wtk_textbox {
     wtk_textbox_type type;
     wtk_align text_align;
     int max_len;
+
+    // Callbacks:
+    int (WTK_API *on_value_changed_callback)( struct wtk_control* control, wtk_event event );
 };
 
 #endif // __WTK_CONTROLS_H_

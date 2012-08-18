@@ -21,8 +21,8 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_TEXTBOX_H_
-#define _WTK_TEXTBOX_H_
+#ifndef _WTK_CHECKBOX_H_
+#define _WTK_CHECKBOX_H_
 
 #include <wtk/wtk_control.h>
 
@@ -30,19 +30,19 @@
 extern "C" {
 #endif // __cplusplus
 
-struct wtk_textbox;
-typedef struct wtk_textbox wtk_textbox;
+struct wtk_checkbox;
+typedef struct wtk_checkbox wtk_checkbox;
 
-extern WTK_EXPORT struct wtk_textbox* WTK_API wtk_textbox_create( int x, int y, int width, int height, struct wtk_control* parent );
+extern WTK_EXPORT struct wtk_checkbox* WTK_API wtk_checkbox_create( int x, int y, int width, int height, struct wtk_control* parent );
 
-#define WTK_TEXTBOX_TYPE( type ) WTK_TEXTBOX_TYPE_##type
+#define WTK_CHECKBOX_STATE( state ) WTK_CHECKBOX_STATE_##state
 typedef enum {
-    WTK_TEXTBOX_TYPE_Plaintext = 1,
-    WTK_TEXTBOX_TYPE_Protected = 2,
-    WTK_TEXTBOX_TYPE_Multiline = 3
-} wtk_textbox_type;
+    WTK_CHECKBOX_STATE_Checked       = 1,
+    WTK_CHECKBOX_STATE_Indeterminate = 2,
+    WTK_CHECKBOX_STATE_Unchecked     = 3,
+} wtk_checkbox_state;
 
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-#endif // _WTK_TEXTBOX_H_
+#endif // _WTK_CHECKBOX_H_

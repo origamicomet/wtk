@@ -66,7 +66,20 @@ static void WTK_API wtk_event_on_paint_setter( struct wtk_control* control, wtk_
 
 static void WTK_API wtk_event_on_value_changed_setter( struct wtk_control* control, wtk_event_callback callback )
 {
-    control->on_value_changed_callback = callback;
+    WTK_ASSERT(
+        ( control->type == WTK_CONTROL_TYPE(Checkbox) ||
+          control->type == WTK_CONTROL_TYPE(TextBox) )
+    );
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Checkbox): {
+            ((struct wtk_checkbox*)control)->on_value_changed_callback = callback;
+        } break;
+
+        case WTK_CONTROL_TYPE(TextBox): {
+            ((struct wtk_textbox*)control)->on_value_changed_callback = callback;
+        } break;
+    }
 }
 
 // =============================================================================

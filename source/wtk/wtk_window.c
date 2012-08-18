@@ -104,8 +104,24 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
         case WM_COMMAND: {
             switch( HIWORD(wParam) ) {
                 case BN_CLICKED: {
-                    struct wtk_control* btn_control = &((struct wtk_button*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr"))->control;
-                    if( btn_control->on_clicked_callback ) btn_control->on_clicked_callback(btn_control, WTK_EVENT(OnClicked));
+                    struct wtk_control* btn_control = (struct wtk_control*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr");
+
+                    switch( btn_control->type ) {
+                        case WTK_CONTROL_TYPE(Button): {
+                            if( btn_control->on_clicked_callback ) btn_control->on_clicked_callback(btn_control, WTK_EVENT(OnClicked));
+                        } break;
+
+                        case WTK_CONTROL_TYPE(Checkbox): {
+                            struct wtk_checkbox* cb_control = ((struct wtk_checkbox*)btn_control);
+                            if( cb_control->on_value_changed_callback ) cb_control->on_value_changed_callback(btn_control, WTK_EVENT(OnClicked));
+                        } break;
+                    }
+                } break;
+
+                case EN_CHANGE: {
+                    struct wtk_textbox* textbox = (struct wtk_textbox*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr");
+                    struct wtk_control* tb_control = &textbox->control;
+                    if( textbox->on_value_changed_callback ) textbox->on_value_changed_callback(tb_control, WTK_EVENT(OnValueChanged));
                 } break;
             }
         } break;

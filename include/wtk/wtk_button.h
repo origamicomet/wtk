@@ -35,6 +35,12 @@ typedef struct wtk_button wtk_button;
 
 extern WTK_EXPORT struct wtk_button* WTK_API wtk_button_create( int x, int y, int width, int height, struct wtk_control* parent );
 
+#define WTK_BUTTON_STATE( state ) WTK_BUTTON_STATE_##state
+typedef enum {
+    WTK_BUTTON_STATE_Up = 1,
+    WTK_BUTTON_STATE_Down = 2
+} wtk_button_state;
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
