@@ -6,6 +6,7 @@
 #include <wtk/wtk_window.h>
 #include <wtk/wtk_label.h>
 #include <wtk/wtk_button.h>
+#include <wtk/wtk_textbox.h>
 
 void* WTK_API wtk_alloc_callback( size_t num_bytes ) { return malloc(num_bytes); }
 void* WTK_API wtk_realloc_callback( void* ptr, size_t num_bytes ) { return realloc(ptr, num_bytes); }
@@ -26,9 +27,10 @@ static int WTK_API window_on_close( wtk_window* control, wtk_event event )
 
 int main( int argc, char** argv )
 {
-    wtk_window* window;
-    wtk_label*  label;
-    wtk_button* button;
+    wtk_window*  window;
+    wtk_label*   label;
+    wtk_button*  button;
+    wtk_textbox* textbox;
 
     if( !wtk_init(&allocator) ) return EXIT_FAILURE;
 
@@ -49,6 +51,9 @@ int main( int argc, char** argv )
     button = wtk_button_create(16, 16 + 25, 40, 40, (wtk_control*)window);
     wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Icon), app_icon);
+
+    textbox = wtk_textbox_create(16, 16 + 50 + 24, 100, 18, (wtk_control*)window);
+    wtk_control_set_property((wtk_control*)textbox, WTK_CONTROL_PROP(Font), font);
 
     return wtk_run_app();
 }

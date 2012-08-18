@@ -21,19 +21,28 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_TYPES_H_
-#define _WTK_CONTROL_TYPES_H_
+#ifndef _WTK_TEXT_BOX_H_
+#define _WTK_TEXT_BOX_H_
 
-#define WTK_CONTROL_TYPE( type ) WTK_CONTROL_TYPE_##type
+#include <wtk/wtk_control.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+struct wtk_textbox;
+typedef struct wtk_textbox wtk_textbox;
+
+extern WTK_EXPORT struct wtk_textbox* WTK_API wtk_textbox_create( int x, int y, int width, int height, struct wtk_control* parent );
+
+#define WTK_TEXTBOX_TYPE( type ) WTK_TEXTBOX_TYPE_##type
 typedef enum {
-    WTK_CONTROL_TYPE_Invalid = 0,
-    WTK_CONTROL_TYPE_Base,
-    WTK_CONTROL_TYPE_Window,
-    WTK_CONTROL_TYPE_Label,
-    WTK_CONTROL_TYPE_Button,
-    WTK_CONTROL_TYPE_TextBox,
-    WTK_CONTROL_TYPE_COUNT
-} wtk_control_type;
+    WTK_TEXTBOX_TYPE_Plaintext = 1,
+    WTK_TEXTBOX_TYPE_Protected = 2,
+    WTK_TEXTBOX_TYPE_Multiline = 3
+} wtk_textbox_type;
 
-#endif // _WTK_CONTROL_TYPES_H_
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+#endif // _WTK_TEXT_BOX_H_

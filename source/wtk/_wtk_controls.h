@@ -32,6 +32,7 @@
 #include <wtk/wtk_gdi.h>
 #include <wtk/wtk_mouse.h>
 #include <wtk/wtk_keyboard.h>
+#include <wtk/wtk_textbox.h>
 
 struct wtk_control {
     // Shared:
@@ -76,7 +77,6 @@ struct wtk_label {
 
     // Shared:
     const char* text;
-    struct wtk_icon* icon;
     wtk_align text_align;
 };
 
@@ -88,6 +88,16 @@ struct wtk_button {
     struct wtk_icon* icon;
     wtk_align text_h_align;
     wtk_align text_v_align;
+};
+
+struct wtk_textbox {
+    wtk_control control;
+
+    // Shared:
+    const char* text_buffer;
+    wtk_textbox_type type;
+    wtk_align text_align;
+    int max_len;
 };
 
 #endif // __WTK_CONTROLS_H_

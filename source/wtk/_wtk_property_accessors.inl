@@ -138,17 +138,12 @@ static void WTK_API wtk_prop_icon_getter( struct wtk_control* control, va_list a
     struct wtk_icon** icon_out;
 
     WTK_ASSERT( 
-        ( control->type == WTK_CONTROL_TYPE(Label) ||
-          control->type == WTK_CONTROL_TYPE(Button) )
+        (control->type == WTK_CONTROL_TYPE(Button))
     );
 
     icon_out = va_arg(args, struct wtk_icon**);
 
     switch( control->type ) {
-        case WTK_CONTROL_TYPE(Label): {
-            *icon_out = ((struct wtk_label*)control)->icon;
-        } break;
-
         case WTK_CONTROL_TYPE(Button): {
             *icon_out = ((struct wtk_button*)control)->icon;
         } break;
@@ -160,17 +155,12 @@ static void WTK_API wtk_prop_icon_setter( struct wtk_control* control, va_list a
     struct wtk_icon* icon;
 
     WTK_ASSERT( 
-        ( control->type == WTK_CONTROL_TYPE(Label) ||
-          control->type == WTK_CONTROL_TYPE(Button) )
+        (control->type == WTK_CONTROL_TYPE(Button))
     );
 
     icon = va_arg(args, struct wtk_icon*);
 
     switch( control->type ) {
-        case WTK_CONTROL_TYPE(Label): {
-            ((struct wtk_label*)control)->icon = icon;
-        } break;
-
         case WTK_CONTROL_TYPE(Button): {
             ((struct wtk_button*)control)->icon = icon;
             PostMessage(control->hWnd, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(icon ? icon->hIcon : NULL));
@@ -265,7 +255,8 @@ static void WTK_API wtk_prop_text_getter( struct wtk_control* control, va_list a
 
     WTK_ASSERT(
         ( control->type == WTK_CONTROL_TYPE(Label) ||
-          control->type == WTK_CONTROL_TYPE(Button) )
+          control->type == WTK_CONTROL_TYPE(Button) ||
+          control->type == WTK_CONTROL_TYPE(TextBox) )
     );
 
     out = va_arg(args, const char**);
@@ -278,6 +269,17 @@ static void WTK_API wtk_prop_text_getter( struct wtk_control* control, va_list a
         case WTK_CONTROL_TYPE(Button): {
             *out = ((struct wtk_button*)control)->text;
         } break;
+
+        case WTK_CONTROL_TYPE(TextBox): {
+            // TODO: Find a less messy, more performant, and thread safe way.
+            // IDEA: Cache between SetWindowText calls and EN_CHANGE notifications.
+            struct wtk_textbox* textbox = ((struct wtk_textbox*)control);
+            int text_len = GetWindowTextLength(control->hWnd);
+            wtk_realloc(textbox->text_buffer, text_len);
+            memset(textbox->text_buffer, 0, text_len);
+            GetWindowTextA(control->hWnd, textbox->text_buffer, text_len);
+            *out = text_len;
+        } break;
     }
 }
 
@@ -287,7 +289,8 @@ static void WTK_API wtk_prop_text_setter( struct wtk_control* control, va_list a
 
     WTK_ASSERT(
         ( control->type == WTK_CONTROL_TYPE(Label) ||
-          control->type == WTK_CONTROL_TYPE(Button) )
+          control->type == WTK_CONTROL_TYPE(Button) ||
+          control->type == WTK_CONTROL_TYPE(TextBox) )
     );
 
     text = va_arg(args, const char*);
@@ -307,6 +310,10 @@ static void WTK_API wtk_prop_text_setter( struct wtk_control* control, va_list a
                 ((((struct wtk_button*)control)->icon && !text) ? BS_ICON : 0x00000000)
             ));
         } break;
+
+        case WTK_CONTROL_TYPE(TextBox): {
+            // ...
+        } break;
     }
 }
 
@@ -318,7 +325,8 @@ static void WTK_API wtk_prop_text_align_getter( struct wtk_control* control, va_
 {
     WTK_ASSERT(
         ( control->type == WTK_CONTROL_TYPE(Label) ||
-          control->type == WTK_CONTROL_TYPE(Button) )
+          control->type == WTK_CONTROL_TYPE(Button) ||
+          control->type == WTK_CONTROL_TYPE(TextBox) )
     );
 
     switch( control->type ) {
@@ -329,6 +337,10 @@ static void WTK_API wtk_prop_text_align_getter( struct wtk_control* control, va_
         case WTK_CONTROL_TYPE(Button): {
             *va_arg(args, wtk_align*) = ((struct wtk_button*)control)->text_h_align;
             *va_arg(args, wtk_align*) = ((struct wtk_button*)control)->text_v_align;
+        } break;
+
+        case WTK_CONTROL_TYPE(TextBox): {
+            *va_arg(args, wtk_align*) = ((struct wtk_textbox*)control)->text_align;
         } break;
     }
 }
@@ -354,6 +366,14 @@ static DWORD WTK_API wtk_convert_text_align_to_style( struct wtk_control* contro
                 case WTK_ALIGN_Bottom: return BS_BOTTOM; break;
             }
         } break;
+
+        case WTK_CONTROL_TYPE(TextBox): {
+            switch( align ) {
+                case WTK_ALIGN_Left: return ES_LEFT; break;
+                case WTK_ALIGN_Center: return ES_CENTER; break;
+                case WTK_ALIGN_Right: return ES_RIGHT; break;
+            }
+        } break;
     }
 
     return 0x00000000;
@@ -366,7 +386,8 @@ static void WTK_API wtk_prop_text_align_setter( struct wtk_control* control, va_
 
     WTK_ASSERT(
         ( control->type == WTK_CONTROL_TYPE(Label) ||
-          control->type == WTK_CONTROL_TYPE(Button) )
+          control->type == WTK_CONTROL_TYPE(Button) ||
+          control->type == WTK_CONTROL_TYPE(TextBox) )
     );
 
     switch( control->type ) {
@@ -384,6 +405,13 @@ static void WTK_API wtk_prop_text_align_setter( struct wtk_control* control, va_
             ((struct wtk_button*)control)->text_v_align = v_align;
             dwStyle = (DWORD)GetWindowLongPtr(control->hWnd, GWL_STYLE);
             dwStyle &= ~(BS_BOTTOM | BS_CENTER | BS_LEFT | BS_RIGHT | BS_TOP | BS_VCENTER);
+        } break;
+
+        case WTK_CONTROL_TYPE(TextBox): {
+            h_align = va_arg(args, wtk_align);
+            ((struct wtk_textbox*)control)->text_align = h_align;
+            dwStyle = (DWORD)GetWindowLongPtr(control->hWnd, GWL_STYLE);
+            dwStyle &= ~(ES_CENTER | ES_LEFT | ES_RIGHT);
         } break;
     }
 
