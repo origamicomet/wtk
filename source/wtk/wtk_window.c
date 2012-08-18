@@ -111,7 +111,7 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
                             if( btn_control->on_clicked_callback ) btn_control->on_clicked_callback(btn_control, WTK_EVENT(OnClicked));
                         } break;
 
-                        case WTK_CONTROL_TYPE(Checkbox): {
+                        case WTK_CONTROL_TYPE(CheckBox): {
                             struct wtk_checkbox* cb_control = ((struct wtk_checkbox*)btn_control);
                             if( cb_control->on_value_changed_callback ) cb_control->on_value_changed_callback(btn_control, WTK_EVENT(OnClicked));
                         } break;

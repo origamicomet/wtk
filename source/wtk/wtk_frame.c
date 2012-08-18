@@ -21,51 +21,49 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#include <wtk/wtk_checkbox.h>
+#include <wtk/wtk_frame.h>
 
 #include "_wtk_windows.h"
 #include "_wtk_controls.h"
 
 #include <wtk/wtk_mm.h>
-#include <wtk/wtk_align.h>
 #include <wtk/wtk_font.h>
 
-static LRESULT CALLBACK wtk_checkbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+static LRESULT CALLBACK wtk_frame_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
-int WTK_API wtk_checkbox_init()
+int WTK_API wtk_frame_init()
 {
     return TRUE;
 }
 
-struct wtk_checkbox* WTK_API wtk_checkbox_create( int x, int y, int width, int height, struct wtk_control* parent )
+struct wtk_frame* WTK_API wtk_frame_create( int x, int y, int width, int height, struct wtk_control* parent )
 {
-    struct wtk_checkbox* checkbox = NULL;
+    struct wtk_frame* frame = NULL;
     HWND hWnd;
 
     WTK_ASSERT(parent);
 
-    hWnd = CreateWindowExA(0, "BUTTON", NULL, BS_CHECKBOX | BS_AUTOCHECKBOX | WS_VISIBLE | WS_CHILD, x, y, width, height, parent->hWnd, NULL, GetModuleHandle(0), 0);
+    hWnd = CreateWindowExA(0, "BUTTON", NULL, BS_GROUPBOX | WS_VISIBLE | WS_CHILD, x, y, width, height, parent->hWnd, NULL, GetModuleHandle(0), 0);
     if( !hWnd ) return NULL;
 
-    checkbox = wtk_alloc(sizeof(struct wtk_checkbox));
-    memset((void*)checkbox, 0, sizeof(struct wtk_checkbox));
-    checkbox->control.type = WTK_CONTROL_TYPE(CheckBox);
-    checkbox->control.hWnd = hWnd;
-    checkbox->control.font = wtk_font_default();
-    checkbox->text_align = WTK_ALIGN(Right);
+    frame = wtk_alloc(sizeof(struct wtk_frame));
+    memset((void*)frame, 0, sizeof(struct wtk_frame));
+    frame->control.type = WTK_CONTROL_TYPE(Frame);
+    frame->control.hWnd = hWnd;
+    frame->control.font = wtk_font_default();
 
-    SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_checkbox_proc));
-    SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)checkbox);
-    PostMessage(hWnd, WM_SETFONT, (WPARAM)checkbox->control.font->hFont, TRUE);
+    SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_frame_proc));
+    SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)frame);
+    PostMessage(hWnd, WM_SETFONT, (WPARAM)frame->control.font->hFont, TRUE);
     PostMessage(hWnd, WM_USER + 0, 0, 0);
-    return checkbox;
+    return frame;
 }
 
-static LRESULT CALLBACK wtk_checkbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+static LRESULT CALLBACK wtk_frame_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    struct wtk_checkbox* checkbox = (struct wtk_checkbox*)GetPropA(hWnd, "_wtk_ctrl_ptr");
-    struct wtk_control* control = checkbox ? &checkbox->control : NULL;
-    if( !checkbox ) return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
+    struct wtk_frame* frame = (struct wtk_frame*)GetPropA(hWnd, "_wtk_ctrl_ptr");
+    struct wtk_control* control = frame ? &frame->control : NULL;
+    if( !frame ) return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
         case WM_USER + 0: {
@@ -74,7 +72,7 @@ static LRESULT CALLBACK wtk_checkbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, 
 
         case WM_DESTROY: {
             if( control->on_destroy_callback ) control->on_destroy_callback(control, WTK_EVENT(OnDestroy));
-            wtk_free(checkbox);
+            wtk_free(frame);
         } break;
 
         default: {

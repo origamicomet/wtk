@@ -78,6 +78,13 @@ struct wtk_label {
     wtk_align text_align;
 };
 
+struct wtk_frame {
+    wtk_control control;
+
+    // Shared:
+    const char* text;
+};
+
 struct wtk_button {
     wtk_control control;
 

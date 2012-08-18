@@ -5,6 +5,7 @@
 #include <wtk/wtk_mouse.h>
 #include <wtk/wtk_window.h>
 #include <wtk/wtk_label.h>
+#include <wtk/wtk_frame.h>
 #include <wtk/wtk_button.h>
 #include <wtk/wtk_checkbox.h>
 #include <wtk/wtk_textbox.h>
@@ -59,11 +60,12 @@ static int WTK_API textbox_on_value_changed( wtk_textbox* textbox, wtk_event eve
 
 int main( int argc, char** argv )
 {
-    wtk_window*  window;
-    wtk_label*   label;
-    wtk_button*  button;
+    wtk_window*   window;
+    wtk_label*    label;
+    wtk_frame*    frame;
+    wtk_button*   button;
     wtk_checkbox* checkbox;
-    wtk_textbox* textbox;
+    wtk_textbox*  textbox;
 
     if( !wtk_init(&allocator) ) return EXIT_FAILURE;
 
@@ -82,11 +84,15 @@ int main( int argc, char** argv )
     wtk_control_set_property((wtk_control*)label, WTK_CONTROL_PROP(TextAlign), WTK_ALIGN(Left));
     mirror_label = label;
 
+    frame = wtk_frame_create(200, 16, 128, 128, (wtk_control*)window);
+    wtk_control_set_property((wtk_control*)frame, WTK_CONTROL_PROP(Font), font);
+    wtk_control_set_property((wtk_control*)frame, WTK_CONTROL_PROP(Text), "wtk_frame");
+
     button = wtk_button_create(16, 16 + 25, 40, 40, (wtk_control*)window);
     wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Icon), app_icon);
 
-    checkbox = wtk_checkbox_create(124, 16, 100, 18, (wtk_control*)window);
+    checkbox = wtk_checkbox_create(124, 16, 50, 18, (wtk_control*)window);
     wtk_control_set_property((wtk_control*)checkbox, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)checkbox, WTK_CONTROL_PROP(Text), "Mirror?");
     wtk_control_set_property((wtk_control*)checkbox, WTK_CONTROL_PROP(Value), WTK_CHECKBOX_STATE(Checked));

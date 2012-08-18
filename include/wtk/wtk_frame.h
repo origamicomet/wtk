@@ -1,7 +1,7 @@
 // =============================================================================
 // This file is part of the Windowing Toolkit.
 // Copyright (C) 2012 Michael Williams <devbug@bitbyte.ca>
-//
+//a
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -21,21 +21,21 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_TYPES_H_
-#define _WTK_CONTROL_TYPES_H_
+#ifndef _WTK_FRAME_H_
+#define _WTK_FRAME_H_
 
-#define WTK_CONTROL_TYPE( type ) WTK_CONTROL_TYPE_##type
+#include <wtk/wtk_control.h>
 
-typedef enum {
-    WTK_CONTROL_TYPE_Invalid = 0,
-    WTK_CONTROL_TYPE_Base,
-    WTK_CONTROL_TYPE_Window,
-    WTK_CONTROL_TYPE_Label,
-    WTK_CONTROL_TYPE_Frame,
-    WTK_CONTROL_TYPE_Button,
-    WTK_CONTROL_TYPE_CheckBox,
-    WTK_CONTROL_TYPE_TextBox,
-    WTK_CONTROL_TYPE_COUNT
-} wtk_control_type;
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
 
-#endif // _WTK_CONTROL_TYPES_H_
+struct wtk_frame;
+typedef struct wtk_frame wtk_frame;
+
+extern WTK_EXPORT struct wtk_frame* WTK_API wtk_frame_create( int x, int y, int width, int height, struct wtk_control* parent );
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+#endif // _WTK_FRAME_H_
