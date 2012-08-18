@@ -21,22 +21,17 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_PROPERTIES_H_
-#define _WTK_CONTROL_PROPERTIES_H_
+#ifndef __WTK_IMAGE_H_
+#define __WTK_IMAGE_H_
 
-#define WTK_CONTROL_PROP( property ) WTK_CONTROL_PROP_##property
-typedef enum {
-    WTK_CONTROL_PROP_Invalid = 0,
-    WTK_CONTROL_PROP_UserPtr,
-    WTK_CONTROL_PROP_Position,
-    WTK_CONTROL_PROP_Size,
-    WTK_CONTROL_PROP_Font,
-    WTK_CONTROL_PROP_Icon,
-    WTK_CONTROL_PROP_Icons,
-    WTK_CONTROL_PROP_Title,
-    WTK_CONTROL_PROP_Text,
-    WTK_CONTROL_PROP_TextAlign,
-    WTK_CONTROL_PROP_COUNT
-} wtk_control_property;
+#include "_wtk_windows.h"
 
-#endif // _WTK_CONTROL_PROPERTIES_H_
+struct wtk_image {
+    HANDLE hImage;
+};
+
+struct wtk_icon {
+    HANDLE hIcon;
+};
+
+#endif // __WTK_IMAGE_H_

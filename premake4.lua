@@ -53,6 +53,7 @@ solution "wtk"
         objdir("build/" .. _ACTION .. "/sample/obj" )
         targetdir("bin/" .. _ACTION .. "/")
         targetname("sample")
+        debugdir("sample")
 
         configuration("debug") targetsuffix("-dbg") flags({ "Symbols" }) links("libwtk-dbg")
         configuration("release") flags({ "Optimize", "EnableSSE", "EnableSSE2" }) links("libwtk")

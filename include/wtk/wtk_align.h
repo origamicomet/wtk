@@ -21,22 +21,32 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_PROPERTIES_H_
-#define _WTK_CONTROL_PROPERTIES_H_
+#ifndef _WTK_ALIGN_H_
+#define _WTK_ALIGN_H_
 
-#define WTK_CONTROL_PROP( property ) WTK_CONTROL_PROP_##property
+#include <wtk/wtk_config.h>
+#include <wtk/wtk_compat.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+#define WTK_ALIGN( align ) WTK_ALIGN_##align
 typedef enum {
-    WTK_CONTROL_PROP_Invalid = 0,
-    WTK_CONTROL_PROP_UserPtr,
-    WTK_CONTROL_PROP_Position,
-    WTK_CONTROL_PROP_Size,
-    WTK_CONTROL_PROP_Font,
-    WTK_CONTROL_PROP_Icon,
-    WTK_CONTROL_PROP_Icons,
-    WTK_CONTROL_PROP_Title,
-    WTK_CONTROL_PROP_Text,
-    WTK_CONTROL_PROP_TextAlign,
-    WTK_CONTROL_PROP_COUNT
-} wtk_control_property;
+    WTK_ALIGN_Default = 0,
 
-#endif // _WTK_CONTROL_PROPERTIES_H_
+    // Horizontal:
+    WTK_ALIGN_Left   = 1,
+    WTK_ALIGN_Center = 2,
+    WTK_ALIGN_Right  = 3,
+
+    // Vertical:
+    WTK_ALIGN_Top    = 4,
+    WTK_ALIGN_Middle = 5,
+    WTK_ALIGN_Bottom = 6
+} wtk_align;
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+#endif // _WTK_ALIGN_H_

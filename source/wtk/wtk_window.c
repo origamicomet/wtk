@@ -39,7 +39,7 @@ int WTK_API wtk_window_init()
         sizeof(WNDCLASSEX),
         CS_HREDRAW | CS_VREDRAW,
         &wtk_window_proc,
-        0, sizeof(wtk_control*),
+        0, 0,
         GetModuleHandle(0),
         LoadIcon(NULL, IDI_APPLICATION),
         LoadCursor(NULL, IDC_ARROW),
@@ -75,7 +75,7 @@ struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int heigh
     window->control.hWnd = hWnd;
     window->control.font = wtk_font_default();
 
-    SetWindowLongPtr(hWnd, 0, (LONG_PTR)window);
+    SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)window);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)window->control.font->hFont, TRUE);
     PostMessage(hWnd, WM_USER + 0, 0, 0);
     return window;
@@ -83,7 +83,7 @@ struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int heigh
 
 static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    struct wtk_window* window = (struct wtk_window*)GetWindowLongPtr(hWnd, 0);
+    struct wtk_window* window = (struct wtk_window*)GetPropA(hWnd, "_wtk_ctrl_ptr");
     struct wtk_control* control = window ? &window->control : NULL;
     if( !window ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 

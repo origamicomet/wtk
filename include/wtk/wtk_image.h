@@ -21,22 +21,32 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_PROPERTIES_H_
-#define _WTK_CONTROL_PROPERTIES_H_
+#ifndef _WTK_IMAGE_H_
+#define _WTK_IMAGE_H_
 
-#define WTK_CONTROL_PROP( property ) WTK_CONTROL_PROP_##property
-typedef enum {
-    WTK_CONTROL_PROP_Invalid = 0,
-    WTK_CONTROL_PROP_UserPtr,
-    WTK_CONTROL_PROP_Position,
-    WTK_CONTROL_PROP_Size,
-    WTK_CONTROL_PROP_Font,
-    WTK_CONTROL_PROP_Icon,
-    WTK_CONTROL_PROP_Icons,
-    WTK_CONTROL_PROP_Title,
-    WTK_CONTROL_PROP_Text,
-    WTK_CONTROL_PROP_TextAlign,
-    WTK_CONTROL_PROP_COUNT
-} wtk_control_property;
+#include <wtk/wtk_config.h>
+#include <wtk/wtk_compat.h>
 
-#endif // _WTK_CONTROL_PROPERTIES_H_
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+struct wtk_image;
+typedef struct wtk_image wtk_image;
+
+struct wtk_icon;
+typedef struct wtk_icon wtk_icon;
+
+#define WTK_IMAGE_SIZE_DEFAULT -1
+#define WTK_ICON_SIZE_DEFAULT -1
+
+extern WTK_EXPORT struct wtk_image* WTK_API wtk_image_create_from_file( const char* file_path, int width, int height );
+extern WTK_EXPORT void WTK_API wtk_image_destroy( struct wtk_image* image );
+
+extern WTK_EXPORT struct wtk_icon* WTK_API wtk_icon_create_from_file( const char* file_path, int width, int height );
+extern WTK_EXPORT void WTK_API wtk_icon_destroy( struct wtk_icon* icon );
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+#endif // _WTK_IMAGE_H_

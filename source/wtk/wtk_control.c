@@ -90,13 +90,16 @@ typedef struct {
 } wtk_property_accessors;
 
 static wtk_property_accessors _property_accessors[WTK_CONTROL_PROP_COUNT] = {
-    { NULL, NULL },                                           // WTK_CONTROL_PROP_Invalid
-    { &wtk_prop_user_ptr_getter, &wtk_prop_user_ptr_setter }, // WTK_CONTROL_PROP_UserPtr
-    { &wtk_prop_position_getter, &wtk_prop_position_setter }, // WTK_CONTROL_PROP_Position
-    { &wtk_prop_size_getter, &wtk_prop_size_setter },         // WTK_CONTROL_PROP_Size
-    { &wtk_prop_font_getter, &wtk_prop_font_setter },         // WTK_CONTROL_PROP_Font
-    { &wtk_prop_title_getter, &wtk_prop_title_setter },       // WTK_CONTROL_PROP_Title
-    { &wtk_prop_text_getter, &wtk_prop_text_setter },         // WTK_CONTROL_PROP_Text
+    { NULL, NULL },                                               // WTK_CONTROL_PROP_Invalid
+    { &wtk_prop_user_ptr_getter, &wtk_prop_user_ptr_setter },     // WTK_CONTROL_PROP_UserPtr
+    { &wtk_prop_position_getter, &wtk_prop_position_setter },     // WTK_CONTROL_PROP_Position
+    { &wtk_prop_size_getter, &wtk_prop_size_setter },             // WTK_CONTROL_PROP_Size
+    { &wtk_prop_font_getter, &wtk_prop_font_setter },             // WTK_CONTROL_PROP_Font
+    { &wtk_prop_icon_getter, &wtk_prop_icon_setter },             // WTK_CONTROL_PROP_Icon
+    { &wtk_prop_icons_getter, &wtk_prop_icons_setter },           // WTK_CONTROL_PROP_Icons
+    { &wtk_prop_title_getter, &wtk_prop_title_setter },           // WTK_CONTROL_PROP_Title
+    { &wtk_prop_text_getter, &wtk_prop_text_setter },             // WTK_CONTROL_PROP_Text
+    { &wtk_prop_text_align_getter, &wtk_prop_text_align_setter }, // WTK_CONTROL_PROP_TextAlign
 };
 
 void WTK_API wtk_control_get_property( struct wtk_control* control, wtk_control_property property, ... )

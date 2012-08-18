@@ -26,7 +26,9 @@
 
 #include "_wtk_windows.h"
 #include "_wtk_font.h"
+#include "_wtk_image.h"
 
+#include <wtk/wtk_align.h>
 #include <wtk/wtk_gdi.h>
 #include <wtk/wtk_mouse.h>
 #include <wtk/wtk_keyboard.h>
@@ -63,6 +65,7 @@ struct wtk_window {
 
     // Shared:
     const char* title;
+    struct wtk_icon* icons[2];
 
     // Callbacks:
     int (WTK_API *on_close_callback)( struct wtk_control* control, wtk_event event );
@@ -73,6 +76,8 @@ struct wtk_label {
 
     // Shared:
     const char* text;
+    struct wtk_icon* icon;
+    wtk_align text_align;
 };
 
 struct wtk_button {
@@ -80,6 +85,9 @@ struct wtk_button {
 
     // Shared:
     const char* text;
+    struct wtk_icon* icon;
+    wtk_align text_h_align;
+    wtk_align text_v_align;
 };
 
 #endif // __WTK_CONTROLS_H_

@@ -27,6 +27,7 @@
 #include "_wtk_controls.h"
 
 #include <wtk/wtk_mm.h>
+#include <wtk/wtk_align.h>
 #include <wtk/wtk_font.h>
 #include <wtk/wtk_mouse.h>
 #include <wtk/wtk_keyboard.h>
@@ -53,6 +54,7 @@ struct wtk_label* WTK_API wtk_label_create( int x, int y, int width, int height,
     label->control.type = WTK_CONTROL_TYPE(Label);
     label->control.hWnd = hWnd;
     label->control.font = wtk_font_default();
+    label->text_align = WTK_ALIGN(Left);
 
     SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_label_proc));
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)label);

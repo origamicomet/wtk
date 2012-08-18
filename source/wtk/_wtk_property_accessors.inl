@@ -21,7 +21,12 @@
 // THE SOFTWARE.
 // =============================================================================
 
+#include "_wtk_windows.h"
 #include "_wtk_controls.h"
+#include "_wtk_font.h"
+#include "_wtk_image.h"
+
+#include <wtk/wtk_align.h>
 
 #include <stdarg.h>
 
@@ -125,6 +130,107 @@ static void WTK_API wtk_prop_font_setter( struct wtk_control* control, va_list a
 }
 
 // =============================================================================
+// WTK_CONTROL_PROP_Icon
+// =============================================================================
+
+static void WTK_API wtk_prop_icon_getter( struct wtk_control* control, va_list args )
+{
+    struct wtk_icon** icon_out;
+
+    WTK_ASSERT( 
+        ( control->type == WTK_CONTROL_TYPE(Label) ||
+          control->type == WTK_CONTROL_TYPE(Button) )
+    );
+
+    icon_out = va_arg(args, struct wtk_icon**);
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Label): {
+            *icon_out = ((struct wtk_label*)control)->icon;
+        } break;
+
+        case WTK_CONTROL_TYPE(Button): {
+            *icon_out = ((struct wtk_button*)control)->icon;
+        } break;
+    }
+}
+
+static void WTK_API wtk_prop_icon_setter( struct wtk_control* control, va_list args )
+{
+    struct wtk_icon* icon;
+
+    WTK_ASSERT( 
+        ( control->type == WTK_CONTROL_TYPE(Label) ||
+          control->type == WTK_CONTROL_TYPE(Button) )
+    );
+
+    icon = va_arg(args, struct wtk_icon*);
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Label): {
+            ((struct wtk_label*)control)->icon = icon;
+        } break;
+
+        case WTK_CONTROL_TYPE(Button): {
+            ((struct wtk_button*)control)->icon = icon;
+            PostMessage(control->hWnd, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(icon ? icon->hIcon : NULL));
+
+            // BS_ICON needs to be set if there is no text for the icon to show up:
+            SetWindowLongPtr(control->hWnd, GWL_STYLE, (LONG_PTR)(
+                (((DWORD)GetWindowLongPtr(control->hWnd, GWL_STYLE)) & ~BS_ICON) |
+                ((((struct wtk_button*)control)->text && !icon) ? 0x00000000 : BS_ICON)
+            ));
+        } break;
+    }
+}
+
+// =============================================================================
+// WTK_CONTROL_PROP_Icons
+// =============================================================================
+
+static void WTK_API wtk_prop_icons_getter( struct wtk_control* control, va_list args )
+{
+    struct wtk_icon** small_icon_out;
+    struct wtk_icon** large_icon_out;
+
+    WTK_ASSERT( 
+        (control->type == WTK_CONTROL_TYPE(Window))
+    );
+
+    small_icon_out = va_arg(args, struct wtk_icon**);
+    large_icon_out = va_arg(args, struct wtk_icon**);
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Window): {
+            *small_icon_out = ((struct wtk_window*)control)->icons[0];
+            *large_icon_out = ((struct wtk_window*)control)->icons[1];
+        } break;
+    }
+}
+
+static void WTK_API wtk_prop_icons_setter( struct wtk_control* control, va_list args )
+{
+    struct wtk_icon* small_icon;
+    struct wtk_icon* large_icon;
+
+    WTK_ASSERT( 
+        (control->type == WTK_CONTROL_TYPE(Window))
+    );
+
+    small_icon = va_arg(args, struct wtk_icon*);
+    large_icon = va_arg(args, struct wtk_icon*);
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Window): {
+            ((struct wtk_window*)control)->icons[0] = small_icon;
+            ((struct wtk_window*)control)->icons[1] = large_icon;
+            PostMessage(control->hWnd, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)small_icon->hIcon);
+            PostMessage(control->hWnd, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)large_icon->hIcon);
+        } break;
+    }
+}
+
+// =============================================================================
 // WTK_CONTROL_PROP_Title
 // =============================================================================
 
@@ -166,7 +272,7 @@ static void WTK_API wtk_prop_text_getter( struct wtk_control* control, va_list a
 
     switch( control->type ) {
         case WTK_CONTROL_TYPE(Label): {
-            *out = ((struct wtk_button*)control)->text;
+            *out = ((struct wtk_label*)control)->text;
         } break;
 
         case WTK_CONTROL_TYPE(Button): {
@@ -177,14 +283,109 @@ static void WTK_API wtk_prop_text_getter( struct wtk_control* control, va_list a
 
 static void WTK_API wtk_prop_text_setter( struct wtk_control* control, va_list args )
 {
-    const char* value;
+    const char* text;
 
     WTK_ASSERT(
         ( control->type == WTK_CONTROL_TYPE(Label) ||
           control->type == WTK_CONTROL_TYPE(Button) )
     );
 
-    value = va_arg(args, const char*);
-    SetWindowTextA(control->hWnd, value);
-    ((struct wtk_button*)control)->text = value;
+    text = va_arg(args, const char*);
+    SetWindowTextA(control->hWnd, text);
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Label): {
+            ((struct wtk_label*)control)->text = text;
+        } break;
+
+        case WTK_CONTROL_TYPE(Button): {
+            ((struct wtk_button*)control)->text = text;
+
+            // BS_ICON needs to be set if there is no text for the icon to show up:
+            SetWindowLongPtr(control->hWnd, GWL_STYLE, (LONG_PTR)(
+                (((DWORD)GetWindowLongPtr(control->hWnd, GWL_STYLE)) & ~BS_ICON) |
+                ((((struct wtk_button*)control)->icon && !text) ? BS_ICON : 0x00000000)
+            ));
+        } break;
+    }
+}
+
+// =============================================================================
+// WTK_CONTROL_PROP_TextAlignment
+// =============================================================================
+
+static void WTK_API wtk_prop_text_align_getter( struct wtk_control* control, va_list args )
+{
+    WTK_ASSERT(
+        ( control->type == WTK_CONTROL_TYPE(Label) ||
+          control->type == WTK_CONTROL_TYPE(Button) )
+    );
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Label): {
+            *va_arg(args, wtk_align*) = ((struct wtk_label*)control)->text_align;
+        } break;
+
+        case WTK_CONTROL_TYPE(Button): {
+            *va_arg(args, wtk_align*) = ((struct wtk_button*)control)->text_h_align;
+            *va_arg(args, wtk_align*) = ((struct wtk_button*)control)->text_v_align;
+        } break;
+    }
+}
+
+static DWORD WTK_API wtk_convert_text_align_to_style( struct wtk_control* control, wtk_align align )
+{
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Label): {
+            switch( align ) {
+                case WTK_ALIGN_Left: return SS_LEFT; break;
+                case WTK_ALIGN_Center: return SS_CENTER; break;
+                case WTK_ALIGN_Right: return SS_RIGHT; break;
+            }
+        } break;
+
+        case WTK_CONTROL_TYPE(Button): {
+            switch( align ) {
+                case WTK_ALIGN_Left: return BS_LEFT; break;
+                case WTK_ALIGN_Center: return BS_CENTER; break;
+                case WTK_ALIGN_Right: return BS_RIGHT; break;
+                case WTK_ALIGN_Top: return BS_TOP; break;
+                case WTK_ALIGN_Middle: return BS_VCENTER; break;
+                case WTK_ALIGN_Bottom: return BS_BOTTOM; break;
+            }
+        } break;
+    }
+
+    return 0x00000000;
+}
+
+static void WTK_API wtk_prop_text_align_setter( struct wtk_control* control, va_list args )
+{
+    DWORD dwStyle;
+    wtk_align h_align = WTK_ALIGN(Default), v_align = WTK_ALIGN(Default);
+
+    WTK_ASSERT(
+        ( control->type == WTK_CONTROL_TYPE(Label) ||
+          control->type == WTK_CONTROL_TYPE(Button) )
+    );
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Label): {
+            h_align = va_arg(args, wtk_align);
+            ((struct wtk_label*)control)->text_align = h_align;
+            dwStyle = (DWORD)GetWindowLongPtr(control->hWnd, GWL_STYLE);
+            dwStyle &= ~(SS_CENTER | SS_LEFT | SS_RIGHT);
+        } break;
+
+        case WTK_CONTROL_TYPE(Button): {
+            h_align = va_arg(args, wtk_align);
+            v_align = va_arg(args, wtk_align);
+            ((struct wtk_button*)control)->text_h_align = h_align;
+            ((struct wtk_button*)control)->text_v_align = v_align;
+            dwStyle = (DWORD)GetWindowLongPtr(control->hWnd, GWL_STYLE);
+            dwStyle &= ~(BS_BOTTOM | BS_CENTER | BS_LEFT | BS_RIGHT | BS_TOP | BS_VCENTER);
+        } break;
+    }
+
+    SetWindowLongPtr(control->hWnd, GWL_STYLE, (LONG_PTR)(dwStyle | wtk_convert_text_align_to_style(control, h_align) | wtk_convert_text_align_to_style(control, v_align)));
 }

@@ -27,6 +27,7 @@
 #include "_wtk_controls.h"
 
 #include <wtk/wtk_mm.h>
+#include <wtk/wtk_align.h>
 #include <wtk/wtk_font.h>
 #include <wtk/wtk_mouse.h>
 #include <wtk/wtk_keyboard.h>
@@ -53,6 +54,8 @@ struct wtk_button* WTK_API wtk_button_create( int x, int y, int width, int heigh
     button->control.type = WTK_CONTROL_TYPE(Button);
     button->control.hWnd = hWnd;
     button->control.font = wtk_font_default();
+    button->text_h_align = WTK_ALIGN(Left);
+    button->text_v_align = WTK_ALIGN(Middle);
 
     SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_button_proc));
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)button);
@@ -63,7 +66,6 @@ struct wtk_button* WTK_API wtk_button_create( int x, int y, int width, int heigh
 
 static LRESULT CALLBACK wtk_button_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-
     struct wtk_button* button = (struct wtk_button*)GetPropA(hWnd, "_wtk_ctrl_ptr");
     struct wtk_control* control = button ? &button->control : NULL;
     if( !button ) return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
