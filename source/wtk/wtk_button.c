@@ -46,7 +46,7 @@ struct wtk_button* WTK_API wtk_button_create( int x, int y, int width, int heigh
 
     WTK_ASSERT(parent);
 
-    hWnd = CreateWindowExA(0, "BUTTON", NULL, BS_DEFPUSHBUTTON | WS_VISIBLE | WS_CHILD, x, y, width, height, parent->hWnd, NULL, GetModuleHandle(0), 0);
+    hWnd = CreateWindowExA(0, "BUTTON", NULL, BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD, x, y, width, height, parent->hWnd, NULL, GetModuleHandle(0), 0);
     if( !hWnd ) return NULL;
 
     button = wtk_alloc(sizeof(struct wtk_button));
