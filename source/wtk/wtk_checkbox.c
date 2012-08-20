@@ -63,9 +63,9 @@ struct wtk_checkbox* WTK_API wtk_checkbox_create( int x, int y, int width, int h
 
 static LRESULT CALLBACK wtk_checkbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    struct wtk_checkbox* checkbox = (struct wtk_checkbox*)GetPropA(hWnd, "_wtk_ctrl_ptr");
-    struct wtk_control* control = checkbox ? &checkbox->control : NULL;
-    if( !checkbox ) return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
+    struct wtk_control* control = (struct wtk_control*)GetPropA(hWnd, "_wtk_ctrl_ptr");
+    struct wtk_checkbox* checkbox = (struct wtk_checkbox*)control;
+    if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
         case WM_USER + 0: {

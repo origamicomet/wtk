@@ -59,12 +59,34 @@ struct wtk_control {
     HWND hWnd;
 };
 
+struct wtk_menu {
+    wtk_control control;
+
+    // Shared:
+    struct wtk_control* window;
+
+    // Platform specific:
+    HMENU hMenu;
+};
+
+struct wtk_menu_item {
+    wtk_control control;
+
+    // Shared:
+    const char* text;
+    struct wtk_control* parent;
+
+    // Platform specific;
+    HMENU hMenu;
+};
+
 struct wtk_window {
     wtk_control control;
 
     // Shared:
     const char* title;
     struct wtk_icon* icons[2];
+    struct wtk_menu* menu;
 
     // Callbacks:
     int (WTK_API *on_close_callback)( struct wtk_control* control, wtk_event event );

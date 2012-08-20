@@ -1,7 +1,7 @@
 // =============================================================================
 // This file is part of the Windowing Toolkit.
 // Copyright (C) 2012 Michael Williams <devbug@bitbyte.ca>
-//
+//a
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -21,24 +21,26 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_PROPERTIES_H_
-#define _WTK_CONTROL_PROPERTIES_H_
+#ifndef _WTK_MENU_H_
+#define _WTK_MENU_H_
 
-#define WTK_CONTROL_PROP( property ) WTK_CONTROL_PROP_##property
-typedef enum {
-    WTK_CONTROL_PROP_Invalid = 0,
-    WTK_CONTROL_PROP_UserPtr,
-    WTK_CONTROL_PROP_Position,
-    WTK_CONTROL_PROP_Size,
-    WTK_CONTROL_PROP_Font,
-    WTK_CONTROL_PROP_Icon,
-    WTK_CONTROL_PROP_Icons,
-    WTK_CONTROL_PROP_Title,
-    WTK_CONTROL_PROP_Menu,
-    WTK_CONTROL_PROP_Text,
-    WTK_CONTROL_PROP_TextAlign,
-    WTK_CONTROL_PROP_Value,
-    WTK_CONTROL_PROP_COUNT
-} wtk_control_property;
+#include <wtk/wtk_control.h>
 
-#endif // _WTK_CONTROL_PROPERTIES_H_
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+struct wtk_menu;
+typedef struct wtk_menu wtk_menu;
+
+extern WTK_EXPORT struct wtk_menu* WTK_API wtk_menu_create();
+
+struct wtk_menu_item;
+typedef struct wtk_menu_item wtk_menu_item;
+
+extern WTK_EXPORT struct wtk_menu_item* WTK_API wtk_menu_append( struct wtk_control* control, const char* text );
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+#endif // _WTK_MENU_H_

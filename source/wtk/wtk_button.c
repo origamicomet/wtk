@@ -66,9 +66,9 @@ struct wtk_button* WTK_API wtk_button_create( int x, int y, int width, int heigh
 
 static LRESULT CALLBACK wtk_button_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    struct wtk_button* button = (struct wtk_button*)GetPropA(hWnd, "_wtk_ctrl_ptr");
-    struct wtk_control* control = button ? &button->control : NULL;
-    if( !button ) return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
+    struct wtk_control* control = (struct wtk_control*)GetPropA(hWnd, "_wtk_ctrl_ptr");
+    struct wtk_button* button = (struct wtk_button*)control;
+    if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
         case WM_USER + 0: {

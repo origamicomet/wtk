@@ -255,13 +255,34 @@ static void WTK_API wtk_prop_title_getter( struct wtk_control* control, va_list 
 
 static void WTK_API wtk_prop_title_setter( struct wtk_control* control, va_list args )
 {
-    const char* value;
+    const char* title;
 
     WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Window));
 
-    value = va_arg(args, const char*);
-    SetWindowTextA(control->hWnd, value);
-    ((struct wtk_window*)control)->title = value;
+    title = va_arg(args, const char*);
+    SetWindowTextA(control->hWnd, title);
+    ((struct wtk_window*)control)->title = title;
+}
+
+// =============================================================================
+// WTK_CONTROL_PROP_Menu
+// =============================================================================
+
+static void WTK_API wtk_prop_menu_getter( struct wtk_control* control, va_list args )
+{
+    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Window));
+    *va_arg(args, struct wtk_menu**) = ((struct wtk_window*)control)->menu;
+}
+
+static void WTK_API wtk_prop_menu_setter( struct wtk_control* control, va_list args )
+{
+    struct wtk_menu* menu;
+
+    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Window));
+
+    menu = va_arg(args, struct wtk_menu*);
+    SetMenu(control->hWnd, menu ? menu->hMenu : NULL);
+    ((struct wtk_window*)control)->menu = menu;
 }
 
 // =============================================================================

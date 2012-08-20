@@ -65,9 +65,9 @@ struct wtk_label* WTK_API wtk_label_create( int x, int y, int width, int height,
 
 static LRESULT CALLBACK wtk_label_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    struct wtk_label* label = (struct wtk_label*)GetPropA(hWnd, "_wtk_ctrl_ptr");
-    struct wtk_control* control = label ? &label->control : NULL;
-    if( !label ) return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
+    struct wtk_control* control = (struct wtk_control*)GetPropA(hWnd, "_wtk_ctrl_ptr");
+    struct wtk_label* label = (struct wtk_label*)control;
+    if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
         case WM_USER + 0: {

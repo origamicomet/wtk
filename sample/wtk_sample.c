@@ -4,6 +4,7 @@
 #include <wtk/wtk_image.h>
 #include <wtk/wtk_mouse.h>
 #include <wtk/wtk_window.h>
+#include <wtk/wtk_menu.h>
 #include <wtk/wtk_label.h>
 #include <wtk/wtk_frame.h>
 #include <wtk/wtk_button.h>
@@ -24,10 +25,16 @@ static const struct wtk_allocator allocator = {
     &wtk_alloc_callback, &wtk_realloc_callback, &wtk_free_callback
 };
 
-static int WTK_API window_on_close( wtk_window* control, wtk_event event )
+static int WTK_API exit_on_clicked( wtk_menu_item* menu_item, wtk_event event )
 {
     wtk_quit();
-    return FALSE;
+    return TRUE;
+}
+
+static int WTK_API window_on_close( wtk_window* window, wtk_event event )
+{
+    wtk_quit();
+    return TRUE;
 }
 
 static int WTK_API checkbox_on_value_changed( wtk_checkbox* checkbox, wtk_event event )
@@ -60,19 +67,27 @@ static int WTK_API textbox_on_value_changed( wtk_textbox* textbox, wtk_event eve
 
 int main( int argc, char** argv )
 {
-    wtk_window*   window;
-    wtk_label*    label;
-    wtk_frame*    frame;
-    wtk_button*   button;
-    wtk_checkbox* checkbox;
-    wtk_textbox*  textbox;
+    wtk_menu*      menu;
+    wtk_menu_item* menu_item;
+    wtk_window*    window;
+    wtk_label*     label;
+    wtk_frame*     frame;
+    wtk_button*    button;
+    wtk_checkbox*  checkbox;
+    wtk_textbox*   textbox;
 
     if( !wtk_init(&allocator) ) return EXIT_FAILURE;
 
     font = wtk_font_create("Arial", 14, WTK_FONT_STYLE_DEFAULT);
     app_icon = wtk_icon_create_from_file("color-swatch.ico", WTK_ICON_SIZE_DEFAULT, WTK_ICON_SIZE_DEFAULT);
 
+    menu = wtk_menu_create();
+    menu_item = wtk_menu_append((wtk_control*)menu, "File");
+    menu_item = wtk_menu_append((wtk_control*)menu_item, "Exit");
+    wtk_control_set_callback((wtk_control*)menu_item, WTK_EVENT(OnClicked), (wtk_event_callback)&exit_on_clicked);
+
     window = wtk_window_create(0, 0, 800, 600, NULL);
+    wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Menu), menu);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Icons), app_icon, app_icon);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Title), "The Windowing Toolkit");

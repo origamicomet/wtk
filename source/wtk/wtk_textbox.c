@@ -68,9 +68,9 @@ struct wtk_textbox* WTK_API wtk_textbox_create( int x, int y, int width, int hei
 
 static LRESULT CALLBACK wtk_textbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    struct wtk_textbox* textbox = (struct wtk_textbox*)GetPropA(hWnd, "_wtk_ctrl_ptr");
-    struct wtk_control* control = textbox ? &textbox->control : NULL;
-    if( !textbox ) return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
+    struct wtk_control* control = (struct wtk_control*)GetPropA(hWnd, "_wtk_ctrl_ptr");
+    struct wtk_textbox* textbox = (struct wtk_textbox*)control;
+    if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
         case WM_USER + 0: {

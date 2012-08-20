@@ -61,9 +61,9 @@ struct wtk_frame* WTK_API wtk_frame_create( int x, int y, int width, int height,
 
 static LRESULT CALLBACK wtk_frame_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    struct wtk_frame* frame = (struct wtk_frame*)GetPropA(hWnd, "_wtk_ctrl_ptr");
-    struct wtk_control* control = frame ? &frame->control : NULL;
-    if( !frame ) return CallWindowProc((WNDPROC)GetPropA(hWnd, "_wtk_old_proc"), hWnd, uMsg, wParam, lParam);
+    struct wtk_control* control = (struct wtk_control*)GetPropA(hWnd, "_wtk_ctrl_ptr");
+    struct wtk_frame* frame = (struct wtk_frame*)control;
+    if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
         case WM_USER + 0: {

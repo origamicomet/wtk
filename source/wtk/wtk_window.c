@@ -83,9 +83,9 @@ struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int heigh
 
 static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    struct wtk_window* window = (struct wtk_window*)GetPropA(hWnd, "_wtk_ctrl_ptr");
-    struct wtk_control* control = window ? &window->control : NULL;
-    if( !window ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    struct wtk_control* control = (struct wtk_control*)GetPropA(hWnd, "_wtk_ctrl_ptr");
+    struct wtk_window* window = (struct wtk_window*)control;
+    if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
         case WM_USER + 0: {
@@ -94,34 +94,43 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
 
         case WM_DESTROY: {
             if( control->on_destroy_callback ) control->on_destroy_callback(control, WTK_EVENT(OnDestroy));
+            if( window->menu ) wtk_control_destroy((struct wtk_control*)window->menu);
             wtk_free(window);
         } break;
 
         case WM_CLOSE: {
-            if( window->on_close_callback ) return window->on_close_callback(control, WTK_EVENT(OnClose));
+            if( window->on_close_callback ) return !(window->on_close_callback(control, WTK_EVENT(OnClose)));
+        } break;
+
+        case WM_MENUCOMMAND: {
+            struct wtk_control* child_control;
+            MENUITEMINFO menu_item_info = { sizeof(MENUITEMINFO), MIIM_ID, 0, };
+            GetMenuItemInfo((HMENU)lParam, (UINT)wParam, TRUE, &menu_item_info);
+            child_control = ((struct wtk_control*)menu_item_info.wID);
+            if( child_control->on_clicked_callback ) child_control->on_clicked_callback(child_control, WTK_EVENT(OnClicked));
         } break;
 
         case WM_COMMAND: {
             switch( HIWORD(wParam) ) {
                 case BN_CLICKED: {
-                    struct wtk_control* btn_control = (struct wtk_control*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr");
+                    struct wtk_control* child_control = (struct wtk_control*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr");
 
-                    switch( btn_control->type ) {
+                    switch( child_control->type ) {
                         case WTK_CONTROL_TYPE(Button): {
-                            if( btn_control->on_clicked_callback ) btn_control->on_clicked_callback(btn_control, WTK_EVENT(OnClicked));
+                            if( child_control->on_clicked_callback ) child_control->on_clicked_callback(child_control, WTK_EVENT(OnClicked));
                         } break;
 
                         case WTK_CONTROL_TYPE(CheckBox): {
-                            struct wtk_checkbox* cb_control = ((struct wtk_checkbox*)btn_control);
-                            if( cb_control->on_value_changed_callback ) cb_control->on_value_changed_callback(btn_control, WTK_EVENT(OnClicked));
+                            struct wtk_checkbox* cb_control = ((struct wtk_checkbox*)child_control);
+                            if( cb_control->on_value_changed_callback ) cb_control->on_value_changed_callback(child_control, WTK_EVENT(OnClicked));
                         } break;
                     }
                 } break;
 
                 case EN_CHANGE: {
-                    struct wtk_textbox* textbox = (struct wtk_textbox*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr");
-                    struct wtk_control* tb_control = &textbox->control;
-                    if( textbox->on_value_changed_callback ) textbox->on_value_changed_callback(tb_control, WTK_EVENT(OnValueChanged));
+                    struct wtk_control* child_control = (struct wtk_control*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr");
+                    struct wtk_textbox* textbox = (struct wtk_textbox*)child_control;
+                    if( textbox->on_value_changed_callback ) textbox->on_value_changed_callback(child_control, WTK_EVENT(OnValueChanged));
                 } break;
             }
         } break;

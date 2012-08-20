@@ -41,7 +41,7 @@ int WTK_API wtk_control_init()
         sizeof(WNDCLASSEX),
         CS_HREDRAW | CS_VREDRAW,
         &wtk_control_proc,
-        0, sizeof(wtk_control*),
+        0, 0,
         GetModuleHandle(0),
         LoadIcon(NULL, IDI_APPLICATION),
         LoadCursor(NULL, IDC_ARROW),
@@ -70,16 +70,33 @@ struct wtk_control* WTK_API wtk_control_create( int x, int y, unsigned int width
     control->hWnd = hWnd;
     control->font = wtk_font_default();
 
-    SetWindowLongPtr(hWnd, 0, (LONG_PTR)control);
+    SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)control);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)control->font->hFont, TRUE);
     PostMessage(hWnd, WM_USER + 0, 0, 0);
     return control;
 }
 
+extern void WTK_API wtk_menu_destroy( struct wtk_menu* menu );
+extern void WTK_API wtk_menu_item_destroy( struct wtk_menu_item* menu_item );
+
 void WTK_API wtk_control_destroy( struct wtk_control* control )
 {
     WTK_ASSERT(control);
-    DestroyWindow(control->hWnd);
+
+    // TODO: Add wtk_destroy_handlers.
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(Menu): {
+            wtk_menu_destroy((struct wtk_menu*)control);
+        } break;
+
+        case WTK_CONTROL_TYPE(MenuItem): {
+            wtk_menu_item_destroy((struct wtk_menu_item*)control);
+        } break;
+
+        default: {
+            DestroyWindow(control->hWnd);
+        } break;
+    }
 }
 
 #include "_wtk_property_accessors.inl"
@@ -98,6 +115,7 @@ static wtk_property_accessors _property_accessors[WTK_CONTROL_PROP_COUNT] = {
     { &wtk_prop_icon_getter, &wtk_prop_icon_setter },             // WTK_CONTROL_PROP_Icon
     { &wtk_prop_icons_getter, &wtk_prop_icons_setter },           // WTK_CONTROL_PROP_Icons
     { &wtk_prop_title_getter, &wtk_prop_title_setter },           // WTK_CONTROL_PROP_Title
+    { &wtk_prop_menu_getter, &wtk_prop_menu_setter },             // WTK_CONTROL_PROP_Menu
     { &wtk_prop_text_getter, &wtk_prop_text_setter },             // WTK_CONTROL_PROP_Text
     { &wtk_prop_text_align_getter, &wtk_prop_text_align_setter }, // WTK_CONTROL_PROP_TextAlign
     { &wtk_prop_value_getter, &wtk_prop_value_setter },           // WTK_CONTROL_PROP_Value
@@ -158,7 +176,7 @@ void WTK_API wtk_control_set_callback( struct wtk_control* control, wtk_event ev
 
 static LRESULT CALLBACK wtk_control_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    struct wtk_control* control = (struct wtk_control*)GetWindowLongPtr(hWnd, 0);
+    struct wtk_control* control = (struct wtk_control*)GetPropA(hWnd, "_wtk_ctrl_ptr");
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {

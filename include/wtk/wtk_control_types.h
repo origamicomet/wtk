@@ -30,6 +30,8 @@ typedef enum {
     WTK_CONTROL_TYPE_Invalid = 0,
     WTK_CONTROL_TYPE_Base,
     WTK_CONTROL_TYPE_Window,
+    WTK_CONTROL_TYPE_Menu,
+    WTK_CONTROL_TYPE_MenuItem,
     WTK_CONTROL_TYPE_Label,
     WTK_CONTROL_TYPE_Frame,
     WTK_CONTROL_TYPE_Button,
