@@ -1,7 +1,7 @@
 // =============================================================================
 // This file is part of the Windowing Toolkit.
 // Copyright (C) 2012 Michael Williams <devbug@bitbyte.ca>
-//
+//a
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -21,38 +21,26 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_EVENT_H_
-#define _WTK_EVENT_H_
+#ifndef _WTK_LISTVIEW_H_
+#define _WTK_LISTVIEW_H_
 
-#include <wtk/wtk_config.h>
-#include <wtk/wtk_compat.h>
+#include <wtk/wtk_control.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
 
-struct wtk_control;
+struct wtk_listview;
+typedef struct wtk_listview wtk_listview;
 
-#define WTK_EVENT( event ) WTK_EVENT_##event
-typedef enum {
-    WTK_EVENT_Invalid = 0,
-    WTK_EVENT_OnCreate,
-    WTK_EVENT_OnDestroy,
-    WTK_EVENT_OnClose,
-    WTK_EVENT_OnPaint,
-    WTK_EVENT_OnValueChanged,
-    WTK_EVENT_OnSelectionChanged,
-    WTK_EVENT_OnPressed,
-    WTK_EVENT_OnReleased,
-    WTK_EVENT_OnClicked,
-    WTK_EVENT_OnMouseMoved,
-    WTK_EVENT_OnMouseScrolled,
-    WTK_EVENT_OnKeyPressed,
-    WTK_EVENT_OnKeyReleased,
-    WTK_EVENT_COUNT
-} wtk_event;
+extern WTK_EXPORT struct wtk_listview* WTK_API wtk_listview_create( int x, int y, int width, int height, struct wtk_control* parent );
+
+typedef unsigned int wtk_listview_item;
+
+extern WTK_EXPORT wtk_listview_item WTK_API wtk_listview_insert( struct wtk_listview* listview, const char* text, void* user_ptr );
+extern WTK_EXPORT void WTK_API wtk_listview_remove( struct wtk_listview* listview, wtk_listview_item id );
 
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-#endif // _WTK_EVENT_H_
+#endif // _WTK_LISTVIEW_H_

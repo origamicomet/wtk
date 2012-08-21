@@ -139,10 +139,10 @@ static void WTK_API wtk_prop_icon_getter( struct wtk_control* control, va_list a
 {
     struct wtk_icon** icon_out;
 
-    WTK_ASSERT( 
-        ( control->type == WTK_CONTROL_TYPE(Button) ||
-          control->type == WTK_CONTROL_TYPE(CheckBox) )
-    );
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Button) ||
+        control->type == WTK_CONTROL_TYPE(CheckBox)
+    ));
 
     icon_out = va_arg(args, struct wtk_icon**);
 
@@ -161,10 +161,10 @@ static void WTK_API wtk_prop_icon_setter( struct wtk_control* control, va_list a
 {
     struct wtk_icon* icon;
 
-    WTK_ASSERT( 
-        ( control->type == WTK_CONTROL_TYPE(Button) ||
-          control->type == WTK_CONTROL_TYPE(CheckBox) )
-    );
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Button) ||
+        control->type == WTK_CONTROL_TYPE(CheckBox)
+    ));
 
     icon = va_arg(args, struct wtk_icon*);
 
@@ -202,9 +202,9 @@ static void WTK_API wtk_prop_icons_getter( struct wtk_control* control, va_list 
     struct wtk_icon** small_icon_out;
     struct wtk_icon** large_icon_out;
 
-    WTK_ASSERT( 
-        (control->type == WTK_CONTROL_TYPE(Window))
-    );
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Window)
+    ));
 
     small_icon_out = va_arg(args, struct wtk_icon**);
     large_icon_out = va_arg(args, struct wtk_icon**);
@@ -222,9 +222,9 @@ static void WTK_API wtk_prop_icons_setter( struct wtk_control* control, va_list 
     struct wtk_icon* small_icon;
     struct wtk_icon* large_icon;
 
-    WTK_ASSERT( 
-        (control->type == WTK_CONTROL_TYPE(Window))
-    );
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Window)
+    ));
 
     small_icon = va_arg(args, struct wtk_icon*);
     large_icon = va_arg(args, struct wtk_icon*);
@@ -293,13 +293,13 @@ static void WTK_API wtk_prop_text_getter( struct wtk_control* control, va_list a
 {
     const char** out;
 
-    WTK_ASSERT(
-        ( control->type == WTK_CONTROL_TYPE(Label) ||
-          control->type == WTK_CONTROL_TYPE(Frame) ||
-          control->type == WTK_CONTROL_TYPE(Button) ||
-          control->type == WTK_CONTROL_TYPE(CheckBox) ||
-          control->type == WTK_CONTROL_TYPE(TextBox) )
-    );
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Label) ||
+        control->type == WTK_CONTROL_TYPE(Frame) ||
+        control->type == WTK_CONTROL_TYPE(Button) ||
+        control->type == WTK_CONTROL_TYPE(CheckBox) ||
+        control->type == WTK_CONTROL_TYPE(TextBox)
+    ));
 
     out = va_arg(args, const char**);
 
@@ -336,12 +336,13 @@ static void WTK_API wtk_prop_text_setter( struct wtk_control* control, va_list a
 {
     const char* text;
 
-    WTK_ASSERT(
-        ( control->type == WTK_CONTROL_TYPE(Label) ||
-          control->type == WTK_CONTROL_TYPE(Frame) ||
-          control->type == WTK_CONTROL_TYPE(CheckBox) ||
-          control->type == WTK_CONTROL_TYPE(TextBox) )
-    );
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Label) ||
+        control->type == WTK_CONTROL_TYPE(Frame) ||
+        control->type == WTK_CONTROL_TYPE(Button) ||
+        control->type == WTK_CONTROL_TYPE(CheckBox) ||
+        control->type == WTK_CONTROL_TYPE(TextBox)
+    ));
 
     text = va_arg(args, const char*);
     SetWindowTextA(control->hWnd, text);
@@ -387,12 +388,12 @@ static void WTK_API wtk_prop_text_setter( struct wtk_control* control, va_list a
 
 static void WTK_API wtk_prop_text_align_getter( struct wtk_control* control, va_list args )
 {
-    WTK_ASSERT(
-        ( control->type == WTK_CONTROL_TYPE(Label) ||
-          control->type == WTK_CONTROL_TYPE(Button) ||
-          control->type == WTK_CONTROL_TYPE(CheckBox) ||
-          control->type == WTK_CONTROL_TYPE(TextBox) )
-    );
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Label) ||
+        control->type == WTK_CONTROL_TYPE(Button) ||
+        control->type == WTK_CONTROL_TYPE(CheckBox) ||
+        control->type == WTK_CONTROL_TYPE(TextBox)
+    ));
 
     switch( control->type ) {
         case WTK_CONTROL_TYPE(Label): {
@@ -460,12 +461,12 @@ static void WTK_API wtk_prop_text_align_setter( struct wtk_control* control, va_
     DWORD dwStyle;
     wtk_align h_align = WTK_ALIGN(Default), v_align = WTK_ALIGN(Default);
 
-    WTK_ASSERT(
-        ( control->type == WTK_CONTROL_TYPE(Label) ||
-          control->type == WTK_CONTROL_TYPE(Button) ||
-          control->type == WTK_CONTROL_TYPE(CheckBox) ||
-          control->type == WTK_CONTROL_TYPE(TextBox) )
-    );
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Label) ||
+        control->type == WTK_CONTROL_TYPE(Button) ||
+        control->type == WTK_CONTROL_TYPE(CheckBox) ||
+        control->type == WTK_CONTROL_TYPE(TextBox)
+    ));
 
     switch( control->type ) {
         case WTK_CONTROL_TYPE(Label): {
@@ -508,10 +509,10 @@ static void WTK_API wtk_prop_text_align_setter( struct wtk_control* control, va_
 
 static void WTK_API wtk_prop_value_getter( struct wtk_control* control, va_list args )
 {
-    WTK_ASSERT(
-        ( control->type == WTK_CONTROL_TYPE(Button) ||
-          control->type == WTK_CONTROL_TYPE(CheckBox) )
-    );
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Button) ||
+        control->type == WTK_CONTROL_TYPE(CheckBox)
+    ));
 
     switch( control->type ) {
         case WTK_CONTROL_TYPE(Button): {
@@ -530,9 +531,9 @@ static void WTK_API wtk_prop_value_getter( struct wtk_control* control, va_list 
 
 static void WTK_API wtk_prop_value_setter( struct wtk_control* control, va_list args )
 {
-    WTK_ASSERT(
-        (control->type == WTK_CONTROL_TYPE(CheckBox))
-    );
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(CheckBox)
+    ));
 
     switch( control->type ) {
         case WTK_CONTROL_TYPE(CheckBox): {

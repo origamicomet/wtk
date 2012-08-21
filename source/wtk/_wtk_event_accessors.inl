@@ -83,6 +83,19 @@ static void WTK_API wtk_event_on_value_changed_setter( struct wtk_control* contr
 }
 
 // =============================================================================
+// WTK_EVENT_OnSelectionChanged
+// =============================================================================
+
+static void WTK_API wtk_event_on_selection_changed_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(ListView)
+    ));
+
+    ((struct wtk_listview*)control)->on_selection_changed_callback = callback;
+}
+
+// =============================================================================
 // WTK_EVENT_OnPressed
 // =============================================================================
 

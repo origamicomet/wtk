@@ -142,4 +142,14 @@ struct wtk_textbox {
     int (WTK_API *on_value_changed_callback)( struct wtk_control* control, wtk_event event );
 };
 
+struct wtk_listview {
+    wtk_control control;
+
+    // Shared:
+    const char* text_buffer;
+
+    // Callbacks:
+    int (WTK_API *on_selection_changed_callback)( struct wtk_control* control, wtk_event event, unsigned int );
+};
+
 #endif // __WTK_CONTROLS_H_

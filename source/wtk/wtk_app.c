@@ -41,6 +41,7 @@ extern int WTK_API wtk_frame_init();
 extern int WTK_API wtk_button_init();
 extern int WTK_API wtk_checkbox_init();
 extern int WTK_API wtk_textbox_init();
+extern int WTK_API wtk_listview_init();
 
 static const wtk_control_init_func _control_init_funcs[WTK_CONTROL_TYPE_COUNT - 1] = {
     &wtk_control_init,
@@ -51,7 +52,8 @@ static const wtk_control_init_func _control_init_funcs[WTK_CONTROL_TYPE_COUNT - 
     &wtk_frame_init,
     &wtk_button_init,
     &wtk_checkbox_init,
-    &wtk_textbox_init
+    &wtk_textbox_init,
+    &wtk_listview_init,
 };
 
 static void WTK_API wtk_enable_visual_styles()

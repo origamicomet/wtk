@@ -145,6 +145,52 @@ void WTK_API wtk_control_set_property( struct wtk_control* control, wtk_control_
     va_end(args);
 }
 
+#include "_wtk_child_property_accessors.inl"
+
+typedef struct {
+    void (WTK_API *getter)( struct wtk_control*, wtk_child, va_list );
+    void (WTK_API *setter)( struct wtk_control*, wtk_child, va_list );
+} wtk_child_property_accessors;
+
+static wtk_child_property_accessors _child_property_accessors[WTK_CONTROL_PROP_COUNT] = {
+    { NULL, NULL },                                                           // WTK_CONTROL_PROP_Invalid
+    { &wtk_child_prop_user_ptr_getter, &wtk_child_prop_user_ptr_setter },     // WTK_CONTROL_PROP_UserPtr
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Position
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Size
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Font
+    { &wtk_child_prop_icon_getter, &wtk_child_prop_icon_setter },             // WTK_CONTROL_PROP_Icon
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Icons
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Title
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Menu
+    { &wtk_child_prop_text_getter, &wtk_child_prop_text_setter },             // WTK_CONTROL_PROP_Text
+    { &wtk_child_prop_text_align_getter, &wtk_child_prop_text_align_setter }, // WTK_CONTROL_PROP_TextAlign
+    { &wtk_child_prop_value_getter, &wtk_child_prop_value_setter },           // WTK_CONTROL_PROP_Value
+};
+
+void WTK_API wtk_control_get_child_property( struct wtk_control* control, wtk_control_property property, wtk_child child, ... )
+{
+    va_list args;
+
+    WTK_ASSERT(control);
+    WTK_ASSERT(((property > WTK_CONTROL_PROP_Invalid) && (property < WTK_CONTROL_PROP_COUNT)));
+
+    va_start(args, child);
+    _child_property_accessors[property].getter(control, child, args);
+    va_end(args);
+}
+
+void WTK_API wtk_control_set_child_property( struct wtk_control* control, wtk_control_property property, wtk_child child, ... )
+{
+    va_list args;
+
+    WTK_ASSERT(control);
+    WTK_ASSERT(((property > WTK_CONTROL_PROP_Invalid) && (property < WTK_CONTROL_PROP_COUNT)));
+
+    va_start(args, child);
+    _child_property_accessors[property].setter(control, child, args);
+    va_end(args);
+}
+
 #include "_wtk_event_accessors.inl"
 
 typedef struct {
@@ -152,19 +198,20 @@ typedef struct {
 } wtk_event_accessors;
 
 static wtk_event_accessors _event_accessors[WTK_EVENT_COUNT] = {
-    { NULL },                                // WTK_EVENT_Invalid
-    { &wtk_event_on_create_setter },         // WTK_EVENT_OnCreate
-    { &wtk_event_on_destroy_setter },        // WTK_EVENT_OnDestroy
-    { &wtk_event_on_close_setter },          // WTK_EVENT_OnClose
-    { &wtk_event_on_paint_setter },          // WTK_EVENT_OnPaint
-    { &wtk_event_on_value_changed_setter },  // WTK_EVENT_OnValueChanged
-    { &wtk_event_on_pressed_setter },        // WTK_EVENT_OnPressed
-    { &wtk_event_on_released_setter },       // WTK_EVENT_OnReleased
-    { &wtk_event_on_clicked_setter },        // WTK_EVENT_OnClicked
-    { &wtk_event_on_mouse_moved_setter },    // WTK_EVENT_OnMouseMoved
-    { &wtk_event_on_mouse_scrolled_setter }, // WTK_EVENT_OnMouseScrolled
-    { &wtk_event_on_key_pressed_setter },    // WTK_EVENT_OnKeyPressed
-    { &wtk_event_on_key_released_setter },   // WTK_EVENT_OnKeyReleased
+    { NULL },                                   // WTK_EVENT_Invalid
+    { &wtk_event_on_create_setter },            // WTK_EVENT_OnCreate
+    { &wtk_event_on_destroy_setter },           // WTK_EVENT_OnDestroy
+    { &wtk_event_on_close_setter },             // WTK_EVENT_OnClose
+    { &wtk_event_on_paint_setter },             // WTK_EVENT_OnPaint
+    { &wtk_event_on_value_changed_setter },     // WTK_EVENT_OnValueChanged
+    { &wtk_event_on_selection_changed_setter }, // WTK_EVENT_OnValueChanged
+    { &wtk_event_on_pressed_setter },           // WTK_EVENT_OnPressed
+    { &wtk_event_on_released_setter },          // WTK_EVENT_OnReleased
+    { &wtk_event_on_clicked_setter },           // WTK_EVENT_OnClicked
+    { &wtk_event_on_mouse_moved_setter },       // WTK_EVENT_OnMouseMoved
+    { &wtk_event_on_mouse_scrolled_setter },    // WTK_EVENT_OnMouseScrolled
+    { &wtk_event_on_key_pressed_setter },       // WTK_EVENT_OnKeyPressed
+    { &wtk_event_on_key_released_setter },      // WTK_EVENT_OnKeyReleased
 };
 
 void WTK_API wtk_control_set_callback( struct wtk_control* control, wtk_event event, wtk_event_callback callback )

@@ -65,8 +65,10 @@ struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int heigh
     struct wtk_window* window = NULL;
     HWND hWnd = NULL;
 
-    wtk_window_adjust_size(&width, &height, WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
-    hWnd = CreateWindowExA(WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, "_wtk_window", NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, x, y, width, height, parent ? parent->hWnd : NULL, NULL, GetModuleHandle(0), 0);
+    // TODO: Fix WS_CLIPCHILDREN rendering/drawing artifacts.
+
+    wtk_window_adjust_size(&width, &height, WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, /*WS_CLIPCHILDREN |*/ WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+    hWnd = CreateWindowExA(WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, "_wtk_window", NULL, /*WS_CLIPCHILDREN |*/ WS_OVERLAPPEDWINDOW | WS_VISIBLE, x, y, width, height, parent ? parent->hWnd : NULL, NULL, GetModuleHandle(0), 0);
     if( !hWnd ) return NULL;
 
     window = wtk_alloc(sizeof(struct wtk_window));
@@ -131,6 +133,15 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
                     struct wtk_control* child_control = (struct wtk_control*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr");
                     struct wtk_textbox* textbox = (struct wtk_textbox*)child_control;
                     if( textbox->on_value_changed_callback ) textbox->on_value_changed_callback(child_control, WTK_EVENT(OnValueChanged));
+                } break;
+
+                case LBN_SELCHANGE: {
+                    struct wtk_control* child_control = (struct wtk_control*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr");
+                    struct wtk_listview* listview = (struct wtk_listview*)child_control;
+                    if( listview->on_selection_changed_callback ) {
+                        const unsigned int num_selections = (unsigned int)SendMessage(child_control->hWnd, LB_GETSELCOUNT, 0, 0);
+                        listview->on_selection_changed_callback(child_control, WTK_EVENT(OnSelectionChanged), num_selections);
+                    }
                 } break;
             }
         } break;

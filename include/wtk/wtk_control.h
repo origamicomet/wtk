@@ -45,6 +45,11 @@ typedef void* wtk_property;
 extern WTK_EXPORT void WTK_API wtk_control_get_property( struct wtk_control* control, wtk_control_property property, ... );
 extern WTK_EXPORT void WTK_API wtk_control_set_property( struct wtk_control* control, wtk_control_property property, ... );
 
+typedef unsigned int wtk_child;
+
+extern WTK_EXPORT void WTK_API wtk_control_get_child_property( struct wtk_control* control, wtk_control_property property, wtk_child child, ... );
+extern WTK_EXPORT void WTK_API wtk_control_set_child_property( struct wtk_control* control, wtk_control_property property, wtk_child child, ... );
+
 typedef void* wtk_event_callback;
 
 extern WTK_EXPORT void WTK_API wtk_control_set_callback( struct wtk_control* control, wtk_event event, wtk_event_callback callback );
