@@ -11,6 +11,7 @@
 #include <wtk/wtk_checkbox.h>
 #include <wtk/wtk_textbox.h>
 #include <wtk/wtk_listbox.h>
+#include <wtk/wtk_listview.h>
 
 void* WTK_API wtk_alloc_callback( size_t num_bytes ) { return malloc(num_bytes); }
 void* WTK_API wtk_realloc_callback( void* ptr, size_t num_bytes ) { return realloc(ptr, num_bytes); }
@@ -76,6 +77,12 @@ static int WTK_API listbox_on_create( wtk_listbox* listbox, wtk_event event )
     wtk_control_set_child_property((wtk_control*)listbox, WTK_CONTROL_PROP(Text), (wtk_child)to_replace, "wtk_control_set_child_property");
 }
 
+static int WTK_API listview_on_create( wtk_listview* listview, wtk_event event )
+{
+    wtk_listview_insert_column(listview, "Icon", 40);
+    wtk_listview_insert_column(listview, "Text", 134);
+}
+
 int main( int argc, char** argv )
 {
     wtk_menu*      menu;
@@ -86,7 +93,8 @@ int main( int argc, char** argv )
     wtk_button*    button;
     wtk_checkbox*  checkbox;
     wtk_textbox*   textbox;
-    wtk_listbox*  listbox;
+    wtk_listbox*   listbox;
+    wtk_listview*  listview;
 
     if( !wtk_init(&allocator) ) return EXIT_FAILURE;
 
@@ -98,7 +106,7 @@ int main( int argc, char** argv )
     menu_item = wtk_menu_append((wtk_control*)menu_item, "Exit");
     wtk_control_set_callback((wtk_control*)menu_item, WTK_EVENT(OnClicked), (wtk_event_callback)&exit_on_clicked);
 
-    window = wtk_window_create(0, 0, 800, 600, NULL);
+    window = wtk_window_create(0, 0, 344, 375, NULL);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Menu), menu);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Icons), app_icon, app_icon);
@@ -115,9 +123,13 @@ int main( int argc, char** argv )
     wtk_control_set_property((wtk_control*)frame, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)frame, WTK_CONTROL_PROP(Text), "wtk_frame");
 
-    button = wtk_button_create(16, 16 + 25, 40, 40, (wtk_control*)window);
+    button = wtk_button_create(15, 44, 40, 40, (wtk_control*)window);
     wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Icon), app_icon);
+
+    button = wtk_button_create(61, 44, 130, 40, (wtk_control*)window);
+    wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Font), font);
+    wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Text), "wtk_button");
 
     checkbox = wtk_checkbox_create(124, 16, 50, 18, (wtk_control*)window);
     wtk_control_set_property((wtk_control*)checkbox, WTK_CONTROL_PROP(Font), font);
@@ -126,15 +138,19 @@ int main( int argc, char** argv )
     wtk_control_set_callback((wtk_control*)checkbox, WTK_EVENT(OnValueChanged), (wtk_event_callback)&checkbox_on_value_changed);
     mirror_checkbox = checkbox;
 
-    textbox = wtk_textbox_create(16, 16 + 50 + 24, 100, 18, (wtk_control*)window);
+    textbox = wtk_textbox_create(16, 102, 174, 18, (wtk_control*)window);
     wtk_control_set_property((wtk_control*)textbox, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)textbox, WTK_CONTROL_PROP(Text), "Hello, World!");
     wtk_control_set_callback((wtk_control*)textbox, WTK_EVENT(OnValueChanged), (wtk_event_callback)&textbox_on_value_changed);
     mirror_textbox = textbox;
 
-    listbox = wtk_listbox_create(200, 16 + 140, 128, 200, (wtk_control*)window);
+    listbox = wtk_listbox_create(200, 156, 128, 200, (wtk_control*)window);
     wtk_control_set_property((wtk_control*)listbox, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_callback((wtk_control*)listbox, WTK_EVENT(OnCreate), (wtk_event_callback)&listbox_on_create);
+
+    listview = wtk_listview_create(16, 140, 174, 200, (wtk_control*)window);
+    wtk_control_set_property((wtk_control*)listview, WTK_CONTROL_PROP(Font), font);
+    wtk_control_set_callback((wtk_control*)listview, WTK_EVENT(OnCreate), (wtk_event_callback)&listview_on_create);
 
     return wtk_run_app();
 }

@@ -21,25 +21,26 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_PROPERTIES_H_
-#define _WTK_CONTROL_PROPERTIES_H_
+#ifndef _WTK_LISTVIEW_H_
+#define _WTK_LISTVIEW_H_
 
-#define WTK_CONTROL_PROP( property ) WTK_CONTROL_PROP_##property
-typedef enum {
-    WTK_CONTROL_PROP_Invalid = 0,
-    WTK_CONTROL_PROP_UserPtr,
-    WTK_CONTROL_PROP_Position,
-    WTK_CONTROL_PROP_Size,
-    WTK_CONTROL_PROP_Font,
-    WTK_CONTROL_PROP_Icon,
-    WTK_CONTROL_PROP_Icons,
-    WTK_CONTROL_PROP_Title,
-    WTK_CONTROL_PROP_Menu,
-    WTK_CONTROL_PROP_Text,
-    WTK_CONTROL_PROP_TextAlign,
-    WTK_CONTROL_PROP_Value,
-    WTK_CONTROL_PROP_Column,
-    WTK_CONTROL_PROP_COUNT
-} wtk_control_property;
+#include <wtk/wtk_control.h>
 
-#endif // _WTK_CONTROL_PROPERTIES_H_
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+struct wtk_listview;
+typedef struct wtk_listview wtk_listview;
+
+extern WTK_EXPORT struct wtk_listview* WTK_API wtk_listview_create( int x, int y, int width, int height, struct wtk_control* parent );
+
+typedef unsigned int wtk_listview_column;
+
+extern WTK_EXPORT wtk_listview_column WTK_API wtk_listview_insert_column( struct wtk_listview* listview, const char* text, unsigned width );
+extern WTK_EXPORT void WTK_API wtk_listview_remove_column( struct wtk_listview* listview, wtk_listview_column column );
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+#endif // _WTK_LISTVIEW_H_

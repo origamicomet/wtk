@@ -119,6 +119,7 @@ static wtk_property_accessors _property_accessors[WTK_CONTROL_PROP_COUNT] = {
     { &wtk_prop_text_getter, &wtk_prop_text_setter },             // WTK_CONTROL_PROP_Text
     { &wtk_prop_text_align_getter, &wtk_prop_text_align_setter }, // WTK_CONTROL_PROP_TextAlign
     { &wtk_prop_value_getter, &wtk_prop_value_setter },           // WTK_CONTROL_PROP_Value
+    { &wtk_prop_column_getter, &wtk_prop_column_setter },         // WTK_CONTROL_PROP_Column
 };
 
 void WTK_API wtk_control_get_property( struct wtk_control* control, wtk_control_property property, ... )
@@ -165,6 +166,7 @@ static wtk_child_property_accessors _child_property_accessors[WTK_CONTROL_PROP_C
     { &wtk_child_prop_text_getter, &wtk_child_prop_text_setter },             // WTK_CONTROL_PROP_Text
     { &wtk_child_prop_text_align_getter, &wtk_child_prop_text_align_setter }, // WTK_CONTROL_PROP_TextAlign
     { &wtk_child_prop_value_getter, &wtk_child_prop_value_setter },           // WTK_CONTROL_PROP_Value
+    { &wtk_child_prop_column_getter, &wtk_child_prop_column_setter },         // WTK_CONTROL_PROP_Column
 };
 
 void WTK_API wtk_control_get_child_property( struct wtk_control* control, wtk_control_property property, wtk_child child, ... )

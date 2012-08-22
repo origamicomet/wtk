@@ -42,6 +42,7 @@ extern int WTK_API wtk_button_init();
 extern int WTK_API wtk_checkbox_init();
 extern int WTK_API wtk_textbox_init();
 extern int WTK_API wtk_listbox_init();
+extern int WTK_API wtk_listview_init();
 
 static const wtk_control_init_func _control_init_funcs[WTK_CONTROL_TYPE_COUNT - 1] = {
     &wtk_control_init,
@@ -54,6 +55,7 @@ static const wtk_control_init_func _control_init_funcs[WTK_CONTROL_TYPE_COUNT - 
     &wtk_checkbox_init,
     &wtk_textbox_init,
     &wtk_listbox_init,
+    &wtk_listview_init,
 };
 
 static void WTK_API wtk_enable_visual_styles()
@@ -67,7 +69,15 @@ static void WTK_API wtk_enable_visual_styles()
     dwMajorVersion = (DWORD)(LOBYTE(LOWORD(dwVersion)));
 
     if( dwMajorVersion > 5 || (dwMajorVersion == 5 && dwMinorVersion >= 1) ) {
-        const INITCOMMONCONTROLSEX iccx = { sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES };
+        const INITCOMMONCONTROLSEX iccx = {
+            sizeof(INITCOMMONCONTROLSEX),
+            ICC_STANDARD_CLASSES |
+            ICC_LISTVIEW_CLASSES |
+            ICC_PROGRESS_CLASS |
+            ICC_TAB_CLASSES |
+            ICC_TREEVIEW_CLASSES
+        };
+        
         InitCommonControlsEx(&iccx);
     }
 }

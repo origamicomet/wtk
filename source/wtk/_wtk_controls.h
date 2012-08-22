@@ -152,4 +152,11 @@ struct wtk_listbox {
     int (WTK_API *on_selection_changed_callback)( struct wtk_control* control, wtk_event event, unsigned int );
 };
 
+struct wtk_listview {
+    wtk_control control;
+
+    // Platform specific:
+    unsigned int num_columns;
+};
+
 #endif // __WTK_CONTROLS_H_

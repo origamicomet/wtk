@@ -553,3 +553,17 @@ static void WTK_API wtk_prop_value_setter( struct wtk_control* control, va_list 
         } break;
     }
 }
+
+// =============================================================================
+// WTK_CONTROL_PROP_Column
+// =============================================================================
+
+static void WTK_API wtk_prop_column_getter( struct wtk_control* control, wtk_child child, va_list args )
+{
+    WTK_ASSERT(!"wtk_prop_column_getter");
+}
+
+static void WTK_API wtk_prop_column_setter( struct wtk_control* control, wtk_child child, va_list args )
+{
+    WTK_ASSERT(!"wtk_prop_column_setter");
+}
