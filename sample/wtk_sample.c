@@ -10,7 +10,7 @@
 #include <wtk/wtk_button.h>
 #include <wtk/wtk_checkbox.h>
 #include <wtk/wtk_textbox.h>
-#include <wtk/wtk_listview.h>
+#include <wtk/wtk_listbox.h>
 
 void* WTK_API wtk_alloc_callback( size_t num_bytes ) { return malloc(num_bytes); }
 void* WTK_API wtk_realloc_callback( void* ptr, size_t num_bytes ) { return realloc(ptr, num_bytes); }
@@ -66,14 +66,14 @@ static int WTK_API textbox_on_value_changed( wtk_textbox* textbox, wtk_event eve
     return TRUE;
 }
 
-static int WTK_API listview_on_create( wtk_listview* listview, wtk_event event )
+static int WTK_API listbox_on_create( wtk_listbox* listbox, wtk_event event )
 {
-    wtk_listview_item to_replace;
+    wtk_listbox_item to_replace;
 
-    wtk_listview_insert(listview, "Hello, World!", NULL);
-    to_replace = wtk_listview_insert(listview, "...", NULL);
-    wtk_listview_insert(listview, "wtk_listview_insert", NULL);
-    wtk_control_set_child_property((wtk_control*)listview, WTK_CONTROL_PROP(Text), (wtk_child)to_replace, "wtk_control_set_child_property");
+    wtk_listbox_insert(listbox, "Hello, World!", NULL);
+    to_replace = wtk_listbox_insert(listbox, "...", NULL);
+    wtk_listbox_insert(listbox, "wtk_listbox_insert", NULL);
+    wtk_control_set_child_property((wtk_control*)listbox, WTK_CONTROL_PROP(Text), (wtk_child)to_replace, "wtk_control_set_child_property");
 }
 
 int main( int argc, char** argv )
@@ -86,7 +86,7 @@ int main( int argc, char** argv )
     wtk_button*    button;
     wtk_checkbox*  checkbox;
     wtk_textbox*   textbox;
-    wtk_listview*  listview;
+    wtk_listbox*  listbox;
 
     if( !wtk_init(&allocator) ) return EXIT_FAILURE;
 
@@ -132,9 +132,9 @@ int main( int argc, char** argv )
     wtk_control_set_callback((wtk_control*)textbox, WTK_EVENT(OnValueChanged), (wtk_event_callback)&textbox_on_value_changed);
     mirror_textbox = textbox;
 
-    listview = wtk_listview_create(200, 16 + 140, 128, 200, (wtk_control*)window);
-    wtk_control_set_property((wtk_control*)listview, WTK_CONTROL_PROP(Font), font);
-    wtk_control_set_callback((wtk_control*)listview, WTK_EVENT(OnCreate), (wtk_event_callback)&listview_on_create);
+    listbox = wtk_listbox_create(200, 16 + 140, 128, 200, (wtk_control*)window);
+    wtk_control_set_property((wtk_control*)listbox, WTK_CONTROL_PROP(Font), font);
+    wtk_control_set_callback((wtk_control*)listbox, WTK_EVENT(OnCreate), (wtk_event_callback)&listbox_on_create);
 
     return wtk_run_app();
 }

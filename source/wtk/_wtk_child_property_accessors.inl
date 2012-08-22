@@ -72,20 +72,20 @@ static void WTK_API wtk_child_prop_icon_setter( struct wtk_control* control, wtk
 static void WTK_API wtk_child_prop_text_getter( struct wtk_control* control, wtk_child child, va_list args )
 {
     WTK_ASSERT((
-        control->type == WTK_CONTROL_TYPE(ListView)
+        control->type == WTK_CONTROL_TYPE(ListBox)
     ));
 
     switch( control->type ) {
-        case WTK_CONTROL_TYPE(ListView): {
-            struct wtk_listview* listview = ((struct wtk_listview*)control);
+        case WTK_CONTROL_TYPE(ListBox): {
+            struct wtk_listbox* listbox = ((struct wtk_listbox*)control);
             int text_len = GetWindowTextLength(control->hWnd);
 
             WTK_ASSERT(child > 0);
 
-            listview->text_buffer = wtk_realloc(listview->text_buffer, text_len + 1);
-            memset(listview->text_buffer, 0, text_len + 1);
-            GetWindowTextA(control->hWnd, listview->text_buffer, text_len + 1);
-            *va_arg(args, const char**) = listview->text_buffer;
+            listbox->text_buffer = wtk_realloc(listbox->text_buffer, text_len + 1);
+            memset(listbox->text_buffer, 0, text_len + 1);
+            GetWindowTextA(control->hWnd, listbox->text_buffer, text_len + 1);
+            *va_arg(args, const char**) = listbox->text_buffer;
         } break;
     }
 }
@@ -93,12 +93,12 @@ static void WTK_API wtk_child_prop_text_getter( struct wtk_control* control, wtk
 static void WTK_API wtk_child_prop_text_setter( struct wtk_control* control, wtk_child child, va_list args )
 {
     WTK_ASSERT((
-        control->type == WTK_CONTROL_TYPE(ListView)
+        control->type == WTK_CONTROL_TYPE(ListBox)
     ));
 
     switch( control->type ) {
-        case WTK_CONTROL_TYPE(ListView): {
-            struct wtk_listview* listview = ((struct wtk_listview*)control);
+        case WTK_CONTROL_TYPE(ListBox): {
+            struct wtk_listbox* listbox = ((struct wtk_listbox*)control);
             WTK_ASSERT(child > 0);
 
             // HACK: Have to LB_DELETESTRING then LB_INSERTSTRING to update an item's text.

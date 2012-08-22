@@ -21,8 +21,8 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_LISTVIEW_H_
-#define _WTK_LISTVIEW_H_
+#ifndef _WTK_LISTBOX_H_
+#define _WTK_LISTBOX_H_
 
 #include <wtk/wtk_control.h>
 
@@ -30,17 +30,17 @@
 extern "C" {
 #endif // __cplusplus
 
-struct wtk_listview;
-typedef struct wtk_listview wtk_listview;
+struct wtk_listbox;
+typedef struct wtk_listbox wtk_listbox;
 
-extern WTK_EXPORT struct wtk_listview* WTK_API wtk_listview_create( int x, int y, int width, int height, struct wtk_control* parent );
+extern WTK_EXPORT struct wtk_listbox* WTK_API wtk_listbox_create( int x, int y, int width, int height, struct wtk_control* parent );
 
-typedef unsigned int wtk_listview_item;
+typedef unsigned int wtk_listbox_item;
 
-extern WTK_EXPORT wtk_listview_item WTK_API wtk_listview_insert( struct wtk_listview* listview, const char* text, void* user_ptr );
-extern WTK_EXPORT void WTK_API wtk_listview_remove( struct wtk_listview* listview, wtk_listview_item id );
+extern WTK_EXPORT wtk_listbox_item WTK_API wtk_listbox_insert( struct wtk_listbox* listbox, const char* text, void* user_ptr );
+extern WTK_EXPORT void WTK_API wtk_listbox_remove( struct wtk_listbox* listbox, wtk_listbox_item id );
 
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-#endif // _WTK_LISTVIEW_H_
+#endif // _WTK_LISTBOX_H_

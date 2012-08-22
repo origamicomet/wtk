@@ -137,10 +137,10 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
 
                 case LBN_SELCHANGE: {
                     struct wtk_control* child_control = (struct wtk_control*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr");
-                    struct wtk_listview* listview = (struct wtk_listview*)child_control;
-                    if( listview->on_selection_changed_callback ) {
+                    struct wtk_listbox* listbox = (struct wtk_listbox*)child_control;
+                    if( listbox->on_selection_changed_callback ) {
                         const unsigned int num_selections = (unsigned int)SendMessage(child_control->hWnd, LB_GETSELCOUNT, 0, 0);
-                        listview->on_selection_changed_callback(child_control, WTK_EVENT(OnSelectionChanged), num_selections);
+                        listbox->on_selection_changed_callback(child_control, WTK_EVENT(OnSelectionChanged), num_selections);
                     }
                 } break;
             }

@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#include <wtk/wtk_listview.h>
+#include <wtk/wtk_listbox.h>
 
 #include "_wtk_windows.h"
 #include "_wtk_controls.h"
@@ -30,16 +30,16 @@
 #include <wtk/wtk_align.h>
 #include <wtk/wtk_font.h>
 
-static LRESULT CALLBACK wtk_listview_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+static LRESULT CALLBACK wtk_listbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
-int WTK_API wtk_listview_init()
+int WTK_API wtk_listbox_init()
 {
     return TRUE;
 }
 
-struct wtk_listview* WTK_API wtk_listview_create( int x, int y, int width, int height, struct wtk_control* parent )
+struct wtk_listbox* WTK_API wtk_listbox_create( int x, int y, int width, int height, struct wtk_control* parent )
 {
-    struct wtk_listview* listview = NULL;
+    struct wtk_listbox* listbox = NULL;
     HWND hWnd;
 
     WTK_ASSERT(parent);
@@ -47,43 +47,43 @@ struct wtk_listview* WTK_API wtk_listview_create( int x, int y, int width, int h
     hWnd = CreateWindowExA(0, "LISTBOX", NULL, LBS_HASSTRINGS | WS_BORDER | LBS_NOTIFY | WS_VSCROLL | WS_VISIBLE | WS_CHILD, x, y, width, height, parent->hWnd, NULL, GetModuleHandle(0), 0);
     if( !hWnd ) return NULL;
 
-    listview = wtk_alloc(sizeof(struct wtk_listview));
-    memset((void*)listview, 0, sizeof(struct wtk_listview));
-    listview->control.type = WTK_CONTROL_TYPE(ListView);
-    listview->control.hWnd = hWnd;
-    listview->control.font = wtk_font_default();
+    listbox = wtk_alloc(sizeof(struct wtk_listbox));
+    memset((void*)listbox, 0, sizeof(struct wtk_listbox));
+    listbox->control.type = WTK_CONTROL_TYPE(ListBox);
+    listbox->control.hWnd = hWnd;
+    listbox->control.font = wtk_font_default();
 
-    SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_listview_proc));
-    SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)listview);
-    PostMessage(hWnd, WM_SETFONT, (WPARAM)listview->control.font->hFont, TRUE);
+    SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_listbox_proc));
+    SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)listbox);
+    PostMessage(hWnd, WM_SETFONT, (WPARAM)listbox->control.font->hFont, TRUE);
     PostMessage(hWnd, WM_USER + 0, 0, 0);
-    return listview;
+    return listbox;
 }
 
-wtk_listview_item WTK_API wtk_listview_insert( struct wtk_listview* listview, const char* text, void* user_ptr )
+wtk_listbox_item WTK_API wtk_listbox_insert( struct wtk_listbox* listbox, const char* text, void* user_ptr )
 {
     LRESULT result;
 
-    WTK_ASSERT(listview);
+    WTK_ASSERT(listbox);
 
-    result = SendMessage(listview->control.hWnd, LB_ADDSTRING, 0, (LPARAM)text);
+    result = SendMessage(listbox->control.hWnd, LB_ADDSTRING, 0, (LPARAM)text);
     if( result == LB_ERR || result == LB_ERRSPACE ) return 0;
-    SendMessage(listview->control.hWnd, LB_SETITEMDATA, (WPARAM)result, (LPARAM)user_ptr);
-    return (wtk_listview_item)(result + 1);
+    SendMessage(listbox->control.hWnd, LB_SETITEMDATA, (WPARAM)result, (LPARAM)user_ptr);
+    return (wtk_listbox_item)(result + 1);
 }
 
-void WTK_API wtk_listview_remove( struct wtk_listview* listview, wtk_listview_item id )
+void WTK_API wtk_listbox_remove( struct wtk_listbox* listbox, wtk_listbox_item id )
 {
-    WTK_ASSERT(listview);
+    WTK_ASSERT(listbox);
     WTK_ASSERT(id != 0);
 
-    SendMessage(listview->control.hWnd, LB_DELETESTRING, (WPARAM)(id - 1), 0);
+    SendMessage(listbox->control.hWnd, LB_DELETESTRING, (WPARAM)(id - 1), 0);
 }
 
-static LRESULT CALLBACK wtk_listview_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+static LRESULT CALLBACK wtk_listbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     struct wtk_control* control = (struct wtk_control*)GetPropA(hWnd, "_wtk_ctrl_ptr");
-    struct wtk_listview* listview = (struct wtk_listview*)control;
+    struct wtk_listbox* listbox = (struct wtk_listbox*)control;
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
@@ -93,7 +93,7 @@ static LRESULT CALLBACK wtk_listview_proc( HWND hWnd, UINT uMsg, WPARAM wParam, 
 
         case WM_DESTROY: {
             if( control->on_destroy_callback ) control->on_destroy_callback(control, WTK_EVENT(OnDestroy));
-            wtk_free(listview);
+            wtk_free(listbox);
         } break;
 
         default: {

@@ -142,7 +142,7 @@ struct wtk_textbox {
     int (WTK_API *on_value_changed_callback)( struct wtk_control* control, wtk_event event );
 };
 
-struct wtk_listview {
+struct wtk_listbox {
     wtk_control control;
 
     // Shared:
