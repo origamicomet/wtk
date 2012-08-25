@@ -2,6 +2,7 @@
 #include <wtk/wtk_align.h>
 #include <wtk/wtk_font.h>
 #include <wtk/wtk_image.h>
+#include <wtk/wtk_image_list.h>
 #include <wtk/wtk_mouse.h>
 #include <wtk/wtk_window.h>
 #include <wtk/wtk_menu.h>
@@ -75,12 +76,55 @@ static int WTK_API listbox_on_create( wtk_listbox* listbox, wtk_event event )
     to_replace = wtk_listbox_insert(listbox, "...", NULL);
     wtk_listbox_insert(listbox, "wtk_listbox_insert", NULL);
     wtk_control_set_child_property((wtk_control*)listbox, WTK_CONTROL_PROP(Text), (wtk_child)to_replace, "wtk_control_set_child_property");
+
+    return TRUE;
+}
+
+static wtk_image_list* listview_image_list()
+{
+    wtk_icon* icon;
+    wtk_image_list* img_list = wtk_image_list_create(16, 16, 3);
+    wtk_image_list_id id;
+
+    icon = wtk_icon_create_from_file("compile.ico", 16, 16);
+    id = wtk_image_list_add_icon(img_list, icon);
+    wtk_image_destroy(icon);
+
+    icon = wtk_icon_create_from_file("compile-warning.ico", 16, 16);
+    id = wtk_image_list_add_icon(img_list, icon);
+    wtk_image_destroy(icon);
+
+    icon = wtk_icon_create_from_file("compile-error.ico", 16, 16);
+    id = wtk_image_list_add_icon(img_list, icon);
+    wtk_image_destroy(icon);
+
+    return img_list;
 }
 
 static int WTK_API listview_on_create( wtk_listview* listview, wtk_event event )
 {
-    wtk_listview_insert_column(listview, "Icon", 40);
-    wtk_listview_insert_column(listview, "Text", 134);
+    wtk_listview_column icon_column;
+    wtk_listview_column text_column;
+    wtk_listview_row row;
+
+    icon_column = wtk_listview_insert_column(listview, "", 24);
+    text_column = wtk_listview_insert_column(listview, "Text", 148);
+
+    wtk_control_set_property((wtk_control*)listview, WTK_CONTROL_PROP(ImageList), listview_image_list());
+
+    row = wtk_listview_insert_row(listview);
+    wtk_control_set_child_property((wtk_control*)listview, WTK_CONTROL_PROP(Icon), (wtk_child)row, icon_column, 1);
+    wtk_control_set_child_property((wtk_control*)listview, WTK_CONTROL_PROP(Text), (wtk_child)row, text_column, "compile.ico");
+
+    row = wtk_listview_insert_row(listview);
+    wtk_control_set_child_property((wtk_control*)listview, WTK_CONTROL_PROP(Icon), (wtk_child)row, icon_column, 2);
+    wtk_control_set_child_property((wtk_control*)listview, WTK_CONTROL_PROP(Text), (wtk_child)row, text_column, "compile-warning.ico");
+
+    row = wtk_listview_insert_row(listview);
+    wtk_control_set_child_property((wtk_control*)listview, WTK_CONTROL_PROP(Icon), (wtk_child)row, icon_column, 3);
+    wtk_control_set_child_property((wtk_control*)listview, WTK_CONTROL_PROP(Text), (wtk_child)row, text_column, "compile-error.ico");
+
+    return TRUE;
 }
 
 int main( int argc, char** argv )

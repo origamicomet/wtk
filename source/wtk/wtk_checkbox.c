@@ -57,7 +57,7 @@ struct wtk_checkbox* WTK_API wtk_checkbox_create( int x, int y, int width, int h
     SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_checkbox_proc));
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)checkbox);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)checkbox->control.font->hFont, TRUE);
-    PostMessage(hWnd, WM_USER + 0, 0, 0);
+    PostMessage(hWnd, WM_USER + 1, 0, 0);
     return checkbox;
 }
 
@@ -68,7 +68,7 @@ static LRESULT CALLBACK wtk_checkbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, 
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
-        case WM_USER + 0: {
+        case WM_USER + 1: {
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
         } break;
 

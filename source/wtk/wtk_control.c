@@ -72,7 +72,7 @@ struct wtk_control* WTK_API wtk_control_create( int x, int y, unsigned int width
 
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)control);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)control->font->hFont, TRUE);
-    PostMessage(hWnd, WM_USER + 0, 0, 0);
+    PostMessage(hWnd, WM_USER + 1, 0, 0);
     return control;
 }
 
@@ -120,6 +120,7 @@ static wtk_property_accessors _property_accessors[WTK_CONTROL_PROP_COUNT] = {
     { &wtk_prop_text_align_getter, &wtk_prop_text_align_setter }, // WTK_CONTROL_PROP_TextAlign
     { &wtk_prop_value_getter, &wtk_prop_value_setter },           // WTK_CONTROL_PROP_Value
     { &wtk_prop_column_getter, &wtk_prop_column_setter },         // WTK_CONTROL_PROP_Column
+    { &wtk_prop_image_list_getter, &wtk_prop_image_list_setter }, // WTK_CONTROL_PROP_ImageList
 };
 
 void WTK_API wtk_control_get_property( struct wtk_control* control, wtk_control_property property, ... )
@@ -167,6 +168,7 @@ static wtk_child_property_accessors _child_property_accessors[WTK_CONTROL_PROP_C
     { &wtk_child_prop_text_align_getter, &wtk_child_prop_text_align_setter }, // WTK_CONTROL_PROP_TextAlign
     { &wtk_child_prop_value_getter, &wtk_child_prop_value_setter },           // WTK_CONTROL_PROP_Value
     { &wtk_child_prop_column_getter, &wtk_child_prop_column_setter },         // WTK_CONTROL_PROP_Column
+    { &wtk_child_prop_image_list_getter, &wtk_child_prop_image_list_setter }, // WTK_CONTROL_PROP_ImageList
 };
 
 void WTK_API wtk_control_get_child_property( struct wtk_control* control, wtk_control_property property, wtk_child child, ... )
@@ -229,7 +231,7 @@ static LRESULT CALLBACK wtk_control_proc( HWND hWnd, UINT uMsg, WPARAM wParam, L
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
-        case WM_USER + 0: {
+        case WM_USER + 1: {
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
         } break;
 

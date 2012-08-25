@@ -155,8 +155,12 @@ struct wtk_listbox {
 struct wtk_listview {
     wtk_control control;
 
+    // Shared:
+    struct wtk_image_list* img_list;
+
     // Platform specific:
     unsigned int num_columns;
+    unsigned int num_rows;
 };
 
 #endif // __WTK_CONTROLS_H_

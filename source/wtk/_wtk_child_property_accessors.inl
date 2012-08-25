@@ -27,6 +27,8 @@
 #include "_wtk_image.h"
 
 #include <wtk/wtk_align.h>
+#include <wtk/wtk_listview.h>
+#include <wtk/wtk_image_list.h>
 
 #include <stdarg.h>
 
@@ -62,7 +64,31 @@ static void WTK_API wtk_child_prop_icon_getter( struct wtk_control* control, wtk
 
 static void WTK_API wtk_child_prop_icon_setter( struct wtk_control* control, wtk_child child, va_list args )
 {
-    WTK_ASSERT(!"wtk_child_prop_icon_setter");
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(ListView)
+    ));
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(ListView): {
+            struct wtk_listview* listview = ((struct wtk_listview*)control);
+
+            WTK_ASSERT(child != 0);
+
+            if( child > 0 ) {
+                LVCOLUMN lvc;
+                lvc.mask = LVCF_IMAGE;
+                lvc.iImage = va_arg(args, wtk_image_list_id) - 1;
+                ListView_SetColumn(control->hWnd, (int)(child - 1), &lvc);
+            } else {
+                LVITEM lvi;
+                lvi.mask = LVIF_IMAGE;
+                lvi.iItem = -((int)child) - 1;
+                lvi.iSubItem = va_arg(args, wtk_listview_column) - 1;
+                lvi.iImage = va_arg(args, wtk_image_list_id) - 1;
+                ListView_SetItem(control->hWnd, &lvi);
+            }
+        } break;
+    }
 }
 
 // =============================================================================
@@ -72,7 +98,8 @@ static void WTK_API wtk_child_prop_icon_setter( struct wtk_control* control, wtk
 static void WTK_API wtk_child_prop_text_getter( struct wtk_control* control, wtk_child child, va_list args )
 {
     WTK_ASSERT((
-        control->type == WTK_CONTROL_TYPE(ListBox)
+        control->type == WTK_CONTROL_TYPE(ListBox) ||
+        control->type == WTK_CONTROL_TYPE(ListView)
     ));
 
     switch( control->type ) {
@@ -87,13 +114,18 @@ static void WTK_API wtk_child_prop_text_getter( struct wtk_control* control, wtk
             GetWindowTextA(control->hWnd, listbox->text_buffer, text_len + 1);
             *va_arg(args, const char**) = listbox->text_buffer;
         } break;
+
+        case WTK_CONTROL_TYPE(ListView): {
+            WTK_ASSERT(!"wtk_child_prop_text_getter::ListView");
+        } break;
     }
 }
 
 static void WTK_API wtk_child_prop_text_setter( struct wtk_control* control, wtk_child child, va_list args )
 {
     WTK_ASSERT((
-        control->type == WTK_CONTROL_TYPE(ListBox)
+        control->type == WTK_CONTROL_TYPE(ListBox) ||
+        control->type == WTK_CONTROL_TYPE(ListView)
     ));
 
     switch( control->type ) {
@@ -104,6 +136,25 @@ static void WTK_API wtk_child_prop_text_setter( struct wtk_control* control, wtk
             // HACK: Have to LB_DELETESTRING then LB_INSERTSTRING to update an item's text.
             SendMessage(control->hWnd, LB_DELETESTRING, (WPARAM)(child - 1), 0);
             SendMessage(control->hWnd, LB_INSERTSTRING, (WPARAM)(child - 1), (LPARAM)va_arg(args, const char*));
+        } break;
+
+        case WTK_CONTROL_TYPE(ListView): {
+            struct wtk_listview* listview = ((struct wtk_listview*)control);
+            WTK_ASSERT(child != 0);
+
+            if( child > 0 ) {
+                LVCOLUMN lvc;
+                lvc.mask = LVCF_TEXT;
+                lvc.pszText = va_arg(args, const char*);
+                ListView_SetColumn(control->hWnd, (int)(child - 1), &lvc);
+            } else {
+                LVITEM lvi;
+                lvi.mask = LVIF_TEXT;
+                lvi.iItem = -((int)child) - 1;
+                lvi.iSubItem = va_arg(args, wtk_listview_column) - 1;
+                lvi.pszText = va_arg(args, const char*);
+                ListView_SetItem(control->hWnd, &lvi);
+            }
         } break;
     }
 }
@@ -148,4 +199,18 @@ static void WTK_API wtk_child_prop_column_getter( struct wtk_control* control, w
 static void WTK_API wtk_child_prop_column_setter( struct wtk_control* control, wtk_child child, va_list args )
 {
     WTK_ASSERT(!"wtk_child_prop_column_setter");
+}
+
+// =============================================================================
+// WTK_CONTROL_PROP_ImageList
+// =============================================================================
+
+static void WTK_API wtk_child_prop_image_list_getter( struct wtk_control* control, wtk_child child, va_list args )
+{
+    WTK_ASSERT(!"wtk_child_prop_image_list_getter");
+}
+
+static void WTK_API wtk_child_prop_image_list_setter( struct wtk_control* control, wtk_child child, va_list args )
+{
+    WTK_ASSERT(!"wtk_child_prop_image_list_setter");
 }

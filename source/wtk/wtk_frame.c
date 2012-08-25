@@ -55,7 +55,7 @@ struct wtk_frame* WTK_API wtk_frame_create( int x, int y, int width, int height,
     SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_frame_proc));
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)frame);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)frame->control.font->hFont, TRUE);
-    PostMessage(hWnd, WM_USER + 0, 0, 0);
+    PostMessage(hWnd, WM_USER + 1, 0, 0);
     return frame;
 }
 
@@ -66,7 +66,7 @@ static LRESULT CALLBACK wtk_frame_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
-        case WM_USER + 0: {
+        case WM_USER + 1: {
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
         } break;
 

@@ -59,7 +59,7 @@ struct wtk_label* WTK_API wtk_label_create( int x, int y, int width, int height,
     SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_label_proc));
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)label);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)label->control.font->hFont, TRUE);
-    PostMessage(hWnd, WM_USER + 0, 0, 0);
+    PostMessage(hWnd, WM_USER + 1, 0, 0);
     return label;
 }
 
@@ -70,7 +70,7 @@ static LRESULT CALLBACK wtk_label_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
-        case WM_USER + 0: {
+        case WM_USER + 1: {
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
         } break;
 

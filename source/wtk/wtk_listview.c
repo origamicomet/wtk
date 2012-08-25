@@ -46,33 +46,35 @@ struct wtk_listview* WTK_API wtk_listview_create( int x, int y, int width, int h
 
     WTK_ASSERT(parent);
 
-    hWnd = CreateWindowExA(0, WC_LISTVIEWA, NULL, LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_VISIBLE | WS_CHILD, x, y, width, height, parent->hWnd, NULL, GetModuleHandle(0), 0);
+    hWnd = CreateWindowExA(0, WC_LISTVIEWA, NULL, LVS_REPORT | LVS_SINGLESEL | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_VISIBLE | WS_CHILD, x, y, width, height, parent->hWnd, NULL, GetModuleHandle(0), 0);
     if( !hWnd ) return NULL;
 
     listview = wtk_alloc(sizeof(struct wtk_listview));
     memset((void*)listview, 0, sizeof(struct wtk_listview));
-    listview->control.type = WTK_CONTROL_TYPE(ListBox);
+    listview->control.type = WTK_CONTROL_TYPE(ListView);
     listview->control.hWnd = hWnd;
     listview->control.font = wtk_font_default();
 
     SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_listview_proc));
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)listview);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)listview->control.font->hFont, TRUE);
-    PostMessage(hWnd, WM_USER + 0, 0, 0);
+    PostMessage(hWnd, WM_USER + 1, 0, 0);
+    ListView_SetExtendedListViewStyle(hWnd, LVS_EX_GRIDLINES | LVS_EX_SUBITEMIMAGES | LVS_EX_FULLROWSELECT);
+
     return listview;
 }
 
 wtk_listview_column WTK_API wtk_listview_insert_column( struct wtk_listview* listview, const char* text, unsigned width )
 {
-    va_list args;
     LVCOLUMN lvc = { 0, };
 
     WTK_ASSERT(listview);
     WTK_ASSERT(text);
 
-    lvc.mask    = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH;
-    lvc.pszText = text;
-    lvc.cx      = width;
+    lvc.mask     = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
+    lvc.pszText  = text;
+    lvc.cx       = width;
+    lvc.iSubItem = listview->num_columns;
 
     return (wtk_listview_column)(ListView_InsertColumn(listview->control.hWnd, listview->num_columns++, &lvc) + 1);
 }
@@ -86,6 +88,30 @@ void WTK_API wtk_listview_remove_column( struct wtk_listview* listview, wtk_list
     --listview->num_columns;
 }
 
+wtk_listview_row WTK_API wtk_listview_insert_row( struct wtk_listview* listview )
+{
+    LVITEM lvi;
+
+    WTK_ASSERT(listview);
+
+    lvi.mask     = LVIF_STATE;
+    lvi.iItem    = listview->num_rows++;
+    lvi.iSubItem = 0;
+    lvi.state    = 0;
+    lvi.pszText  = NULL;
+
+    return -ListView_InsertItem(listview->control.hWnd, &lvi) - 1;
+}
+
+void WTK_API wtk_listview_remove_row( struct wtk_listview* listview, wtk_listview_row row )
+{
+    WTK_ASSERT(listview);
+    WTK_ASSERT(row < 0);
+
+    ListView_DeleteItem(listview->control.hWnd, -(row + 1));
+    --listview->num_rows;
+}
+
 static LRESULT CALLBACK wtk_listview_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     struct wtk_control* control = (struct wtk_control*)GetPropA(hWnd, "_wtk_ctrl_ptr");
@@ -93,7 +119,7 @@ static LRESULT CALLBACK wtk_listview_proc( HWND hWnd, UINT uMsg, WPARAM wParam, 
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
-        case WM_USER + 0: {
+        case WM_USER + 1: {
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
         } break;
 

@@ -35,7 +35,7 @@ typedef struct wtk_listbox wtk_listbox;
 
 extern WTK_EXPORT struct wtk_listbox* WTK_API wtk_listbox_create( int x, int y, int width, int height, struct wtk_control* parent );
 
-typedef unsigned int wtk_listbox_item;
+typedef int wtk_listbox_item;
 
 extern WTK_EXPORT wtk_listbox_item WTK_API wtk_listbox_insert( struct wtk_listbox* listbox, const char* text, void* user_ptr );
 extern WTK_EXPORT void WTK_API wtk_listbox_remove( struct wtk_listbox* listbox, wtk_listbox_item id );

@@ -34,4 +34,8 @@ struct wtk_icon {
     HANDLE hIcon;
 };
 
+struct wtk_image_list {
+    HIMAGELIST hImageList;
+};
+
 #endif // __WTK_IMAGE_H_

@@ -79,7 +79,7 @@ struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int heigh
 
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)window);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)window->control.font->hFont, TRUE);
-    PostMessage(hWnd, WM_USER + 0, 0, 0);
+    PostMessage(hWnd, WM_USER + 1, 0, 0);
     return window;
 }
 
@@ -90,7 +90,7 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
-        case WM_USER + 0: {
+        case WM_USER + 1: {
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
         } break;
 

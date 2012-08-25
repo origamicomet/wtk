@@ -35,10 +35,15 @@ typedef struct wtk_listview wtk_listview;
 
 extern WTK_EXPORT struct wtk_listview* WTK_API wtk_listview_create( int x, int y, int width, int height, struct wtk_control* parent );
 
-typedef unsigned int wtk_listview_column;
+typedef int wtk_listview_column;
 
 extern WTK_EXPORT wtk_listview_column WTK_API wtk_listview_insert_column( struct wtk_listview* listview, const char* text, unsigned width );
 extern WTK_EXPORT void WTK_API wtk_listview_remove_column( struct wtk_listview* listview, wtk_listview_column column );
+
+typedef int wtk_listview_row;
+
+extern WTK_EXPORT wtk_listview_row WTK_API wtk_listview_insert_row( struct wtk_listview* listview );
+extern WTK_EXPORT void WTK_API wtk_listview_remove_row( struct wtk_listview* listview, wtk_listview_row row );
 
 #ifdef __cplusplus
 }

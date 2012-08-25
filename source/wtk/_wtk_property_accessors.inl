@@ -558,12 +558,46 @@ static void WTK_API wtk_prop_value_setter( struct wtk_control* control, va_list 
 // WTK_CONTROL_PROP_Column
 // =============================================================================
 
-static void WTK_API wtk_prop_column_getter( struct wtk_control* control, wtk_child child, va_list args )
+static void WTK_API wtk_prop_column_getter( struct wtk_control* control, va_list args )
 {
     WTK_ASSERT(!"wtk_prop_column_getter");
 }
 
-static void WTK_API wtk_prop_column_setter( struct wtk_control* control, wtk_child child, va_list args )
+static void WTK_API wtk_prop_column_setter( struct wtk_control* control, va_list args )
 {
     WTK_ASSERT(!"wtk_prop_column_setter");
+}
+
+// =============================================================================
+// WTK_CONTROL_PROP_ImageList
+// =============================================================================
+
+static void WTK_API wtk_prop_image_list_getter( struct wtk_control* control, va_list args )
+{
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(ListView)
+    ));
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(ListView): {
+            struct wtk_listview* listview = (struct wtk_listview*)control;
+            *va_arg(args, struct wtk_image_list**) = listview->img_list;
+        } break;
+    }
+}
+
+static void WTK_API wtk_prop_image_list_setter( struct wtk_control* control, va_list args )
+{
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(ListView)
+    ));
+
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(ListView): {
+            struct wtk_listview* listview = (struct wtk_listview*)control;
+            listview->img_list = va_arg(args, struct wtk_image_list*);
+            ListView_SetImageList(control->hWnd, listview->img_list->hImageList, LVSIL_SMALL);
+            ListView_SetImageList(control->hWnd, listview->img_list->hImageList, LVSIL_NORMAL);
+        } break;
+    }
 }

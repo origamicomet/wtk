@@ -64,8 +64,8 @@ struct wtk_icon* WTK_API wtk_icon_create_from_file( const char* file_path, int w
     WTK_ASSERT(file_path);
 
     hIcon = LoadImageA(GetModuleHandle(0), file_path, IMAGE_ICON,
-                        (width == WTK_IMAGE_SIZE_DEFAULT) ? 0 : width,
-                        (height == WTK_IMAGE_SIZE_DEFAULT) ? 0 : height,
+                        (width == WTK_ICON_SIZE_DEFAULT) ? 0 : width,
+                        (height == WTK_ICON_SIZE_DEFAULT) ? 0 : height,
                         LR_LOADFROMFILE);
     if( !hIcon ) return NULL;
 

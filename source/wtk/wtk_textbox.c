@@ -62,7 +62,7 @@ struct wtk_textbox* WTK_API wtk_textbox_create( int x, int y, int width, int hei
     SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_textbox_proc));
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)textbox);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)textbox->control.font->hFont, TRUE);
-    PostMessage(hWnd, WM_USER + 0, 0, 0);
+    PostMessage(hWnd, WM_USER + 1, 0, 0);
     return textbox;
 }
 
@@ -73,7 +73,7 @@ static LRESULT CALLBACK wtk_textbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, L
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
-        case WM_USER + 0: {
+        case WM_USER + 1: {
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
         } break;
 
