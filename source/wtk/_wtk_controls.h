@@ -43,7 +43,7 @@ struct wtk_control {
     // Callbacks:
     int (WTK_API *on_create_callback)( struct wtk_control* control, wtk_event event );
     int (WTK_API *on_destroy_callback)( struct wtk_control* control, wtk_event event );
-    int (WTK_API *on_paint_callback)( struct wtk_control* control, wtk_event event, struct wtk_gdi* gid );
+    int (WTK_API *on_paint_callback)( struct wtk_control* control, wtk_event event, struct wtk_gdi* gdi );
 
     int (WTK_API *on_pressed_callback)( struct wtk_control* control, wtk_event event, wtk_mouse_btn mouse_btn, int x, int y );
     int (WTK_API *on_released_callback)( struct wtk_control* control, wtk_event event, wtk_mouse_btn mouse_btn, int x, int y );

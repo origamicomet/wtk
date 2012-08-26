@@ -73,3 +73,15 @@ void WTK_API wtk_font_destroy( struct wtk_font* font )
     DeleteObject(font->hFont);
     wtk_free(font);
 }
+
+void wtk_font_set_user_ptr( struct wtk_font* font, void* user_ptr )
+{
+    WTK_ASSERT(font);
+    font->user_ptr = user_ptr;
+}
+
+void* wtk_font_get_user_ptr( struct wtk_font* font )
+{
+    WTK_ASSERT(font);
+    return font->user_ptr;
+}

@@ -28,6 +28,7 @@
 
 struct wtk_font {
     HFONT hFont;
+    void* user_ptr;
 };
 
 #endif // __WTK_FONT_H_

@@ -43,8 +43,14 @@ typedef struct wtk_icon wtk_icon;
 extern WTK_EXPORT struct wtk_image* WTK_API wtk_image_create_from_file( const char* file_path, int width, int height );
 extern WTK_EXPORT void WTK_API wtk_image_destroy( struct wtk_image* image );
 
+extern WTK_EXPORT void WTK_API wtk_image_set_user_ptr( struct wtk_image* image, void* user_ptr );
+extern WTK_EXPORT void* WTK_API wtk_image_get_user_ptr( struct wtk_image* image );
+
 extern WTK_EXPORT struct wtk_icon* WTK_API wtk_icon_create_from_file( const char* file_path, int width, int height );
 extern WTK_EXPORT void WTK_API wtk_icon_destroy( struct wtk_icon* icon );
+
+extern WTK_EXPORT void WTK_API wtk_icon_set_user_ptr( struct wtk_icon* icon, void* user_ptr );
+extern WTK_EXPORT void* WTK_API wtk_icon_get_user_ptr( struct wtk_icon* icon );
 
 #ifdef __cplusplus
 }

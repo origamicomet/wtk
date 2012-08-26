@@ -32,7 +32,7 @@ solution "wtk"
         language("C")
         objdir("build/" .. _ACTION .. "/libwtk/obj" )
         targetdir("lib/" .. _ACTION .. "/")
-        targetname("libwtk")
+        targetname("wtk")
 
         configuration("debug") targetsuffix("-dbg") flags({ "Symbols" })
         configuration("release") flags({ "Optimize", "EnableSSE", "EnableSSE2" })
@@ -55,8 +55,8 @@ solution "wtk"
         targetname("sample")
         debugdir("sample")
 
-        configuration("debug") targetsuffix("-dbg") flags({ "Symbols" }) links("libwtk-dbg")
-        configuration("release") flags({ "Optimize", "EnableSSE", "EnableSSE2" }) links("libwtk")
+        configuration("debug") targetsuffix("-dbg") flags({ "Symbols" }) links("wtk-dbg")
+        configuration("release") flags({ "Optimize", "EnableSSE", "EnableSSE2" }) links("wtk")
 
         configuration({})
             libdirs({ "lib/" .. _ACTION })

@@ -56,6 +56,18 @@ void WTK_API wtk_image_destroy( struct wtk_image* image )
     wtk_free(image);
 }
 
+void WTK_API wtk_image_set_user_ptr( struct wtk_image* image, void* user_ptr )
+{
+    WTK_ASSERT(image);
+    image->user_ptr = user_ptr;
+}
+
+void* WTK_API wtk_image_get_user_ptr( struct wtk_image* image )
+{
+    WTK_ASSERT(image);
+    return image->user_ptr;
+}
+
 struct wtk_icon* WTK_API wtk_icon_create_from_file( const char* file_path, int width, int height )
 {
     HANDLE hIcon;
@@ -80,4 +92,16 @@ void WTK_API wtk_icon_destroy( struct wtk_icon* icon )
     WTK_ASSERT(icon);
     DestroyIcon(icon->hIcon);
     wtk_free(icon);
+}
+
+void WTK_API wtk_icon_set_user_ptr( struct wtk_icon* icon, void* user_ptr )
+{
+    WTK_ASSERT(icon);
+    icon->user_ptr = user_ptr;
+}
+
+void* WTK_API wtk_icon_get_user_ptr( struct wtk_icon* icon )
+{
+    WTK_ASSERT(icon);
+    return icon->user_ptr;
 }

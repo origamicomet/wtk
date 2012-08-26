@@ -28,14 +28,17 @@
 
 struct wtk_image {
     HANDLE hImage;
+    void* user_ptr;
 };
 
 struct wtk_icon {
     HANDLE hIcon;
+    void* user_ptr;
 };
 
 struct wtk_image_list {
     HIMAGELIST hImageList;
+    void* user_ptr;
 };
 
 #endif // __WTK_IMAGE_H_

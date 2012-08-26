@@ -46,6 +46,9 @@ extern WTK_EXPORT struct wtk_font* WTK_API wtk_font_create( const char* font_fam
 extern WTK_EXPORT struct wtk_font* WTK_API wtk_font_default();
 extern WTK_EXPORT void WTK_API wtk_font_destroy( struct wtk_font* font );
 
+extern WTK_EXPORT void wtk_font_set_user_ptr( struct wtk_font* font, void* user_ptr );
+extern WTK_EXPORT void* wtk_font_get_user_ptr( struct wtk_font* font );
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
