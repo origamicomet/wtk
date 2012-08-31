@@ -25,6 +25,7 @@
 
 #include "_wtk_windows.h"
 #include "_wtk_controls.h"
+#include "_wtk_msgs.h"
 
 #include <wtk/wtk_mm.h>
 #include <wtk/wtk_font.h>
@@ -72,7 +73,7 @@ struct wtk_control* WTK_API wtk_control_create( int x, int y, unsigned int width
 
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)control);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)control->font->hFont, TRUE);
-    PostMessage(hWnd, WM_USER + 1, 0, 0);
+    PostMessage(hWnd, WTK_ON_CREATE, 0, 0);
     return control;
 }
 
@@ -109,8 +110,11 @@ typedef struct {
 static wtk_property_accessors _property_accessors[WTK_CONTROL_PROP_COUNT] = {
     { NULL, NULL },                                               // WTK_CONTROL_PROP_Invalid
     { &wtk_prop_user_ptr_getter, &wtk_prop_user_ptr_setter },     // WTK_CONTROL_PROP_UserPtr
+    { &wtk_prop_hidden_getter, &wtk_prop_hidden_setter },         // WTK_CONTROL_PROP_Hidden
+    { &wtk_prop_auto_fill_getter, &wtk_prop_auto_fill_setter },   // WTK_CONTROL_PROP_AutoFill
     { &wtk_prop_position_getter, &wtk_prop_position_setter },     // WTK_CONTROL_PROP_Position
     { &wtk_prop_size_getter, &wtk_prop_size_setter },             // WTK_CONTROL_PROP_Size
+    { &wtk_prop_margins_getter, &wtk_prop_margins_setter },       // WTK_CONTROL_PROP_Margins
     { &wtk_prop_font_getter, &wtk_prop_font_setter },             // WTK_CONTROL_PROP_Font
     { &wtk_prop_icon_getter, &wtk_prop_icon_setter },             // WTK_CONTROL_PROP_Icon
     { &wtk_prop_icons_getter, &wtk_prop_icons_setter },           // WTK_CONTROL_PROP_Icons
@@ -157,8 +161,11 @@ typedef struct {
 static wtk_child_property_accessors _child_property_accessors[WTK_CONTROL_PROP_COUNT] = {
     { NULL, NULL },                                                           // WTK_CONTROL_PROP_Invalid
     { &wtk_child_prop_user_ptr_getter, &wtk_child_prop_user_ptr_setter },     // WTK_CONTROL_PROP_UserPtr
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Hidden
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_AutoFill
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Position
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Size
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Margins
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Font
     { &wtk_child_prop_icon_getter, &wtk_child_prop_icon_setter },             // WTK_CONTROL_PROP_Icon
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Icons
@@ -205,6 +212,7 @@ static wtk_event_accessors _event_accessors[WTK_EVENT_COUNT] = {
     { NULL },                                   // WTK_EVENT_Invalid
     { &wtk_event_on_create_setter },            // WTK_EVENT_OnCreate
     { &wtk_event_on_destroy_setter },           // WTK_EVENT_OnDestroy
+    { &wtk_event_on_layout_changed_setter },    // WTK_EVENT_OnLayoutChanged
     { &wtk_event_on_close_setter },             // WTK_EVENT_OnClose
     { &wtk_event_on_paint_setter },             // WTK_EVENT_OnPaint
     { &wtk_event_on_value_changed_setter },     // WTK_EVENT_OnValueChanged
@@ -216,6 +224,9 @@ static wtk_event_accessors _event_accessors[WTK_EVENT_COUNT] = {
     { &wtk_event_on_mouse_scrolled_setter },    // WTK_EVENT_OnMouseScrolled
     { &wtk_event_on_key_pressed_setter },       // WTK_EVENT_OnKeyPressed
     { &wtk_event_on_key_released_setter },      // WTK_EVENT_OnKeyReleased
+    { &wtk_event_on_minimized_setter },         // WTK_EVENT_OnMinimized
+    { &wtk_event_on_maximized_setter },         // WTK_EVENT_OnMaximized
+    { &wtk_event_on_resized_setter },           // WTK_EVENT_OnResized
 };
 
 void WTK_API wtk_control_set_callback( struct wtk_control* control, wtk_event event, wtk_event_callback callback )
@@ -225,14 +236,26 @@ void WTK_API wtk_control_set_callback( struct wtk_control* control, wtk_event ev
     _event_accessors[event].setter(control, callback);
 }
 
+static BOOL CALLBACK wtk_on_layout_change_proc( HWND hWnd, LPARAM lParam ) {
+    SendMessage(hWnd, WTK_ON_LAYOUT_CHANGED, 0, 0);
+    return TRUE;
+}
+
 static LRESULT CALLBACK wtk_control_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     struct wtk_control* control = (struct wtk_control*)GetPropA(hWnd, "_wtk_ctrl_ptr");
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
-        case WM_USER + 1: {
+        case WTK_ON_CREATE: {
+            HWND hWndParent = GetParent(hWnd);
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
+            if( hWndParent ) SendMessage(hWndParent, WTK_ON_LAYOUT_CHANGED, 0, 0);
+        } break;
+
+        case WTK_ON_LAYOUT_CHANGED: {
+            EnumChildWindows(hWnd, &wtk_on_layout_change_proc, NULL);
+            if( control->on_layout_changed_callback ) control->on_layout_changed_callback(control, WTK_EVENT(OnLayoutChanged));
         } break;
 
         case WM_DESTROY: {

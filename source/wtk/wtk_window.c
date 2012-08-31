@@ -25,6 +25,7 @@
 
 #include "_wtk_windows.h"
 #include "_wtk_controls.h"
+#include "_wtk_msgs.h"
 
 #include <wtk/wtk_mm.h>
 #include <wtk/wtk_font.h>
@@ -79,8 +80,13 @@ struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int heigh
 
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)window);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)window->control.font->hFont, TRUE);
-    PostMessage(hWnd, WM_USER + 1, 0, 0);
+    PostMessage(hWnd, WTK_ON_CREATE, 0, 0);
     return window;
+}
+
+static BOOL CALLBACK wtk_on_layout_change_proc( HWND hWnd, LPARAM lParam ) {
+    SendMessage(hWnd, WTK_ON_LAYOUT_CHANGED, 0, 0);
+    return TRUE;
 }
 
 static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -90,14 +96,40 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
-        case WM_USER + 1: {
+        case WTK_ON_CREATE: {
+            HWND hWndParent = GetParent(hWnd);
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
+            if( hWndParent ) SendMessage(hWndParent, WTK_ON_LAYOUT_CHANGED, 0, 0);
+        } break;
+
+        case WTK_ON_LAYOUT_CHANGED: {
+            EnumChildWindows(hWnd, &wtk_on_layout_change_proc, NULL);
+            if( control->on_layout_changed_callback ) control->on_layout_changed_callback(control, WTK_EVENT(OnLayoutChanged));
         } break;
 
         case WM_DESTROY: {
             if( control->on_destroy_callback ) control->on_destroy_callback(control, WTK_EVENT(OnDestroy));
             if( window->menu ) wtk_control_destroy((struct wtk_control*)window->menu);
             wtk_free(window);
+        } break;
+
+        case WM_SIZE: {
+            switch( wParam ) {
+                case SIZE_MINIMIZED: {
+                    if( window->on_minimized_callback ) window->on_minimized_callback(control, WTK_EVENT(OnMinimized), LOWORD(lParam), HIWORD(lParam));
+                    SendMessage(hWnd, WTK_ON_LAYOUT_CHANGED, 0, 0);
+                } break;
+
+                case SIZE_MAXIMIZED: {
+                    if( window->on_maximized_callback ) window->on_maximized_callback(control, WTK_EVENT(OnMaximized), LOWORD(lParam), HIWORD(lParam));
+                    SendMessage(hWnd, WTK_ON_LAYOUT_CHANGED, 0, 0);
+                } break;
+
+                case SIZE_RESTORED: {
+                    if( window->on_resized_callback ) window->on_resized_callback(control, WTK_EVENT(OnResized), LOWORD(lParam), HIWORD(lParam));
+                    SendMessage(hWnd, WTK_ON_LAYOUT_CHANGED, 0, 0);
+                } break;
+            }
         } break;
 
         case WM_CLOSE: {

@@ -42,6 +42,15 @@ static void WTK_API wtk_event_on_destroy_setter( struct wtk_control* control, wt
 }
 
 // =============================================================================
+// WTK_EVENT_OnLayoutChanged
+// =============================================================================
+
+static void WTK_API wtk_event_on_layout_changed_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    control->on_layout_changed_callback = callback;
+}
+
+// =============================================================================
 // WTK_EVENT_OnClose
 // =============================================================================
 
@@ -156,4 +165,34 @@ static void WTK_API wtk_event_on_key_released_setter( struct wtk_control* contro
 static void WTK_API wtk_event_on_mouse_scrolled_setter( struct wtk_control* control, wtk_event_callback callback )
 {
     control->on_mouse_scrolled_callback = callback;
+}
+
+// =============================================================================
+// WTK_EVENT_OnMinimized
+// =============================================================================
+
+static void WTK_API wtk_event_on_minimized_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Window));
+    ((struct wtk_window*)control)->on_minimized_callback = callback;
+}
+
+// =============================================================================
+// WTK_EVENT_OnMaximized
+// =============================================================================
+
+static void WTK_API wtk_event_on_maximized_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Window));
+    ((struct wtk_window*)control)->on_maximized_callback = callback;
+}
+
+// =============================================================================
+// WTK_EVENT_OnResized
+// =============================================================================
+
+static void WTK_API wtk_event_on_resized_setter( struct wtk_control* control, wtk_event_callback callback )
+{
+    WTK_ASSERT(control->type == WTK_CONTROL_TYPE(Window));
+    ((struct wtk_window*)control)->on_resized_callback = callback;
 }

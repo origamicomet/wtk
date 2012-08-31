@@ -51,6 +51,37 @@ static void WTK_API wtk_prop_user_ptr_setter( struct wtk_control* control, va_li
 }
 
 // =============================================================================
+// WTK_CONTROL_PROP_Hidden
+// =============================================================================
+
+static void WTK_API wtk_prop_hidden_getter( struct wtk_control* control, va_list args )
+{
+    *va_arg(args, unsigned*) = control->hidden;
+}
+
+static void WTK_API wtk_prop_hidden_setter( struct wtk_control* control, va_list args )
+{
+    control->hidden = va_arg(args, unsigned);
+    ShowWindow(control->hWnd, control->hidden ? SW_HIDE : SW_SHOW);
+}
+
+// =============================================================================
+// WTK_CONTROL_PROP_AutoFill
+// =============================================================================
+
+static void WTK_API wtk_prop_auto_fill_getter( struct wtk_control* control, va_list args )
+{
+    *va_arg(args, unsigned*) = control->auto_fill;
+}
+
+static void WTK_API wtk_prop_auto_fill_setter( struct wtk_control* control, va_list args )
+{
+    HWND hWndRoot = GetAncestor(control->hWnd, GA_ROOTOWNER);
+    control->auto_fill = va_arg(args, unsigned);
+    if( hWndRoot ) SendMessage(hWndRoot, WTK_ON_LAYOUT_CHANGED, 0, 0);
+}
+
+// =============================================================================
 // WTK_CONTROL_PROP_Position
 // =============================================================================
 
@@ -110,6 +141,28 @@ static void WTK_API wtk_prop_size_setter( struct wtk_control* control, va_list a
     height = va_arg(args, int);
 
     SetWindowPos(control->hWnd, 0, 0, 0, width, height, SWP_NOZORDER | SWP_NOMOVE);
+}
+
+// =============================================================================
+// WTK_CONTROL_PROP_Margins
+// =============================================================================
+
+static void WTK_API wtk_prop_margins_getter( struct wtk_control* control, va_list args )
+{
+    *va_arg(args, int*) = control->margin_left;
+    *va_arg(args, int*) = control->margin_top;
+    *va_arg(args, int*) = control->margin_right;
+    *va_arg(args, int*) = control->margin_bottom;
+}
+
+static void WTK_API wtk_prop_margins_setter( struct wtk_control* control, va_list args )
+{
+    HWND hWndRoot = GetAncestor(control->hWnd, GA_ROOTOWNER);
+    control->margin_left = va_arg(args, int);
+    control->margin_top = va_arg(args, int);
+    control->margin_bottom = va_arg(args, int);
+    control->margin_right = va_arg(args, int);
+    if( hWndRoot ) SendMessage(hWndRoot, WTK_ON_LAYOUT_CHANGED, 0, 0);
 }
 
 // =============================================================================

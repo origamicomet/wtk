@@ -38,6 +38,7 @@ typedef enum {
     WTK_EVENT_Invalid = 0,
     WTK_EVENT_OnCreate,
     WTK_EVENT_OnDestroy,
+    WTK_EVENT_OnLayoutChanged,
     WTK_EVENT_OnClose,
     WTK_EVENT_OnPaint,
     WTK_EVENT_OnValueChanged,
@@ -49,6 +50,9 @@ typedef enum {
     WTK_EVENT_OnMouseScrolled,
     WTK_EVENT_OnKeyPressed,
     WTK_EVENT_OnKeyReleased,
+    WTK_EVENT_OnMinimized,
+    WTK_EVENT_OnMaximized,
+    WTK_EVENT_OnResized,
     WTK_EVENT_COUNT
 } wtk_event;
 

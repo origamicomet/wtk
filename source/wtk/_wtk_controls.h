@@ -39,10 +39,15 @@ struct wtk_control {
     wtk_control_type type;
     void* user_ptr;
     struct wtk_font* font;
+    unsigned hidden : 1;
+    unsigned auto_fill : 1;
+    unsigned reserved : 6;
+    int margin_top, margin_left, margin_bottom, margin_right;
 
     // Callbacks:
     int (WTK_API *on_create_callback)( struct wtk_control* control, wtk_event event );
     int (WTK_API *on_destroy_callback)( struct wtk_control* control, wtk_event event );
+    int (WTK_API *on_layout_changed_callback)( struct wtk_control* control, wtk_event event );
     int (WTK_API *on_paint_callback)( struct wtk_control* control, wtk_event event, struct wtk_gdi* gdi );
 
     int (WTK_API *on_pressed_callback)( struct wtk_control* control, wtk_event event, wtk_mouse_btn mouse_btn, int x, int y );
@@ -90,6 +95,9 @@ struct wtk_window {
 
     // Callbacks:
     int (WTK_API *on_close_callback)( struct wtk_control* control, wtk_event event );
+    int (WTK_API *on_minimized_callback)( struct wtk_control* control, wtk_event event, int width, int height );
+    int (WTK_API *on_maximized_callback)( struct wtk_control* control, wtk_event event, int width, int height );
+    int (WTK_API *on_resized_callback)( struct wtk_control* control, wtk_event event, int width, int height );
 };
 
 struct wtk_label {

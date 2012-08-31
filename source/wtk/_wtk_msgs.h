@@ -21,29 +21,7 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_CONTROL_PROPERTIES_H_
-#define _WTK_CONTROL_PROPERTIES_H_
+#include "_wtk_windows.h"
 
-#define WTK_CONTROL_PROP( property ) WTK_CONTROL_PROP_##property
-typedef enum {
-    WTK_CONTROL_PROP_Invalid = 0,
-    WTK_CONTROL_PROP_UserPtr,
-    WTK_CONTROL_PROP_Hidden,
-    WTK_CONTROL_PROP_AutoFill,
-    WTK_CONTROL_PROP_Position,
-    WTK_CONTROL_PROP_Size,
-    WTK_CONTROL_PROP_Margins,
-    WTK_CONTROL_PROP_Font,
-    WTK_CONTROL_PROP_Icon,
-    WTK_CONTROL_PROP_Icons,
-    WTK_CONTROL_PROP_Title,
-    WTK_CONTROL_PROP_Menu,
-    WTK_CONTROL_PROP_Text,
-    WTK_CONTROL_PROP_TextAlign,
-    WTK_CONTROL_PROP_Value,
-    WTK_CONTROL_PROP_Column,
-    WTK_CONTROL_PROP_ImageList,
-    WTK_CONTROL_PROP_COUNT
-} wtk_control_property;
-
-#endif // _WTK_CONTROL_PROPERTIES_H_
+#define WTK_ON_CREATE WM_USER + 1
+#define WTK_ON_LAYOUT_CHANGED WM_USER + 2

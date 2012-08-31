@@ -88,15 +88,15 @@ static wtk_image_list* listview_image_list()
 
     icon = wtk_icon_create_from_file("compile.ico", 16, 16);
     id = wtk_image_list_add_icon(img_list, icon);
-    wtk_image_destroy(icon);
+    wtk_icon_destroy(icon);
 
     icon = wtk_icon_create_from_file("compile-warning.ico", 16, 16);
     id = wtk_image_list_add_icon(img_list, icon);
-    wtk_image_destroy(icon);
+    wtk_icon_destroy(icon);
 
     icon = wtk_icon_create_from_file("compile-error.ico", 16, 16);
     id = wtk_image_list_add_icon(img_list, icon);
-    wtk_image_destroy(icon);
+    wtk_icon_destroy(icon);
 
     return img_list;
 }

@@ -25,6 +25,7 @@
 
 #include "_wtk_windows.h"
 #include "_wtk_controls.h"
+#include "_wtk_msgs.h"
 
 #include <wtk/wtk_mm.h>
 #include <wtk/wtk_align.h>
@@ -57,8 +58,13 @@ struct wtk_checkbox* WTK_API wtk_checkbox_create( int x, int y, int width, int h
     SetPropA(hWnd, "_wtk_old_proc", (HANDLE)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&wtk_checkbox_proc));
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)checkbox);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)checkbox->control.font->hFont, TRUE);
-    PostMessage(hWnd, WM_USER + 1, 0, 0);
+    PostMessage(hWnd, WTK_ON_CREATE, 0, 0);
     return checkbox;
+}
+
+static BOOL CALLBACK wtk_on_layout_change_proc( HWND hWnd, LPARAM lParam ) {
+    SendMessage(hWnd, WTK_ON_LAYOUT_CHANGED, 0, 0);
+    return TRUE;
 }
 
 static LRESULT CALLBACK wtk_checkbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -68,8 +74,15 @@ static LRESULT CALLBACK wtk_checkbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, 
     if( !control ) return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch( uMsg ) {
-        case WM_USER + 1: {
+        case WTK_ON_CREATE: {
+            HWND hWndParent = GetParent(hWnd);
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
+            if( hWndParent ) SendMessage(hWndParent, WTK_ON_LAYOUT_CHANGED, 0, 0);
+        } break;
+
+        case WTK_ON_LAYOUT_CHANGED: {
+            EnumChildWindows(hWnd, &wtk_on_layout_change_proc, NULL);
+            if( control->on_layout_changed_callback ) control->on_layout_changed_callback(control, WTK_EVENT(OnLayoutChanged));
         } break;
 
         case WM_DESTROY: {
