@@ -174,6 +174,8 @@ int main( int argc, char** argv )
     button = wtk_button_create(61, 44, 130, 40, (wtk_control*)window);
     wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Text), "wtk_button");
+    // wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(AutoFill), TRUE);
+    // wtk_control_set_property((wtk_control*)button, WTK_CONTROL_PROP(Margins), 16, 16, 16, 16);
 
     checkbox = wtk_checkbox_create(124, 16, 50, 18, (wtk_control*)window);
     wtk_control_set_property((wtk_control*)checkbox, WTK_CONTROL_PROP(Font), font);

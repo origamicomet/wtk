@@ -26,6 +26,7 @@
 #include "_wtk_windows.h"
 #include "_wtk_controls.h"
 #include "_wtk_msgs.h"
+#include "_wtk_layout.h"
 
 #include <wtk/wtk_mm.h>
 #include <wtk/wtk_font.h>
@@ -110,6 +111,7 @@ typedef struct {
 static wtk_property_accessors _property_accessors[WTK_CONTROL_PROP_COUNT] = {
     { NULL, NULL },                                               // WTK_CONTROL_PROP_Invalid
     { &wtk_prop_user_ptr_getter, &wtk_prop_user_ptr_setter },     // WTK_CONTROL_PROP_UserPtr
+    { &wtk_prop_parent_getter, &wtk_prop_parent_setter },         // WTK_CONTROL_PROP_Parent
     { &wtk_prop_hidden_getter, &wtk_prop_hidden_setter },         // WTK_CONTROL_PROP_Hidden
     { &wtk_prop_auto_fill_getter, &wtk_prop_auto_fill_setter },   // WTK_CONTROL_PROP_AutoFill
     { &wtk_prop_position_getter, &wtk_prop_position_setter },     // WTK_CONTROL_PROP_Position
@@ -161,6 +163,7 @@ typedef struct {
 static wtk_child_property_accessors _child_property_accessors[WTK_CONTROL_PROP_COUNT] = {
     { NULL, NULL },                                                           // WTK_CONTROL_PROP_Invalid
     { &wtk_child_prop_user_ptr_getter, &wtk_child_prop_user_ptr_setter },     // WTK_CONTROL_PROP_UserPtr
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Parent
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Hidden
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_AutoFill
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Position
@@ -254,6 +257,7 @@ static LRESULT CALLBACK wtk_control_proc( HWND hWnd, UINT uMsg, WPARAM wParam, L
         } break;
 
         case WTK_ON_LAYOUT_CHANGED: {
+            wtk_on_layout_changed(control);
             EnumChildWindows(hWnd, &wtk_on_layout_change_proc, NULL);
             if( control->on_layout_changed_callback ) control->on_layout_changed_callback(control, WTK_EVENT(OnLayoutChanged));
         } break;

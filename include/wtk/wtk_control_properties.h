@@ -28,6 +28,7 @@
 typedef enum {
     WTK_CONTROL_PROP_Invalid = 0,
     WTK_CONTROL_PROP_UserPtr,
+    WTK_CONTROL_PROP_Parent,
     WTK_CONTROL_PROP_Hidden,
     WTK_CONTROL_PROP_AutoFill,
     WTK_CONTROL_PROP_Position,

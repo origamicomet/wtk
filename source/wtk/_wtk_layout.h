@@ -21,12 +21,11 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef __WTK_MSGS_H_
-#define __WTK_MSGS_H_
+#ifndef __WTK_LAYOUT_H_
+#define __WTK_LAYOUT_H_
 
-#include "_wtk_windows.h"
+#include "_wtk_controls.h"
 
-#define WTK_ON_CREATE WM_USER + 1
-#define WTK_ON_LAYOUT_CHANGED WM_USER + 2
+extern void WTK_API wtk_on_layout_changed( struct wtk_control* control );
 
-#endif // __WTK_MSGS_H_
+#endif // __WTK_LAYOUT_H_

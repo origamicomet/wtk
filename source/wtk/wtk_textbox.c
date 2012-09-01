@@ -26,6 +26,7 @@
 #include "_wtk_windows.h"
 #include "_wtk_controls.h"
 #include "_wtk_msgs.h"
+#include "_wtk_layout.h"
 
 #include <wtk/wtk_mm.h>
 #include <wtk/wtk_align.h>
@@ -81,6 +82,12 @@ static LRESULT CALLBACK wtk_textbox_proc( HWND hWnd, UINT uMsg, WPARAM wParam, L
     switch( uMsg ) {
         case WTK_ON_CREATE: {
             if( control->on_create_callback ) control->on_create_callback(control, WTK_EVENT(OnCreate));
+        } break;
+
+        case WTK_ON_LAYOUT_CHANGED: {
+            wtk_on_layout_changed(control);
+            EnumChildWindows(hWnd, &wtk_on_layout_change_proc, NULL);
+            if( control->on_layout_changed_callback ) control->on_layout_changed_callback(control, WTK_EVENT(OnLayoutChanged));
         } break;
 
         case WM_DESTROY: {

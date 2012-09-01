@@ -114,19 +114,25 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
         } break;
 
         case WM_SIZE: {
+            RECT client_rect;
+            int width, height;
+            GetClientRect(hWnd, &client_rect);
+            width = client_rect.right;
+            height = client_rect.bottom;
+
             switch( wParam ) {
                 case SIZE_MINIMIZED: {
-                    if( window->on_minimized_callback ) window->on_minimized_callback(control, WTK_EVENT(OnMinimized), LOWORD(lParam), HIWORD(lParam));
+                    if( window->on_minimized_callback ) window->on_minimized_callback(control, WTK_EVENT(OnMinimized), width, height);
                     SendMessage(hWnd, WTK_ON_LAYOUT_CHANGED, 0, 0);
                 } break;
 
                 case SIZE_MAXIMIZED: {
-                    if( window->on_maximized_callback ) window->on_maximized_callback(control, WTK_EVENT(OnMaximized), LOWORD(lParam), HIWORD(lParam));
+                    if( window->on_maximized_callback ) window->on_maximized_callback(control, WTK_EVENT(OnMaximized), width, height);
                     SendMessage(hWnd, WTK_ON_LAYOUT_CHANGED, 0, 0);
                 } break;
 
                 case SIZE_RESTORED: {
-                    if( window->on_resized_callback ) window->on_resized_callback(control, WTK_EVENT(OnResized), LOWORD(lParam), HIWORD(lParam));
+                    if( window->on_resized_callback ) window->on_resized_callback(control, WTK_EVENT(OnResized), width, height);
                     SendMessage(hWnd, WTK_ON_LAYOUT_CHANGED, 0, 0);
                 } break;
             }

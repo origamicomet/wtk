@@ -21,12 +21,24 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef __WTK_MSGS_H_
-#define __WTK_MSGS_H_
+#include "_wtk_controls.h"
+#include "_wtk_layout.h"
 
-#include "_wtk_windows.h"
+void WTK_API wtk_on_layout_changed( struct wtk_control* control )
+{
+    WTK_ASSERT(control);
 
-#define WTK_ON_CREATE WM_USER + 1
-#define WTK_ON_LAYOUT_CHANGED WM_USER + 2
+    if( control->auto_fill && control->type != WTK_CONTROL_TYPE(Window) ) {
+        struct wtk_control* parent_control;
+        int parent_width, parent_height;
 
-#endif // __WTK_MSGS_H_
+        wtk_control_get_property(control, WTK_CONTROL_PROP(Parent), &parent_control);
+        if( !parent_control ) return;
+
+        // TODO: Take into account menu on windows?
+
+        wtk_control_get_property(parent_control, WTK_CONTROL_PROP(Size), &parent_width, &parent_height);
+        wtk_control_set_property(control, WTK_CONTROL_PROP(Position), control->margin_left, control->margin_top);
+        wtk_control_set_property(control, WTK_CONTROL_PROP(Size), parent_width - control->margin_right - control->margin_left, parent_height - control->margin_bottom - control->margin_top);
+    }
+}

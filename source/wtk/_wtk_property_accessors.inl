@@ -51,6 +51,23 @@ static void WTK_API wtk_prop_user_ptr_setter( struct wtk_control* control, va_li
 }
 
 // =============================================================================
+// WTK_CONTROL_PROP_Parent
+// =============================================================================
+
+static void WTK_API wtk_prop_parent_getter( struct wtk_control* control, va_list args )
+{
+    HWND hWndParent = GetParent(control->hWnd);
+    struct wtk_control** parent = va_arg(args, struct wtk_control**);
+    if( hWndParent ) *parent = (struct wtk_control*)GetPropA(hWndParent, "_wtk_ctrl_ptr");
+    else *parent = NULL;
+}
+
+static void WTK_API wtk_prop_parent_setter( struct wtk_control* control, va_list args )
+{
+    SetParent(control->hWnd, va_arg(args, struct wtk_control*)->hWnd);
+}
+
+// =============================================================================
 // WTK_CONTROL_PROP_Hidden
 // =============================================================================
 
@@ -100,7 +117,7 @@ static void WTK_API wtk_prop_position_getter( struct wtk_control* control, va_li
         *x_out = p.x; *y_out = p.y;
     } else {
         RECT rect;
-        GetWindowRect(control->hWnd, &rect);
+        GetClientRect(control->hWnd, &rect);
         *x_out = rect.left; *y_out = rect.top;
     }
 }
@@ -127,7 +144,7 @@ static void WTK_API wtk_prop_size_getter( struct wtk_control* control, va_list a
     width_out = va_arg(args, int*);
     height_out = va_arg(args, int*);
 
-    GetWindowRect(control->hWnd, &rect);
+    GetClientRect(control->hWnd, &rect);
 
     *width_out = rect.right - rect.left - 1;
     *height_out = rect.bottom - rect.top - 1;
