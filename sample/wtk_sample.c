@@ -136,7 +136,7 @@ int main( int argc, char** argv )
     menu_item = wtk_menu_append((wtk_control*)menu_item, "Exit");
     wtk_control_set_callback((wtk_control*)menu_item, WTK_EVENT(OnClicked), (wtk_event_callback)&exit_on_clicked);
 
-    window = wtk_window_create(0, 0, 344, 375, NULL);
+    window = wtk_window_create(WTK_WINDOW_CENTER, WTK_WINDOW_CENTER, 344, 375, NULL);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Menu), menu);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Icons), app_icon, app_icon);

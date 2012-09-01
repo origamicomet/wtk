@@ -61,6 +61,12 @@ static void wtk_window_adjust_size( int* width, int* height, DWORD dwExStyles, D
     *height = client_area.bottom - client_area.top + 1;
 }
 
+static void wtk_window_center( int* x, int* y, int width, int height )
+{
+    *x = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
+    *y = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
+}
+
 struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int height, struct wtk_control* parent )
 {
     struct wtk_window* window = NULL;
@@ -69,6 +75,7 @@ struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int heigh
     // TODO: Fix WS_CLIPCHILDREN rendering/drawing artifacts.
 
     wtk_window_adjust_size(&width, &height, WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, /*WS_CLIPCHILDREN |*/ WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+    if( x == WTK_WINDOW_CENTER && y == WTK_WINDOW_CENTER ) wtk_window_center(&x, &y, width, height);
     hWnd = CreateWindowExA(WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, "_wtk_window", NULL, /*WS_CLIPCHILDREN |*/ WS_OVERLAPPEDWINDOW | WS_VISIBLE, x, y, width, height, parent ? parent->hWnd : NULL, NULL, GetModuleHandle(0), 0);
     if( !hWnd ) return NULL;
 
