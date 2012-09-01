@@ -146,7 +146,7 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
         } break;
 
         case WM_CLOSE: {
-            if( window->on_close_callback ) return !(window->on_close_callback(control, WTK_EVENT(OnClose)));
+            if( window->on_close_callback ) if( window->on_close_callback(control, WTK_EVENT(OnClose)) ) DestroyWindow(hWnd);
         } break;
 
         case WM_MENUCOMMAND: {
