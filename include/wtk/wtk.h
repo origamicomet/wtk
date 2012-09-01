@@ -1,7 +1,7 @@
 // =============================================================================
 // This file is part of the Windowing Toolkit.
 // Copyright (C) 2012 Michael Williams <devbug@bitbyte.ca>
-//a
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -21,23 +21,26 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#ifndef _WTK_WINDOW_H_
-#define _WTK_WINDOW_H_
-
+#include <wtk/wtk_config.h>
+#include <wtk/wtk_compat.h>
+#include <wtk/wtk_mm.h>
+#include <wtk/wtk_app.h>
+#include <wtk/wtk_event.h>
+#include <wtk/wtk_control_properties.h>
+#include <wtk/wtk_align.h>
+#include <wtk/wtk_font.h>
+#include <wtk/wtk_image.h>
+#include <wtk/wtk_image_list.h>
+#include <wtk/wtk_gdi.h>
+#include <wtk/wtk_mouse.h>
+#include <wtk/wtk_keyboard.h>
 #include <wtk/wtk_control.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
-
-struct wtk_window;
-typedef struct wtk_window wtk_window;
-
-#define WTK_WINDOW_CENTER -1
-
-extern WTK_EXPORT struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int height, struct wtk_control* parent );
-
-#ifdef __cplusplus
-}
-#endif // __cplusplus
-#endif // _WTK_WINDOW_H_
+#include <wtk/wtk_window.h>
+#include <wtk/wtk_menu.h>
+#include <wtk/wtk_label.h>
+#include <wtk/wtk_frame.h>
+#include <wtk/wtk_button.h>
+#include <wtk/wtk_checkbox.h>
+#include <wtk/wtk_textbox.h>
+#include <wtk/wtk_listbox.h>
+#include <wtk/wtk_listview.h>

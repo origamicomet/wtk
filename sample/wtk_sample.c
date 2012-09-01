@@ -1,18 +1,4 @@
-#include <wtk/wtk_app.h>
-#include <wtk/wtk_align.h>
-#include <wtk/wtk_font.h>
-#include <wtk/wtk_image.h>
-#include <wtk/wtk_image_list.h>
-#include <wtk/wtk_mouse.h>
-#include <wtk/wtk_window.h>
-#include <wtk/wtk_menu.h>
-#include <wtk/wtk_label.h>
-#include <wtk/wtk_frame.h>
-#include <wtk/wtk_button.h>
-#include <wtk/wtk_checkbox.h>
-#include <wtk/wtk_textbox.h>
-#include <wtk/wtk_listbox.h>
-#include <wtk/wtk_listview.h>
+#include <wtk/wtk.h>
 
 void* WTK_API wtk_alloc_callback( size_t num_bytes ) { return malloc(num_bytes); }
 void* WTK_API wtk_realloc_callback( void* ptr, size_t num_bytes ) { return realloc(ptr, num_bytes); }
