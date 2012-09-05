@@ -99,6 +99,35 @@ static void WTK_API wtk_prop_auto_fill_setter( struct wtk_control* control, va_l
 }
 
 // =============================================================================
+// WTK_CONTROL_PROP_Resizeable
+// =============================================================================
+
+static void WTK_API wtk_prop_resizable_getter( struct wtk_control* control, va_list args )
+{
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Window)
+    ));
+
+    *va_arg(args, unsigned*) = control->resizable;
+}
+
+static void WTK_API wtk_prop_resizable_setter( struct wtk_control* control, va_list args )
+{
+    DWORD dwStyle;
+
+    WTK_ASSERT((
+        control->type == WTK_CONTROL_TYPE(Window)
+    ));
+
+    control->resizable = va_arg(args, unsigned);
+    dwStyle = GetWindowLongPtr(control->hWnd, GWL_STYLE);
+    if( control->resizable ) dwStyle = dwStyle | (WS_THICKFRAME | WS_MAXIMIZEBOX);
+    else dwStyle = (dwStyle & ~(WS_THICKFRAME | WS_MAXIMIZEBOX));
+    SetWindowLongPtr(control->hWnd, GWL_STYLE, dwStyle);
+    SetWindowPos(control->hWnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_DRAWFRAME);
+}
+
+// =============================================================================
 // WTK_CONTROL_PROP_Position
 // =============================================================================
 
@@ -177,8 +206,8 @@ static void WTK_API wtk_prop_margins_setter( struct wtk_control* control, va_lis
     HWND hWndRoot = GetAncestor(control->hWnd, GA_ROOTOWNER);
     control->margin_left = va_arg(args, int);
     control->margin_top = va_arg(args, int);
-    control->margin_bottom = va_arg(args, int);
     control->margin_right = va_arg(args, int);
+    control->margin_bottom = va_arg(args, int);
     if( hWndRoot ) SendMessage(hWndRoot, WTK_ON_LAYOUT_CHANGED, 0, 0);
 }
 
@@ -453,7 +482,7 @@ static void WTK_API wtk_prop_text_setter( struct wtk_control* control, va_list a
 }
 
 // =============================================================================
-// WTK_CONTROL_PROP_TextAlignment
+// WTK_CONTROL_PROP_TextAlign
 // =============================================================================
 
 static void WTK_API wtk_prop_text_align_getter( struct wtk_control* control, va_list args )

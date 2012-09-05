@@ -32,7 +32,7 @@ extern "C" {
 #endif // __cplusplus
 
 struct wtk_gdi;
-typedef struct wtk_gdi;
+typedef struct wtk_gdi wtk_gdi;
 
 #ifdef __cplusplus
 }

@@ -41,7 +41,8 @@ struct wtk_control {
     struct wtk_font* font;
     unsigned hidden : 1;
     unsigned auto_fill : 1;
-    unsigned reserved : 6;
+    unsigned resizable : 1;
+    unsigned reserved : 5;
     int margin_top, margin_left, margin_bottom, margin_right;
 
     // Callbacks:

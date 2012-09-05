@@ -74,9 +74,9 @@ struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int heigh
 
     // TODO: Fix WS_CLIPCHILDREN rendering/drawing artifacts.
 
-    wtk_window_adjust_size(&width, &height, WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, /*WS_CLIPCHILDREN |*/ WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+    wtk_window_adjust_size(&width, &height, WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, /*WS_CLIPCHILDREN |*/ WS_OVERLAPPEDWINDOW);
     if( x == WTK_WINDOW_CENTER && y == WTK_WINDOW_CENTER ) wtk_window_center(&x, &y, width, height);
-    hWnd = CreateWindowExA(WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, "_wtk_window", NULL, /*WS_CLIPCHILDREN |*/ WS_OVERLAPPEDWINDOW | WS_VISIBLE, x, y, width, height, parent ? parent->hWnd : NULL, NULL, GetModuleHandle(0), 0);
+    hWnd = CreateWindowExA(WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW, "_wtk_window", NULL, /*WS_CLIPCHILDREN |*/ WS_OVERLAPPEDWINDOW, x, y, width, height, parent ? parent->hWnd : NULL, NULL, GetModuleHandle(0), 0);
     if( !hWnd ) return NULL;
 
     window = wtk_alloc(sizeof(struct wtk_window));
@@ -84,6 +84,7 @@ struct wtk_window* WTK_API wtk_window_create( int x, int y, int width, int heigh
     window->control.type = WTK_CONTROL_TYPE(Window);
     window->control.hWnd = hWnd;
     window->control.font = wtk_font_default();
+    window->control.resizable = TRUE;
 
     SetPropA(hWnd, "_wtk_ctrl_ptr", (HANDLE)window);
     PostMessage(hWnd, WM_SETFONT, (WPARAM)window->control.font->hFont, TRUE);

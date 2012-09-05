@@ -48,7 +48,7 @@ struct wtk_font* WTK_API wtk_font_create( const char* font_family, unsigned int 
                         lf.lfCharSet,
                         lf.lfOutPrecision,
                         lf.lfClipPrecision,
-                        lf.lfQuality,
+                        CLEARTYPE_QUALITY /*lf.lfQuality*/,
                         lf.lfPitchAndFamily,
                         &font_family[0]);
 

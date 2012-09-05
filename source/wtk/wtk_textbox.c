@@ -41,14 +41,14 @@ int WTK_API wtk_textbox_init()
     return TRUE;
 }
 
-struct wtk_textbox* WTK_API wtk_textbox_create( int x, int y, int width, int height, struct wtk_control* parent )
+struct wtk_textbox* WTK_API wtk_textbox_create( int x, int y, int width, int height, unsigned multiline, struct wtk_control* parent )
 {
     struct wtk_textbox* textbox = NULL;
     HWND hWnd;
 
     WTK_ASSERT(parent);
 
-    hWnd = CreateWindowExA(0, "EDIT", NULL, ES_LEFT | ES_AUTOHSCROLL | WS_BORDER | WS_VISIBLE | WS_CHILD, x, y, width, height, parent->hWnd, NULL, GetModuleHandle(0), 0);
+    hWnd = CreateWindowExA(0, "EDIT", NULL, ES_LEFT | ES_AUTOHSCROLL | WS_BORDER | WS_VISIBLE | WS_CHILD | (multiline ? ES_AUTOVSCROLL | ES_MULTILINE | ES_WANTRETURN : 0), x, y, width, height, parent->hWnd, NULL, GetModuleHandle(0), 0);
     if( !hWnd ) return NULL;
 
     textbox = wtk_alloc(sizeof(struct wtk_textbox));

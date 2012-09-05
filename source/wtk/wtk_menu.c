@@ -63,7 +63,7 @@ struct wtk_menu* WTK_API wtk_menu_create()
 
 void WTK_API wtk_menu_destroy( struct wtk_menu* menu )
 {
-    unsigned int i;
+    unsigned int i = 0;
     const unsigned int num_menu_items = GetMenuItemCount(menu->hMenu);
     MENUITEMINFO menu_item_info = { sizeof(MENUITEMINFO), MIIM_ID | MIIM_SUBMENU, 0, };
 
@@ -140,7 +140,7 @@ struct wtk_menu_item* WTK_API wtk_menu_append( struct wtk_control* control, cons
 void WTK_API wtk_menu_item_destroy( struct wtk_menu_item* menu_item )
 {
     if( menu_item->hMenu ) {
-        unsigned int i;
+        unsigned int i = 0;
         const unsigned int num_menu_items = GetMenuItemCount(menu_item->hMenu);
         MENUITEMINFO menu_item_info = { sizeof(MENUITEMINFO), MIIM_ID | MIIM_SUBMENU, 0, };
 

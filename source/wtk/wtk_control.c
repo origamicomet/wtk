@@ -114,6 +114,7 @@ static wtk_property_accessors _property_accessors[WTK_CONTROL_PROP_COUNT] = {
     { &wtk_prop_parent_getter, &wtk_prop_parent_setter },         // WTK_CONTROL_PROP_Parent
     { &wtk_prop_hidden_getter, &wtk_prop_hidden_setter },         // WTK_CONTROL_PROP_Hidden
     { &wtk_prop_auto_fill_getter, &wtk_prop_auto_fill_setter },   // WTK_CONTROL_PROP_AutoFill
+    { &wtk_prop_resizable_getter, &wtk_prop_resizable_setter },   // WTK_CONTROL_PROP_Resizable
     { &wtk_prop_position_getter, &wtk_prop_position_setter },     // WTK_CONTROL_PROP_Position
     { &wtk_prop_size_getter, &wtk_prop_size_setter },             // WTK_CONTROL_PROP_Size
     { &wtk_prop_margins_getter, &wtk_prop_margins_setter },       // WTK_CONTROL_PROP_Margins
@@ -166,6 +167,7 @@ static wtk_child_property_accessors _child_property_accessors[WTK_CONTROL_PROP_C
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Parent
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Hidden
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_AutoFill
+    { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Resizable
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Position
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Size
     { &wtk_child_prop_default, &wtk_child_prop_default },                     // WTK_CONTROL_PROP_Margins

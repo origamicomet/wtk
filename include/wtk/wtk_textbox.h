@@ -33,7 +33,7 @@ extern "C" {
 struct wtk_textbox;
 typedef struct wtk_textbox wtk_textbox;
 
-extern WTK_EXPORT struct wtk_textbox* WTK_API wtk_textbox_create( int x, int y, int width, int height, struct wtk_control* parent );
+extern WTK_EXPORT struct wtk_textbox* WTK_API wtk_textbox_create( int x, int y, int width, int height, unsigned multiline, struct wtk_control* parent );
 
 #define WTK_TEXTBOX_TYPE( type ) WTK_TEXTBOX_TYPE_##type
 typedef enum {

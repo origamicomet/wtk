@@ -128,7 +128,7 @@ int main( int argc, char** argv )
 
     if( !wtk_init(&allocator) ) return EXIT_FAILURE;
 
-    font = wtk_font_create("Arial", 14, WTK_FONT_STYLE_DEFAULT);
+    font = wtk_font_create("MS Sans Serif", 12, WTK_FONT_STYLE_DEFAULT);
     app_icon = wtk_icon_create_from_file("color-swatch.ico", WTK_ICON_SIZE_DEFAULT, WTK_ICON_SIZE_DEFAULT);
 
     menu = wtk_menu_create();
@@ -141,6 +141,8 @@ int main( int argc, char** argv )
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Icons), app_icon, app_icon);
     wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Title), "The Windowing Toolkit");
+    wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Resizable), FALSE);
+    wtk_control_set_property((wtk_control*)window, WTK_CONTROL_PROP(Hidden), FALSE);
     wtk_control_set_callback((wtk_control*)window, WTK_EVENT(OnClose), (wtk_event_callback)&window_on_close);
 
     label = wtk_label_create(16, 16, 100, 18, (wtk_control*)window);
@@ -170,7 +172,7 @@ int main( int argc, char** argv )
     wtk_control_set_callback((wtk_control*)checkbox, WTK_EVENT(OnValueChanged), (wtk_event_callback)&checkbox_on_value_changed);
     mirror_checkbox = checkbox;
 
-    textbox = wtk_textbox_create(16, 102, 174, 18, (wtk_control*)window);
+    textbox = wtk_textbox_create(16, 102, 174, 18, FALSE, (wtk_control*)window);
     wtk_control_set_property((wtk_control*)textbox, WTK_CONTROL_PROP(Font), font);
     wtk_control_set_property((wtk_control*)textbox, WTK_CONTROL_PROP(Text), "Hello, World!");
     wtk_control_set_callback((wtk_control*)textbox, WTK_EVENT(OnValueChanged), (wtk_event_callback)&textbox_on_value_changed);

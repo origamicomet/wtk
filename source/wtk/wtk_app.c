@@ -98,6 +98,13 @@ int WTK_API wtk_init( const wtk_allocator* allocator )
     return TRUE;
 }
 
+static wtk_tick_callback on_tick_callback = NULL;
+
+void WTK_API wtk_set_tick_callback( wtk_tick_callback tick_callback )
+{
+    on_tick_callback = tick_callback;
+}
+
 int WTK_API wtk_run_app()
 {
     MSG msg;
@@ -105,10 +112,11 @@ int WTK_API wtk_run_app()
     while( TRUE ) {
         while( PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) ) {
             if( msg.message == WM_QUIT ) return EXIT_SUCCESS;
-
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+
+        if( on_tick_callback ) if( !on_tick_callback() ) PostQuitMessage(0);
     }
 
     return EXIT_FAILURE;

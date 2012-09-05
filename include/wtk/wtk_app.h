@@ -32,7 +32,10 @@
 extern "C" {
 #endif // __cplusplus
 
+typedef int (WTK_API *wtk_tick_callback)();
+
 extern WTK_EXPORT int WTK_API wtk_init( const wtk_allocator* allocator );
+extern WTK_EXPORT void WTK_API wtk_set_tick_callback( wtk_tick_callback tick_callback );
 extern WTK_EXPORT int WTK_API wtk_run_app();
 extern WTK_EXPORT void WTK_API wtk_quit();
 
