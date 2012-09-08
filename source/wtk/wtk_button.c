@@ -86,7 +86,7 @@ static LRESULT CALLBACK wtk_button_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
 
         case WTK_ON_LAYOUT_CHANGED: {
             wtk_on_layout_changed(control);
-            EnumChildWindows(hWnd, &wtk_on_layout_change_proc, NULL);
+            EnumChildWindows(hWnd, &wtk_on_layout_change_proc, 0);
             if( control->on_layout_changed_callback ) control->on_layout_changed_callback(control, WTK_EVENT(OnLayoutChanged));
         } break;
 

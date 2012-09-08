@@ -111,7 +111,7 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
         } break;
 
         case WTK_ON_LAYOUT_CHANGED: {
-            EnumChildWindows(hWnd, &wtk_on_layout_change_proc, NULL);
+            EnumChildWindows(hWnd, &wtk_on_layout_change_proc, 0);
             if( control->on_layout_changed_callback ) control->on_layout_changed_callback(control, WTK_EVENT(OnLayoutChanged));
         } break;
 
@@ -181,13 +181,27 @@ static LRESULT CALLBACK wtk_window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LP
                     if( textbox->on_value_changed_callback ) textbox->on_value_changed_callback(child_control, WTK_EVENT(OnValueChanged));
                 } break;
 
-                case LBN_SELCHANGE: {
+                case LBN_SELCHANGE: { // CBN_SELCHANGE
                     struct wtk_control* child_control = (struct wtk_control*)GetPropA((HWND)lParam, "_wtk_ctrl_ptr");
-                    struct wtk_listbox* listbox = (struct wtk_listbox*)child_control;
-                    if( listbox->on_selection_changed_callback ) {
-                        const unsigned int num_selections = (unsigned int)SendMessage(child_control->hWnd, LB_GETSELCOUNT, 0, 0);
-                        listbox->on_selection_changed_callback(child_control, WTK_EVENT(OnSelectionChanged), num_selections);
+
+                    switch( child_control->type ) {
+                        case WTK_CONTROL_TYPE(ListBox): {
+                            struct wtk_listbox* listbox = (struct wtk_listbox*)child_control;
+                            if( listbox->on_selection_changed_callback ) {
+                                const unsigned int num_selections = (unsigned int)SendMessage(child_control->hWnd, LB_GETSELCOUNT, 0, 0);
+                                listbox->on_selection_changed_callback(child_control, WTK_EVENT(OnSelectionChanged), num_selections);
+                            }
+                        } break;
+
+                        case WTK_CONTROL_TYPE(ComboBox): {
+                            struct wtk_combobox* combobox = (struct wtk_combobox*)child_control;
+                            if( combobox->on_selection_changed_callback ) {
+                                combobox->on_selection_changed_callback(child_control, WTK_EVENT(OnSelectionChanged), 1);
+                            }
+                        } break;
                     }
+
+
                 } break;
             }
         } break;

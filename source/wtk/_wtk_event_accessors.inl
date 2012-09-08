@@ -98,10 +98,19 @@ static void WTK_API wtk_event_on_value_changed_setter( struct wtk_control* contr
 static void WTK_API wtk_event_on_selection_changed_setter( struct wtk_control* control, wtk_event_callback callback )
 {
     WTK_ASSERT((
-        control->type == WTK_CONTROL_TYPE(ListBox)
+        control->type == WTK_CONTROL_TYPE(ListBox) ||
+		control->type == WTK_CONTROL_TYPE(ComboBox)
     ));
 
-    ((struct wtk_listbox*)control)->on_selection_changed_callback = callback;
+    switch( control->type ) {
+        case WTK_CONTROL_TYPE(ListBox): {
+            ((struct wtk_listbox*)control)->on_selection_changed_callback = callback;
+        } break;
+
+        case WTK_CONTROL_TYPE(ComboBox): {
+            ((struct wtk_combobox*)control)->on_selection_changed_callback = callback;
+        } break;
+    }
 }
 
 // =============================================================================
