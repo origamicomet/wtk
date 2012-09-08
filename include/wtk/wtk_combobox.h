@@ -21,27 +21,26 @@
 // THE SOFTWARE.
 // =============================================================================
 
-#include <wtk/wtk_config.h>
-#include <wtk/wtk_compat.h>
-#include <wtk/wtk_mm.h>
-#include <wtk/wtk_app.h>
-#include <wtk/wtk_event.h>
-#include <wtk/wtk_control_properties.h>
-#include <wtk/wtk_align.h>
-#include <wtk/wtk_font.h>
-#include <wtk/wtk_image.h>
-#include <wtk/wtk_image_list.h>
-#include <wtk/wtk_gdi.h>
-#include <wtk/wtk_mouse.h>
-#include <wtk/wtk_keyboard.h>
+#ifndef _WTK_COMBOBOX_H_
+#define _WTK_COMBOBOX_H_
+
 #include <wtk/wtk_control.h>
-#include <wtk/wtk_window.h>
-#include <wtk/wtk_menu.h>
-#include <wtk/wtk_label.h>
-#include <wtk/wtk_frame.h>
-#include <wtk/wtk_button.h>
-#include <wtk/wtk_checkbox.h>
-#include <wtk/wtk_textbox.h>
-#include <wtk/wtk_listbox.h>
-#include <wtk/wtk_listview.h>
-#include <wtk/wtk_combobox.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+struct wtk_combobox;
+typedef struct wtk_combobox wtk_combobox;
+
+extern WTK_EXPORT struct wtk_combobox* WTK_API wtk_combobox_create( int x, int y, int width, int height, struct wtk_control* parent );
+
+typedef int wtk_combobox_item;
+
+extern WTK_EXPORT wtk_combobox_item WTK_API wtk_combobox_insert( struct wtk_combobox* combobox, const char* text, void* user_ptr );
+extern WTK_EXPORT void WTK_API wtk_combobox_remove( struct wtk_combobox* combobox, wtk_combobox_item id );
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+#endif // _WTK_COMBOBOX_H_

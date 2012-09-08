@@ -39,6 +39,7 @@ typedef enum {
     WTK_CONTROL_TYPE_TextBox,
     WTK_CONTROL_TYPE_ListBox,
     WTK_CONTROL_TYPE_ListView,
+	WTK_CONTROL_TYPE_ComboBox,
     WTK_CONTROL_TYPE_COUNT
 } wtk_control_type;
 

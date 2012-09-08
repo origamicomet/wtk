@@ -29,6 +29,7 @@
 #include <wtk/wtk_align.h>
 #include <wtk/wtk_button.h>
 #include <wtk/wtk_checkbox.h>
+#include <wtk/wtk_combobox.h>
 
 #include <stdarg.h>
 
@@ -135,7 +136,7 @@ static void WTK_API wtk_prop_position_getter( struct wtk_control* control, va_li
 {
     HWND hWndParent;
     int *x_out, *y_out;
-    
+
     x_out = va_arg(args, int*);
     y_out = va_arg(args, int*);
 
@@ -154,7 +155,7 @@ static void WTK_API wtk_prop_position_getter( struct wtk_control* control, va_li
 static void WTK_API wtk_prop_position_setter( struct wtk_control* control, va_list args )
 {
     int x, y;
-    
+
     x = va_arg(args, int);
     y = va_arg(args, int);
 
@@ -169,7 +170,7 @@ static void WTK_API wtk_prop_size_getter( struct wtk_control* control, va_list a
 {
     RECT rect;
     int *width_out, *height_out;
-    
+
     width_out = va_arg(args, int*);
     height_out = va_arg(args, int*);
 
@@ -182,7 +183,7 @@ static void WTK_API wtk_prop_size_getter( struct wtk_control* control, va_list a
 static void WTK_API wtk_prop_size_setter( struct wtk_control* control, va_list args )
 {
     int width, height;
-    
+
     width = va_arg(args, int);
     height = va_arg(args, int);
 
@@ -610,7 +611,8 @@ static void WTK_API wtk_prop_value_getter( struct wtk_control* control, va_list 
 {
     WTK_ASSERT((
         control->type == WTK_CONTROL_TYPE(Button) ||
-        control->type == WTK_CONTROL_TYPE(CheckBox)
+        control->type == WTK_CONTROL_TYPE(CheckBox) ||
+        control->type == WTK_CONTROL_TYPE(ComboBox)
     ));
 
     switch( control->type ) {
@@ -625,13 +627,21 @@ static void WTK_API wtk_prop_value_getter( struct wtk_control* control, va_list 
                 case BST_UNCHECKED: *va_arg(args, wtk_checkbox_state*) = WTK_CHECKBOX_STATE(Unchecked); break;
             }
         } break;
+
+        case WTK_CONTROL_TYPE(ComboBox): {
+            int value = ComboBox_GetCurSel(control->hWnd);
+            if(value != CB_ERR) {
+                *va_arg(args, wtk_combobox_item*) = value + 1;
+            }
+        } break;
     }
 }
 
 static void WTK_API wtk_prop_value_setter( struct wtk_control* control, va_list args )
 {
     WTK_ASSERT((
-        control->type == WTK_CONTROL_TYPE(CheckBox)
+        control->type == WTK_CONTROL_TYPE(CheckBox) ||
+        control->type == WTK_CONTROL_TYPE(ComboBox)
     ));
 
     switch( control->type ) {
@@ -649,6 +659,10 @@ static void WTK_API wtk_prop_value_setter( struct wtk_control* control, va_list 
                     Button_SetCheck(control->hWnd, BST_UNCHECKED);
                 } break;
             }
+        } break;
+
+        case WTK_CONTROL_TYPE(ComboBox): {
+            ComboBox_SetCurSel(control->hWnd, va_arg(args, wtk_combobox_item) - 1);
         } break;
     }
 }

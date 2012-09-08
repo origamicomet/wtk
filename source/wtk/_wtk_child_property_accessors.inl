@@ -99,7 +99,8 @@ static void WTK_API wtk_child_prop_text_getter( struct wtk_control* control, wtk
 {
     WTK_ASSERT((
         control->type == WTK_CONTROL_TYPE(ListBox) ||
-        control->type == WTK_CONTROL_TYPE(ListView)
+        control->type == WTK_CONTROL_TYPE(ListView) ||
+        control->type == WTK_CONTROL_TYPE(ComboBox)
     ));
 
     switch( control->type ) {
@@ -118,6 +119,18 @@ static void WTK_API wtk_child_prop_text_getter( struct wtk_control* control, wtk
         case WTK_CONTROL_TYPE(ListView): {
             WTK_ASSERT(!"wtk_child_prop_text_getter::ListView");
         } break;
+
+        case WTK_CONTROL_TYPE(ComboBox): {
+            struct wtk_combobox* combobox = ((struct wtk_combobox*)control);
+            int text_len = GetWindowTextLength(control->hWnd);
+
+            WTK_ASSERT(child > 0);
+
+            combobox->text_buffer = wtk_realloc(combobox->text_buffer, text_len + 1);
+            memset(combobox->text_buffer, 0, text_len + 1);
+            GetWindowTextA(control->hWnd, combobox->text_buffer, text_len + 1);
+            *va_arg(args, const char**) = combobox->text_buffer;
+        } break;
     }
 }
 
@@ -125,7 +138,8 @@ static void WTK_API wtk_child_prop_text_setter( struct wtk_control* control, wtk
 {
     WTK_ASSERT((
         control->type == WTK_CONTROL_TYPE(ListBox) ||
-        control->type == WTK_CONTROL_TYPE(ListView)
+        control->type == WTK_CONTROL_TYPE(ListView) ||
+        control->type == WTK_CONTROL_TYPE(ComboBox)
     ));
 
     switch( control->type ) {
@@ -155,6 +169,15 @@ static void WTK_API wtk_child_prop_text_setter( struct wtk_control* control, wtk
                 lvi.pszText = va_arg(args, const char*);
                 ListView_SetItem(control->hWnd, &lvi);
             }
+        } break;
+
+        case WTK_CONTROL_TYPE(ComboBox): {
+            struct wtk_combobox* combobox = ((struct wtk_combobox*)control);
+            WTK_ASSERT(child > 0);
+
+            // HACK: Have to LB_DELETESTRING then LB_INSERTSTRING to update an item's text.
+            SendMessage(control->hWnd, CB_DELETESTRING, (WPARAM)(child - 1), 0);
+            SendMessage(control->hWnd, CB_INSERTSTRING, (WPARAM)(child - 1), (LPARAM)va_arg(args, const char*));
         } break;
     }
 }

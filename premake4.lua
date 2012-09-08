@@ -27,6 +27,23 @@ solution "wtk"
     location("build/" .. _ACTION)
     configurations({ "debug", "release" })
 
+    project("sample")
+        kind("WindowedApp")
+        language("C")
+        objdir("build/" .. _ACTION .. "/sample/obj" )
+        targetdir("bin/" .. _ACTION .. "/")
+        targetname("sample")
+        debugdir("sample")
+
+        configuration("debug") targetsuffix("-dbg") flags({ "Symbols" }) links("libwtk")
+        configuration("release") flags({ "Optimize", "EnableSSE", "EnableSSE2" }) links("libwtk")
+
+        configuration({})
+            libdirs({ "lib/" .. _ACTION })
+            defines({ "WTK_DLL" })
+            includedirs({ "include" })
+            files { "sample/**.c" }
+
     project("libwtk")
         kind("SharedLib")
         language("C")
@@ -40,27 +57,10 @@ solution "wtk"
         configuration({})
             defines({ "WTK_DLL", "WTK_BUILD" })
             includedirs { "include" }
-            files { "include/**.h", "source/**.c" }
+            files { "include/**.h", "include/**.inl", "source/**.c" }
 
         configuration("windows")
             links({ "comctl32" })
             defines({ "ISOLATION_AWARE_ENABLED=1" })
             postbuildcommands({ "move \"..\\..\\lib\\" .. _ACTION .. "\\*.dll\" \"..\\..\\bin\\" .. _ACTION .. "\\\"" })
-
-    project("sample")
-        kind("WindowedApp")
-        language("C")
-        objdir("build/" .. _ACTION .. "/sample/obj" )
-        targetdir("bin/" .. _ACTION .. "/")
-        targetname("sample")
-        debugdir("sample")
-
-        configuration("debug") targetsuffix("-dbg") flags({ "Symbols" }) links("wtk-dbg")
-        configuration("release") flags({ "Optimize", "EnableSSE", "EnableSSE2" }) links("wtk")
-
-        configuration({})
-            libdirs({ "lib/" .. _ACTION })
-            defines({ "WTK_DLL" })
-            includedirs({ "include" })
-            files { "sample/**.c" }
 end
