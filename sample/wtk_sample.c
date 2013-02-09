@@ -150,7 +150,7 @@ int main( int argc, char** argv )
 
     if( !wtk_init(&allocator) ) return EXIT_FAILURE;
 
-    font = wtk_font_create("MS Sans Serif", 12, WTK_FONT_STYLE_DEFAULT);
+    font = wtk_font_create("Arial", 14, WTK_FONT_STYLE_DEFAULT);
     app_icon = wtk_icon_create_from_file("color-swatch.ico", WTK_ICON_SIZE_DEFAULT, WTK_ICON_SIZE_DEFAULT);
 
     menu = wtk_menu_create();
