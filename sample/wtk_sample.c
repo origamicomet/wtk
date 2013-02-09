@@ -74,14 +74,14 @@ static int WTK_API combobox_on_create( wtk_combobox* combobox, wtk_event event )
     to_replace = wtk_combobox_insert(combobox, "...", NULL);
     wtk_combobox_insert(combobox, "Option 2", NULL);
     wtk_control_set_child_property((wtk_control*)combobox, WTK_CONTROL_PROP(Text), (wtk_child)to_replace, "Option 1b");
-	wtk_control_set_property((wtk_control*)combobox, WTK_CONTROL_PROP(Value), to_replace);
+    wtk_control_set_property((wtk_control*)combobox, WTK_CONTROL_PROP(Value), to_replace);
 
     return TRUE;
 }
 
 static int WTK_API combobox_on_selection_changed( wtk_combobox* combobox, wtk_event event, unsigned int count )
 {
-	wtk_combobox_item selected;
+    wtk_combobox_item selected;
     wtk_control_get_property((wtk_control*)combobox, WTK_CONTROL_PROP(Value), &selected);
 
     return TRUE;

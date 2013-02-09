@@ -57,7 +57,7 @@ static const wtk_control_init_func _control_init_funcs[WTK_CONTROL_TYPE_COUNT - 
     &wtk_textbox_init,
     &wtk_listbox_init,
     &wtk_listview_init,
-	&wtk_checkbox_init,
+    &wtk_checkbox_init,
 };
 
 static void WTK_API wtk_enable_visual_styles()
