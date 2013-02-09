@@ -35,7 +35,8 @@
 
 #ifndef _MSC_STDINT_H_ // [
 #define _MSC_STDINT_H_
-#define _STDINT
+
+#define _STDINT // Prevent #include <stdint.h>
 
 #if _MSC_VER > 1000
 #pragma once
