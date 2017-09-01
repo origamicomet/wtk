@@ -44,7 +44,7 @@ WTK_BEGIN_EXTERN_C
 static wtk_batch_t *allocate_a_batch(wtk_block_t *block)
 {
   /* Maximum number of verticies per batch. */
-  static const wtk_uint32_t VERTICIES_PER_BATCH = 1536;
+  static const wtk_uint32_t VERTICIES_PER_BATCH = 1024;
 
   static wtk_uint32_t id = 0;
 
@@ -89,7 +89,7 @@ wtk_canvas_t *wtk_canvas_create(wtk_uint32_t width,
   canvas->permanent.size   = 65535;
 
   /* TODO(mtwilliams): Dynamically grow and shrink transient arena. */
-  canvas->transient.base   = (wtk_uintptr_t)wtk_allocate_s(65535, 16);
+  canvas->transient.base   = (wtk_uintptr_t)wtk_allocate_s(1048575, 16);
   canvas->transient.offset = 0;
   canvas->transient.size   = 65535;
 
