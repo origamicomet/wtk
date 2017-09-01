@@ -288,53 +288,51 @@ void wtk_renderer_shutdown(void)
   r = NULL;
 }
 
-void wtk_renderer_begin(void)
+void wtk_renderer_invalidate(wtk_handle_t window,
+                             const wtk_rectangle_t *area)
 {
-  /* Dirtiness is determined each pump. */
-  r->dirty = NULL;
+  wtk_dirty_t *dirty;
 
-  /* Blow away allocations from previous frame. */
-  wtk_block_reset(&r->transient);
-}
+  for (dirty = r->dirty; dirty; dirty = dirty->next)
+    if (dirty->window == window)
+      break;
 
-void wtk_renderer_submit(void);
-void wtk_renderer_present(void);
-
-void wtk_renderer_end(void)
-{
-  /* Submit all batches. */
-  wtk_renderer_submit();
-
-  /* Present. */
-  wtk_renderer_present();
-
-  r->frames += 1;
-}
-
-void wtk_renderer_mark_as_dirty(wtk_handle_t window,
-                                const wtk_rectangle_t *area)
-{
-  wtk_dirty_t *dirty =
-    (wtk_dirty_t *)wtk_block_allocate_s(&r->transient, sizeof(wtk_dirty_t));
-
-  dirty->window = window;
-
-  /* Cached, rather than looking up repeatability. */
-  dirty->surface = window_to_surface(window);
-
-  if (area) {
-    dirty->area.x = area->x;
-    dirty->area.y = area->y;
-    dirty->area.w = area->w;
-    dirty->area.h = area->h;
+  if (dirty) {
+    if (area) {
+      /* Merge dirty areas. */
+      dirty->area.x = WTK_MIN(dirty->area.x, area->x);
+      dirty->area.y = WTK_MIN(dirty->area.y, area->y);
+      dirty->area.w = WTK_MAX(dirty->area.w, area->w);
+      dirty->area.h = WTK_MAX(dirty->area.h, area->h);
+    } else {
+      /* Assume entire window is dirty. */
+      dirty->area.x = 0;
+      dirty->area.y = 0;
+      wtk_ogl_dimensions_of_surface(dirty->surface, &dirty->area.w, &dirty->area.h);
+    }
   } else {
-    /* Assume entire window is dirty. */
-    dirty->area.x = dirty->area.y = 0;
-    wtk_ogl_dimensions_of_surface(dirty->surface, &dirty->area.w, &dirty->area.h);
-  }
+    dirty = (wtk_dirty_t *)wtk_block_allocate_s(&r->transient, sizeof(wtk_dirty_t));
 
-  dirty->next = r->dirty;
-  r->dirty = dirty;
+    dirty->window = window;
+
+    /* Cached, rather than looking up repeatedly. */
+    dirty->surface = window_to_surface(window);
+
+    if (area) {
+      dirty->area.x = area->x;
+      dirty->area.y = area->y;
+      dirty->area.w = area->w;
+      dirty->area.h = area->h;
+    } else {
+      /* Assume entire window is dirty. */
+      dirty->area.x = 0;
+      dirty->area.y = 0;
+      wtk_ogl_dimensions_of_surface(dirty->surface, &dirty->area.w, &dirty->area.h);
+    }
+
+    dirty->next = r->dirty;
+    r->dirty = dirty;
+  }
 }
 
 void wtk_renderer_submit_a_canvas(wtk_canvas_t *canvas,
@@ -416,19 +414,25 @@ void wtk_renderer_submit_a_canvas(wtk_canvas_t *canvas,
   }
 }
 
-void wtk_renderer_submit(void)
-{
+void wtk_renderer_submit(void) {
+  /* Redraw all dirty areas. */
   for (const wtk_dirty_t *dirty = r->dirty; dirty; dirty = dirty->next) {
     wtk_renderer_submit_a_canvas(wtk_window_to_canvas(dirty->window),
                                  dirty->surface);
   }
-}
 
-void wtk_renderer_present(void)
-{
+  /* Present. */
   for (const wtk_dirty_t *dirty = r->dirty; dirty; dirty = dirty->next) {
     wtk_ogl_present(dirty->surface);
   }
+
+  /* Redrawn. */
+  r->dirty = NULL;
+
+  /* Blow away allocations from previous frame. */
+  wtk_block_reset(&r->transient);
+
+  r->frames += 1;
 }
 
 WTK_END_EXTERN_C

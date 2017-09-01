@@ -397,7 +397,7 @@ wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
           dirty.w = ps.rcPaint.right - ps.rcPaint.left;
           dirty.h = ps.rcPaint.bottom - ps.rcPaint.top;
 
-          wtk_renderer_mark_as_dirty(handle, &dirty);
+          wtk_renderer_invalidate(handle, &dirty);
 
           EndPaint(hWnd, &ps);
         }

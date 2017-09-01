@@ -26,14 +26,11 @@ extern WTK_PRIVATE
   void wtk_renderer_shutdown(void);
 
 extern WTK_PRIVATE
-  void wtk_renderer_begin(void);
+  void wtk_renderer_invalidate(wtk_handle_t window,
+                               const wtk_rectangle_t *area);
 
 extern WTK_PRIVATE
-  void wtk_renderer_end(void);
-
-extern WTK_PRIVATE
-  void wtk_renderer_mark_as_dirty(wtk_handle_t window,
-                                  const wtk_rectangle_t *area);
+  void wtk_renderer_submit(void);
 
 WTK_END_EXTERN_C
 

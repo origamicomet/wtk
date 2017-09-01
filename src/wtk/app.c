@@ -70,12 +70,12 @@ void wtk_app_draw(void)
   for (window in windows)
     InvalidateRect(window->handle, NULL, TRUE);
 #endif
+
+  wtk_renderer_submit();
 }
 
 void wtk_app_pump(void)
 {
-  wtk_renderer_begin();
-
 #if WTK_PLATFORM == WTK_PLATFORM_WINDOWS
   MSG msg;
   while (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -88,7 +88,6 @@ void wtk_app_pump(void)
 
   wtk_app_draw();
 
-  wtk_renderer_end();
 }
 
 WTK_END_EXTERN_C
