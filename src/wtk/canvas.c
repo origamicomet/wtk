@@ -184,6 +184,12 @@ void wtk_canvas_push(wtk_canvas_t *canvas,
   /* TODO(mtwilliams): Timestamp batches. */
   batch->started = batch->completed = 0;
 
+  /* Circumscribed by previous clipping rectangle. */
+  clip.x = WTK_MAX(clip.x, canvas->clip[canvas->depth - 1].x);
+  clip.y = WTK_MAX(clip.y, canvas->clip[canvas->depth - 1].y);
+  clip.w = WTK_MIN(clip.w, canvas->clip[canvas->depth - 1].w);
+  clip.h = WTK_MIN(clip.h, canvas->clip[canvas->depth - 1].h);
+
   /* New clipping rectangle. */
   canvas->clip[canvas->depth] = batch->clip = clip;
 

@@ -56,7 +56,9 @@ int main(int argc, const char *argv[]) {
       wtk_canvas_push(canvas, {768 + 32, 32, 384 - 32 - 32, 64});
         wtk_canvas_rect(canvas, {6 * 128, 0,   128, 128}, 0x3f0000ff, 0);
         wtk_canvas_rect(canvas, {7 * 128, 0,   128, 128}, 0x003f00ff, 0);
-        wtk_canvas_rect(canvas, {8 * 128, 0,   128, 128}, 0x00003fff, 0);
+        wtk_canvas_push(canvas, {1024 + 16, 16, 128 - 16 - 16, 128 - 16});
+          wtk_canvas_rect(canvas, {8 * 128, 0,   128, 128}, 0x00003fff, 0);
+        wtk_canvas_pop(canvas);
       wtk_canvas_pop(canvas);
     wtk_canvas_end(canvas);
 
