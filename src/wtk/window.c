@@ -414,7 +414,7 @@ wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
     ZeroMemory((void *)&common_window_class, sizeof(WNDCLASSEXW));
 
     common_window_class.cbSize        = sizeof(WNDCLASSEXW);
-    common_window_class.style         = CS_VREDRAW |  CS_HREDRAW | CS_OWNDC;
+    common_window_class.style         = CS_VREDRAW | CS_HREDRAW | CS_OWNDC;
     common_window_class.lpfnWndProc   = &wtk_window_callback;
     common_window_class.hInstance     = GetModuleHandle(NULL);
     common_window_class.hCursor       = LoadCursor(NULL, IDC_ARROW);

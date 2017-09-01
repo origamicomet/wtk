@@ -78,9 +78,9 @@ void wtk_app_pump(void)
 {
 #if WTK_PLATFORM == WTK_PLATFORM_WINDOWS
   MSG msg;
-  while (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-    ::TranslateMessage(&msg);
-    ::DispatchMessage(&msg);
+  while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
   }
 
   wtk_app_draw();

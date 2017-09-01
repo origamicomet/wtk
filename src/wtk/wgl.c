@@ -516,7 +516,7 @@ void wtk_wgl_dimensions_of_surface(wtk_wgl_surface_t *surface,
   wtk_assert_debug(height != NULL);
 
   RECT area = { 0, };
-  ::GetClientRect(surface->window, &area);
+  GetClientRect(surface->window, &area);
 
   *width = area.right - area.left;
   *height = area.bottom - area.top;
