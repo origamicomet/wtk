@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+
+			"follow_symlinks": true,
+
+			"file_exclude_patterns": [
+				"*.sublime-project",
+				"*.ninja*"
+			],
+
+			"folder_exclude_patterns": [
+				"_build",
+				"_deps",
+				"docs"
+			]
+		}
+	]
+}

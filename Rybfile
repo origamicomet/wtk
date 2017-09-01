@@ -1,0 +1,101 @@
+# ===-- Rybfile ------------------------------------------*- mode: Ruby -*-=== #
+#
+#
+#                                      _   _
+#                                _ _ _| |_| |_
+#                               | | | |  _| '_|
+#                               |_____|_| |_,_|
+#
+#        This file is distributed under the terms described in LICENSE.
+#
+# ===----------------------------------------------------------------------=== #
+
+project :wtk, pretty: 'wtk' do |proj|
+  # Dynamically linking makes some sense.
+  proj.define 'WTK_LINKAGE' => 'WTK_LINKAGE_STATIC'
+
+  # Supress all of Visual Studio's bullshit.
+  # TODO(mtwilliams): Refactor into Ryb.
+  proj.define '_HAS_EXCEPTIONS' => false,
+              '_SCL_SECURE_NO_WARNINGS' => true,
+              '_CRT_SECURE_NO_WARNINGS' => true,
+              '_CRT_SECURE_NO_DEPRECATE' => true,
+              '_SECURE_SCL_THROWS' => false,
+              '_SILENCE_DEPRECATION_OF_SECURE_SCL_THROWS' => true,
+              # See http://stackoverflow.com/questions/14363929
+              '_USING_V110_SDK71_' => true
+
+  # Suffix builds in the form: _{configuration}_{platform}_{32,64}.
+   # e.g. libwtk_macosx_64.dylib or wtk_windows_32.dll
+  proj.architecture :x86 do |arch| arch.suffix = '_32'; end
+  proj.architecture :x86_64 do |arch| arch.suffix = '_64'; end
+  proj.platform :windows do |platform| platform.suffix = '_windows'; end
+  proj.platform :macosx do |platform| platform.suffix = '_macosx'; end
+  proj.platform :linux do |platform| platform.suffix = '_linux'; end
+  proj.configuration :debug do |config| config.suffix = '_debug'; end
+  proj.configuration :release do |config| config.suffix = '_release'; end
+
+  proj.configuration :debug, pretty: 'Debug' do |config|
+    config.define 'WTK_CONFIGURATION' => 'WTK_CONFIGURATION_DEBUG'
+
+    config.define '_DEBUG' => true,
+                  '_HAS_ITERATOR_DEBUGGING' => true,
+                  '_SECURE_SCL' => true
+
+    config.generate_debug_symbols = true
+    config.link_time_code_generation = false
+    config.optimize = :nothing
+  end
+
+  proj.configuration :release, pretty: 'Release' do |config|
+    config.define 'WTK_CONFIGURATION' => 'WTK_CONFIGURATION_RELEASE'
+
+    config.define 'NDEBUG' => true,
+                  '_HAS_ITERATOR_DEBUGGING' => false,
+                  '_SECURE_SCL' => false
+
+    config.generate_debug_symbols = true
+    config.link_time_code_generation = true
+    config.optimize = :speed
+  end
+
+  proj.library :wtk, pretty: 'Loom' do |lib|
+    lib.linkage = :static
+
+    lib.author = 'Origami Comet Games, Inc.'
+    lib.description = 'Mixed mode user interface toolkit.'
+    lib.license = 'CC0'
+
+    lib.define '__WTK_IS_BEING_COMPILED__' => true
+    lib.define '__WTK_VERSION__' => "\"\\\"#{`git rev-parse HEAD`.rstrip}\\\"\""
+    lib.define '__WTK_REVISION__' => `git rev-list --count HEAD`.strip.to_i
+
+    lib.add_include_paths 'include/'
+    lib.add_library_paths '$build/lib/', '$build/bin/'
+    lib.add_binary_paths '$build/bin/'
+
+    lib.add_source_files 'include/**/*.h'
+
+    # HACK(mtwilliams): Force compilation as C++ because Visual C doesn't do C99.
+    lib.add_source_files 'src/**/*.c', language: :cpp
+
+    lib.platform :windows do |platform|
+      platform.add_external_dependencies %w(kernel32 user32 advapi32 gdi32)
+    end
+  end
+
+  proj.application :example, pretty: 'Example' do |app|
+    app.add_include_paths 'include/', 'test/'
+    app.add_library_paths '$build/lib/', '$build/bin/'
+    app.add_binary_paths '$build/bin/'
+
+    # HACK(mtwilliams): Force compilation as C++ because Visual C doesn't do C99.
+    app.add_source_files 'example.c', language: :cpp
+
+    app.add_dependency :wtk
+
+    app.platform :windows do |platform|
+      platform.add_external_dependencies %w(kernel32 user32 advapi32 gdi32)
+    end
+  end
+end

@@ -1,3 +1,11 @@
-build/*
-*.idb
-*.ilk
+!.gitignore
+
+# Sublime Text 2/3
+*.sublime-workspace
+
+# Ryb
+_build/
+Makefile
+build.ninja
+.ninja_deps
+.ninja_log
