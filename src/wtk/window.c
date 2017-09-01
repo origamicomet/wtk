@@ -383,7 +383,10 @@ wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
 
         window->event_handler(handle, &event, window->event_handler_context);
       } return 0;
-    #endif
+
+      case WM_ERASEBKGND: {
+        /* Prevent flickering. */
+      } return TRUE;
 
       case WM_PAINT: {
         PAINTSTRUCT ps;
