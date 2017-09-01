@@ -122,7 +122,7 @@ static const char *VERTEX_SHADER_SOURCE =
   "    fs_texture = 0u;                                                   \n" \
   "  } else {                                                             \n" \
   "    fs_uv = vs_uv;                                                     \n" \
-  "    fs_color = vs_color;                                               \n" \
+  "    fs_color = vs_color.wzyx;                                          \n" \
   "    fs_texture = vs_texture;                                           \n" \
   "  }                                                                    \n" \
   "}";
