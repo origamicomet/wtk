@@ -82,12 +82,16 @@ void wtk_app_pump(void)
     ::TranslateMessage(&msg);
     ::DispatchMessage(&msg);
   }
-#elif WTK_PLATFORM == WTK_PLATFORM_MAC
-#elif WTK_PLATFORM == WTK_PLATFORM_LINUX
-#endif
 
   wtk_app_draw();
 
+  /* Wait until messages arrive, or ~16ms elapse. */
+  UINT_PTR timer = SetTimer(NULL, NULL, 16, NULL);
+  WaitMessage();
+  KillTimer(NULL, timer);
+#elif WTK_PLATFORM == WTK_PLATFORM_MAC
+#elif WTK_PLATFORM == WTK_PLATFORM_LINUX
+#endif
 }
 
 WTK_END_EXTERN_C
