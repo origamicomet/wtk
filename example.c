@@ -52,6 +52,9 @@ int main(int argc, const char *argv[]) {
       wtk_canvas_rect(canvas, {3 * 128, 0,   128, 128}, 0x7f0000ff, 0);
       wtk_canvas_rect(canvas, {4 * 128, 0,   128, 128}, 0x007f00ff, 0);
       wtk_canvas_rect(canvas, {5 * 128, 0,   128, 128}, 0x00007fff, 0);
+      wtk_canvas_rect(canvas, {6 * 128, 0,   128, 128}, 0x3f0000ff, 0);
+      wtk_canvas_rect(canvas, {7 * 128, 0,   128, 128}, 0x003f00ff, 0);
+      wtk_canvas_rect(canvas, {8 * 128, 0,   128, 128}, 0x00003fff, 0);
     wtk_canvas_end(canvas);
 
     wtk_app_pump();
