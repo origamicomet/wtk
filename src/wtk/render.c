@@ -356,7 +356,11 @@ void wtk_renderer_submit_a_canvas(wtk_canvas_t *canvas,
 
   glClear(GL_COLOR_BUFFER_BIT);
 
-  glDisable(GL_CULL_FACE);
+  glEnable(GL_SCISSOR_TEST);
+
+  glEnable(GL_BLEND);
+
+  glEnable(GL_CULL_FACE);
   glFrontFace(GL_CW);
   glCullFace(GL_BACK);
 

@@ -66,6 +66,15 @@ extern WTK_PUBLIC
     wtk_canvas_t *canvas);
 
 extern WTK_PUBLIC
+  void wtk_canvas_push(
+    wtk_canvas_t *canvas,
+    wtk_rectangle_t clip);
+
+extern WTK_PUBLIC
+  void wtk_canvas_pop(
+    wtk_canvas_t *canvas);
+
+extern WTK_PUBLIC
   void wtk_canvas_rect(
     wtk_canvas_t *canvas,
     wtk_rectangle_t rectangle,
