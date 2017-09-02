@@ -14,9 +14,6 @@
 
 #include "wtk/foundation.h"
 
-/* For batches. */
-#include "wtk/draw.h"
-
 WTK_BEGIN_EXTERN_C
 
 typedef struct wtk_canvas {
@@ -29,13 +26,13 @@ typedef struct wtk_canvas {
   wtk_uint32_t depth;
 
   /*! Linked-list of batches to submit. */
-  wtk_batch_t *batches;
+  struct wtk_batch *batches;
 
   /*! Current batch. */
-  wtk_batch_t *batch;
+  struct wtk_batch *batch;
 
   /*! Current batch for each level in clipping stack. */
-  wtk_batch_t *batch_at_depth[8];
+  struct wtk_batch *batch_at_depth[8];
 
   /*! Allocations for lifetime of canvas. */
   wtk_block_t permanent;
