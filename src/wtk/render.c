@@ -122,7 +122,7 @@ static const char *VERTEX_SHADER_SOURCE =
   "    fs_texture = 0u;                                                   \n" \
   "  } else {                                                             \n" \
   "    fs_uv = vs_uv;                                                     \n" \
-  "    fs_color = vs_color.wzyx;                                          \n" \
+  "    fs_color = vs_color;                                               \n" \
   "    fs_texture = vs_texture;                                           \n" \
   "  }                                                                    \n" \
   "}";
@@ -406,7 +406,7 @@ void wtk_renderer_submit_a_canvas(wtk_canvas_t *canvas,
 
     glVertexAttribPointer(0, 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(wtk_vertex_t), (const void *)offsetof(wtk_vertex_t, x));
     glVertexAttribPointer(1, 2, GL_UNSIGNED_SHORT, GL_TRUE, sizeof(wtk_vertex_t), (const void *)offsetof(wtk_vertex_t, u));
-    glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(wtk_vertex_t), (const void *)offsetof(wtk_vertex_t, color));
+    glVertexAttribPointer(2, GL_BGRA, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(wtk_vertex_t), (const void *)offsetof(wtk_vertex_t, color));
 
   #if 0
     glVertexAttribIPointer(4, 1, GL_UNSIGNED_BYTE, sizeof(wtk_vertex_t), (const void *)offsetof(wtk_vertex_t, texture));

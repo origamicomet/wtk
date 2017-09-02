@@ -210,6 +210,7 @@
 #define GL_RGB32F                         0x8815
 #define GL_RGB32I                         0x8D83
 #define GL_RGB32UI                        0x8D71
+#define GL_RGB8                           0x8051
 #define GL_RGBA8                          0x8058
 #define GL_RGBA16F                        0x881A
 #define GL_RGBA32F                        0x8814
@@ -220,7 +221,9 @@
 #define GL_RGBA16UI                       0x8D76
 #define GL_RGBA32UI                       0x8D70
 
-#define GL_RGB8                           0x8051
+#define GL_BGR                            0x80E0
+#define GL_BGRA                           0x80E1
+
 #define GL_SRGB8                          0x8C41
 #define GL_SRGB8_ALPHA8                   0x8C43
 
