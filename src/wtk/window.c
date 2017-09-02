@@ -321,7 +321,6 @@ wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
         wtk_free((void *)window);
       } return 0;
 
-    #if 0
       case WM_MOVING: {
         /* TODO(mtwilliams): Convert coordinate space? */
         const RECT *drag = (const RECT *)lParam;
