@@ -16,7 +16,11 @@
 
 WTK_BEGIN_EXTERN_C
 
-#pragma pack(push, 1)
+#if WTK_ARCHITECTURE == WTK_ARCHITECTURE_X86 || \
+    WTK_ARCHITECTURE == WTK_ARCHITECTURE_X86_X64
+  /* Reduce bloat at cost of unaligned access. */
+  #pragma pack(push, 1)
+#endif
 
 typedef struct wtk_vertex {
   wtk_uint16_t x, y;
@@ -25,7 +29,10 @@ typedef struct wtk_vertex {
   wtk_uint8_t  texture;
 } wtk_vertex_t;
 
-#pragma pack(pop)
+#if WTK_ARCHITECTURE == WTK_ARCHITECTURE_X86 || \
+    WTK_ARCHITECTURE == WTK_ARCHITECTURE_X86_X64
+  #pragma pack(pop)
+#endif
 
 typedef struct wtk_batch {
   struct wtk_batch *next;
