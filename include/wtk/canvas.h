@@ -75,7 +75,7 @@ extern WTK_PUBLIC
   void wtk_canvas_rect(
     wtk_canvas_t *canvas,
     wtk_rectangle_t rectangle,
-    wtk_uint32_t color,
+    wtk_color_t color,
     wtk_uint32_t flags);
 
 WTK_END_EXTERN_C

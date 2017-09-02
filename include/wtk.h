@@ -19,6 +19,8 @@
 
 #include "wtk/handle.h"
 
+#include "wtk/color.h"
+
 #include "wtk/app.h"
 
 #include "wtk/layout.h"

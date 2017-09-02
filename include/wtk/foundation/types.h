@@ -47,6 +47,10 @@ typedef struct wtk_rectangle {
   wtk_uint32_t x, y, w, h;
 } wtk_rectangle_t;
 
+typedef struct wtk_color {
+  wtk_uint32_t rgba;
+} wtk_color_t;
+
 WTK_END_EXTERN_C
 
 #endif /* _WTK_FOUNDATION_TYPES_H_ */

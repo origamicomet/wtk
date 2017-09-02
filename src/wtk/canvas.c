@@ -243,7 +243,7 @@ static void wtk_canvas_flush_if_nessecary(wtk_canvas_t *canvas,
 static void wtk_canvas_vert(wtk_canvas_t *canvas,
                             wtk_uint16_t x,
                             wtk_uint16_t y,
-                            wtk_uint32_t color)
+                            wtk_color_t color)
 {
   wtk_vertex_t *v = &canvas->batch->verticies[canvas->batch->count++];
 
@@ -253,14 +253,14 @@ static void wtk_canvas_vert(wtk_canvas_t *canvas,
   v->u = 0;
   v->v = 0;
 
-  v->color = color;
+  v->color = color.rgba;
 
   v->texture = 0;
 }
 
 void wtk_canvas_rect(wtk_canvas_t *canvas,
                      wtk_rectangle_t r,
-                     wtk_uint32_t color,
+                     wtk_color_t color,
                      wtk_uint32_t flags)
 {
   wtk_canvas_flush_if_nessecary(canvas, 6);
