@@ -720,9 +720,15 @@ extern WTK_PRIVATE
   void wtk_ogl_bind(
     wtk_ogl_surface_t *surface);
 
+typedef enum wtk_ogl_present_flags {
+  /*! Synchronize to vertical blanks. */
+  WTK_OGL_PRESENT_SYNCHRONIZE = (1 << 0)
+} wtk_ogl_present_flags_t;
+
 extern WTK_PRIVATE
   void wtk_ogl_present(
-    wtk_ogl_surface_t *surface);
+    wtk_ogl_surface_t *surface,
+    wtk_uint32_t flags);
 
 WTK_END_EXTERN_C
 

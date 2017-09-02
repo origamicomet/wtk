@@ -482,7 +482,8 @@ void wtk_ogl_bind(wtk_ogl_surface_t *surface)
   glBindFramebuffer(GL_FRAMEBUFFER, surface ? surface->fbo : 0);
 }
 
-void wtk_ogl_present(wtk_ogl_surface_t *surface)
+void wtk_ogl_present(wtk_ogl_surface_t *surface,
+                     wtk_uint32_t flags)
 {
   /* TODO(mtwilliams): Resolve swap chain if multisampling. */
 
@@ -504,7 +505,7 @@ void wtk_ogl_present(wtk_ogl_surface_t *surface)
 
 #if WTK_PLATFORM == WTK_PLATFORM_WINDOWS
   /* Swap. */
-  wtk_wgl_present(surface->underlying, WTK_WGL_PRESENT_SYNCHRONIZE);
+  wtk_wgl_present(surface->underlying, (flags & WTK_OGL_PRESENT_SYNCHRONIZE) ? WTK_WGL_PRESENT_SYNCHRONIZE : 0);
 
   /* Unbind. */
   wtk_wgl_bind(context, NULL);
