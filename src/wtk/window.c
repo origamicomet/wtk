@@ -243,9 +243,6 @@ wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
 }
 
 #if WTK_PLATFORM == WTK_PLATFORM_WINDOWS
-  /* See `WM_CREATE` handler for reasoning. */
-  #define WM_CREATED (WM_USER + 0x0001)
-
   static LRESULT WINAPI wtk_window_callback(HWND hWnd,
                                             UINT uMsg,
                                             WPARAM wParam,
@@ -275,11 +272,6 @@ wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
         window->canvas =
           wtk_canvas_create(window->width, window->height, 0x00000000);
 
-        /* Defer event delivery since our structures aren't fully initialized yet. */
-        PostMessage(hWnd, WM_CREATED, 0, 0);
-      } return 0;
-
-      case WM_CREATED: {
         wtk_window_event_t event;
         event.type = WTK_WINDOW_EVENT_OPENED;
 
@@ -321,19 +313,6 @@ wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
         wtk_free((void *)window);
       } return 0;
 
-      case WM_MOVING: {
-        /* TODO(mtwilliams): Convert coordinate space? */
-        const RECT *drag = (const RECT *)lParam;
-
-        window->x = drag->left;
-        window->y = drag->top;
-
-        wtk_window_event_t event;
-        event.type = WTK_WINDOW_EVENT_MOVING;
-
-        window->event_handler(handle, &event, window->event_handler_context);
-      } return TRUE;
-
       case WM_MOVE: {
         window->x = LOWORD(lParam);
         window->y = HIWORD(lParam);
@@ -343,21 +322,6 @@ wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
 
         window->event_handler(handle, &event, window->event_handler_context);
       } return 0;
-
-      case WM_SIZING: {
-        /* TODO(mtwilliams): Convert coordinate space? */
-        const RECT *drag = (const RECT *)lParam;
-
-        window->x = drag->left;
-        window->y = drag->top;
-        window->width = drag->right - drag->left;
-        window->height = drag->bottom - drag->top;
-
-        wtk_window_event_t event;
-        event.type = WTK_WINDOW_EVENT_RESIZING;
-
-        window->event_handler(handle, &event, window->event_handler_context);
-      } return TRUE;
 
       case WM_SIZE: {
         switch (wParam) {
@@ -381,6 +345,13 @@ wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
         event.type = WTK_WINDOW_EVENT_RESIZED;
 
         window->event_handler(handle, &event, window->event_handler_context);
+      } return 0;
+
+      case WM_ENTERSIZEMOVE: {
+      } return 0;
+
+      /* Only resize our surface once the user is done resizing. */
+      case WM_EXITSIZEMOVE: {
       } return 0;
 
       case WM_ERASEBKGND: {

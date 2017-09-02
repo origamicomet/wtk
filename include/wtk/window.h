@@ -25,10 +25,8 @@ typedef enum wtk_window_event_type {
   WTK_WINDOW_EVENT_OPENED,
   WTK_WINDOW_EVENT_CLOSED,
   WTK_WINDOW_EVENT_VISIBILITY,
-  WTK_WINDOW_EVENT_MOVING,
   WTK_WINDOW_EVENT_MOVED,
-  WTK_WINDOW_EVENT_RESIZING,
-  WTK_WINDOW_EVENT_RESIZED
+  WTK_WINDOW_EVENT_RESIZED,
 } wtk_window_event_type_t;
 
 typedef struct wtk_window_event {
