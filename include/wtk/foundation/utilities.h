@@ -34,6 +34,13 @@ WTK_BEGIN_EXTERN_C
   (((a) > (b)) ? (a) : (b))
 
 /**
+ * \def WTK_CLAMP
+ * \brief Clamps @v between @min and @max, inclusive.
+ */
+#define WTK_CLAMP(v, min, max) \
+  WTK_MIN(max, WTK_MAX(min, v))
+
+/**
  * \def WTK_BITS_TO_BYTES
  * \brief Computes the number of bytes required to represent @n bits.
  */
