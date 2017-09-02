@@ -11,6 +11,9 @@
 
 #include "wtk/canvas.h"
 
+/* For batches. */
+#include "wtk/draw.h"
+
 WTK_BEGIN_EXTERN_C
 
 /* FIXME(mtwilliams): Batch ordering when parent is flushed. */

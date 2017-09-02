@@ -27,6 +27,7 @@ typedef enum wtk_window_event_type {
   WTK_WINDOW_EVENT_VISIBILITY,
   WTK_WINDOW_EVENT_MOVED,
   WTK_WINDOW_EVENT_RESIZED,
+  WTK_WINDOW_EVENT_DRAW
 } wtk_window_event_type_t;
 
 typedef struct wtk_window_event {
@@ -43,6 +44,11 @@ typedef struct wtk_window_event {
     struct {
       unsigned visible;
     } visibility;
+
+    struct {
+      wtk_canvas_t *canvas;
+      wtk_rectangle_t dirty;
+    } draw;
   };
 } wtk_window_event_t;
 

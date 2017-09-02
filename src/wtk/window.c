@@ -13,17 +13,15 @@
 
 #if WTK_PLATFORM == WTK_PLATFORM_WINDOWS
   #include <windows.h>
+  #include <stdio.h>
 #elif WTK_PLATFORM == WTK_PLATFORM_MAC
 #elif WTK_PLATFORM == WTK_PLATFORM_LINUX
 #endif
 
-/* For creating an associated renderable surface. */
+/* For creating associated renderable surfaces. */
 #include "wtk/gl.h"
 
-/* For drawing. */
-#include "wtk/canvas.h"
-
-/* To mark dirty areas. */
+/* For rendering canvas to associated surface. */
 #include "wtk/render.h"
 
 WTK_BEGIN_EXTERN_C
@@ -236,12 +234,6 @@ wtk_uintptr_t wtk_window_to_native(wtk_handle_t handle)
 #endif
 }
 
-wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
-{
-  wtk_window_t *window = handle_to_window(handle);
-  return window->canvas;
-}
-
 #if WTK_PLATFORM == WTK_PLATFORM_WINDOWS
   static LRESULT WINAPI wtk_window_callback(HWND hWnd,
                                             UINT uMsg,
@@ -361,16 +353,25 @@ wtk_canvas_t *wtk_window_to_canvas(wtk_handle_t handle)
       case WM_PAINT: {
         PAINTSTRUCT ps;
 
+        /* TODO(mtwilliams): Respect `ps.fErase`? */
         if (BeginPaint(hWnd, &ps)) {
-          /* TODO(mtwilliams): Respect `ps.fErase`? */
-          wtk_rectangle_t dirty;
+          wtk_canvas_begin(window->canvas);
 
-          dirty.x = ps.rcPaint.left;
-          dirty.y = ps.rcPaint.top;
-          dirty.w = ps.rcPaint.right - ps.rcPaint.left;
-          dirty.h = ps.rcPaint.bottom - ps.rcPaint.top;
+          wtk_window_event_t event;
+          event.type = WTK_WINDOW_EVENT_DRAW;
+          event.draw.canvas = window->canvas;
+          event.draw.dirty.x = ps.rcPaint.left;
+          event.draw.dirty.y = ps.rcPaint.top;
+          event.draw.dirty.w = ps.rcPaint.right - ps.rcPaint.left;
+          event.draw.dirty.h = ps.rcPaint.bottom - ps.rcPaint.top;
 
-          wtk_renderer_invalidate(handle, &dirty);
+          window->event_handler(handle, &event, window->event_handler_context);
+
+          wtk_canvas_end(window->canvas);
+
+          wtk_ogl_bind(window->surface);
+          wtk_renderer_render(window->canvas);
+          wtk_ogl_present(window->surface, WTK_OGL_PRESENT_SYNCHRONIZE);
 
           EndPaint(hWnd, &ps);
         }

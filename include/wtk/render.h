@@ -14,7 +14,6 @@
 
 #include "wtk/foundation.h"
 
-#include "wtk/window.h"
 #include "wtk/canvas.h"
 
 WTK_BEGIN_EXTERN_C
@@ -26,11 +25,8 @@ extern WTK_PRIVATE
   void wtk_renderer_shutdown(void);
 
 extern WTK_PRIVATE
-  void wtk_renderer_invalidate(wtk_handle_t window,
-                               const wtk_rectangle_t *area);
-
-extern WTK_PRIVATE
-  void wtk_renderer_submit(void);
+  void wtk_renderer_render(
+    const wtk_canvas_t *canvas);
 
 WTK_END_EXTERN_C
 

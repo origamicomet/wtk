@@ -11,30 +11,16 @@
 
 #include "wtk/render.h"
 
+/* For batches. */
+#include "wtk/draw.h"
+
 #include "wtk/gl.h"
 
-#include <stdio.h>
-
-/* TODO(mtwilliams): Manually clip. */
-
 WTK_BEGIN_EXTERN_C
-
-/* See `wtk/window.c`. */
-extern wtk_ogl_surface_t *window_to_surface(wtk_handle_t window);
-
-typedef struct wtk_dirty {
-  struct wtk_dirty *next;
-  wtk_handle_t window;
-  wtk_ogl_surface_t *surface;
-  wtk_rectangle_t area;
-} wtk_dirty_t;
 
 typedef struct wtk_renderer {
   /*! Monotonically increasing count of frames rendered. */
   wtk_uint32_t frames;
-
-  /*! Linked-list of windows (and dirty area) to redraw. */
-  wtk_dirty_t *dirty;
 
   /* Simple shader for rendering a bunch of `wtk_vertex_t`. */
   wtk_uint32_t program;
@@ -172,8 +158,6 @@ void wtk_renderer_init(void)
 
   r->frames = 0;
 
-  r->dirty = NULL;
-
   r->permanent.base   = (wtk_uintptr_t)wtk_allocate_s(65535, 16);
   r->permanent.offset = 0;
   r->permanent.size   = 65535;
@@ -288,73 +272,20 @@ void wtk_renderer_shutdown(void)
   r = NULL;
 }
 
-void wtk_renderer_invalidate(wtk_handle_t window,
-                             const wtk_rectangle_t *area)
+void wtk_renderer_begin(void)
 {
-  wtk_dirty_t *dirty;
-
-  for (dirty = r->dirty; dirty; dirty = dirty->next)
-    if (dirty->window == window)
-      break;
-
-  if (dirty) {
-    if (area) {
-      /* Merge dirty areas. */
-      dirty->area.x = WTK_MIN(dirty->area.x, area->x);
-      dirty->area.y = WTK_MIN(dirty->area.y, area->y);
-      dirty->area.w = WTK_MAX(dirty->area.w, area->w);
-      dirty->area.h = WTK_MAX(dirty->area.h, area->h);
-    } else {
-      /* Assume entire window is dirty. */
-      dirty->area.x = 0;
-      dirty->area.y = 0;
-      wtk_ogl_dimensions_of_surface(dirty->surface, &dirty->area.w, &dirty->area.h);
-    }
-  } else {
-    dirty = (wtk_dirty_t *)wtk_block_allocate_s(&r->transient, sizeof(wtk_dirty_t));
-
-    dirty->window = window;
-
-    /* Cached, rather than looking up repeatedly. */
-    dirty->surface = window_to_surface(window);
-
-    if (area) {
-      dirty->area.x = area->x;
-      dirty->area.y = area->y;
-      dirty->area.w = area->w;
-      dirty->area.h = area->h;
-    } else {
-      /* Assume entire window is dirty. */
-      dirty->area.x = 0;
-      dirty->area.y = 0;
-      wtk_ogl_dimensions_of_surface(dirty->surface, &dirty->area.w, &dirty->area.h);
-    }
-
-    dirty->next = r->dirty;
-    r->dirty = dirty;
-  }
+  /* Blow away allocations from previous frame. */
+  wtk_block_reset(&r->transient);
 }
 
-void wtk_renderer_submit_a_canvas(wtk_canvas_t *canvas,
-                                  wtk_ogl_surface_t *surface)
+void wtk_renderer_end(void)
 {
-  wtk_ogl_bind(surface);
+  r->frames += 1;
+}
 
-  glViewport(0, 0, canvas->width, canvas->height);
-  glScissor(0, 0, canvas->width, canvas->height);
-
-#if 1
-  const wtk_uint32_t color = COLORS[r->frames % 32];
-
-  glClearColor(((color >> 24) & 0xff) * 1.f / 255.f,
-               ((color >> 16) & 0xff) * 1.f / 255.f,
-               ((color >> 8)  & 0xff) * 1.f / 255.f,
-               ((color >> 0)  & 0xff) * 1.f / 255.f);
-#else
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-#endif
-
-  glClear(GL_COLOR_BUFFER_BIT);
+void wtk_renderer_render(const wtk_canvas_t *canvas)
+{
+  wtk_renderer_begin();
 
   glEnable(GL_SCISSOR_TEST);
 
@@ -364,14 +295,18 @@ void wtk_renderer_submit_a_canvas(wtk_canvas_t *canvas,
   glFrontFace(GL_CW);
   glCullFace(GL_BACK);
 
+  glViewport(0, 0, canvas->width, canvas->height);
+  glScissor(0, 0, canvas->width, canvas->height);
+
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+
   glUseProgram(r->program);
 
-#if 1
-  glUniform1ui(r->debug_uniform_loc, 1);
-#else
+  /* Debug visualization is done by our shader. */
   glUniform1ui(r->debug_uniform_loc, 0);
-#endif
 
+  /* TODO(mtwilliams): Use rectangle texture? */
   glUniform2ui(r->dimensions_uniform_loc, canvas->width, canvas->height);
 
   glEnableVertexAttribArray(0);
@@ -416,27 +351,8 @@ void wtk_renderer_submit_a_canvas(wtk_canvas_t *canvas,
 
     glDeleteBuffers(1, &buffer);
   }
-}
 
-void wtk_renderer_submit(void) {
-  /* Redraw all dirty areas. */
-  for (const wtk_dirty_t *dirty = r->dirty; dirty; dirty = dirty->next) {
-    wtk_renderer_submit_a_canvas(wtk_window_to_canvas(dirty->window),
-                                 dirty->surface);
-  }
-
-  /* Present. */
-  for (const wtk_dirty_t *dirty = r->dirty; dirty; dirty = dirty->next) {
-    wtk_ogl_present(dirty->surface);
-  }
-
-  /* Redrawn. */
-  r->dirty = NULL;
-
-  /* Blow away allocations from previous frame. */
-  wtk_block_reset(&r->transient);
-
-  r->frames += 1;
+  wtk_renderer_end();
 }
 
 WTK_END_EXTERN_C

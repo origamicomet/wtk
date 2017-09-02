@@ -61,30 +61,22 @@ void wtk_app_shutdown(void)
   app = NULL;
 }
 
-void wtk_app_draw(void)
+void wtk_app_pump(void)
 {
-  /* TODO(mtwilliams): Iterate over frames, calling presentation callback. */
-
+#if WTK_PLATFORM == WTK_PLATFORM_WINDOWS
   /* HACK(mtwilliams): Force redraw. */
 #if 0
   for (window in windows)
     InvalidateRect(window->handle, NULL, TRUE);
 #endif
 
-  wtk_renderer_submit();
-}
-
-void wtk_app_pump(void)
-{
-#if WTK_PLATFORM == WTK_PLATFORM_WINDOWS
   MSG msg;
   while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
 
-  wtk_app_draw();
-
+  /* TODO(mtwilliams): Hide behind flag. */
   /* Wait until messages arrive, or ~16ms elapse. */
   UINT_PTR timer = SetTimer(NULL, NULL, 16, NULL);
   WaitMessage();
